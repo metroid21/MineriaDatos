@@ -12,6 +12,7 @@ public class ventanaPrincipal extends JFrame {
 	private JPanel contentPane;
 
 	//Hola
+	//Hola, ¿como nos vamos a dividir esto?
 	
 	/**
 	 * Launch the application.
