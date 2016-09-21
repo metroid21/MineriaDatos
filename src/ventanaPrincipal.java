@@ -11,6 +11,8 @@ public class ventanaPrincipal extends JFrame {
 
 	private JPanel contentPane;
 
+	//Hola
+	
 	/**
 	 * Launch the application.
 	 */
