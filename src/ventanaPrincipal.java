@@ -13,7 +13,6 @@ public class ventanaPrincipal extends JFrame {
 
 	//Hola
 	//Hola, ¿como nos vamos a dividir esto?
-	
 	/**
 	 * Launch the application.
 	 */
