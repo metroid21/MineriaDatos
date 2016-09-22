@@ -9,8 +9,9 @@ public class NodoCSV
 	/**
 	 * Valor 1: Atributo
 	 * Valor 2: Nominal
-	 * Valor 3: Numérico
+	 * Valor 3: Entero
 	 * Valor 4: Ordinal
+	 * Valor 5: Real
 	 */
 	private Integer tipo = 0;
 	
@@ -78,5 +79,50 @@ public class NodoCSV
 	public void setEliminado(boolean eliminado) 
 	{
 		this.eliminado = eliminado;
+	}
+	
+	public String getNombreTipo()
+	{
+		if (this.tipo == 1)
+		{
+			return "Atributo";
+		}
+		else if (this.tipo == 2)
+		{
+			return "Nominal";
+		}
+		else if (this.tipo == 3)
+		{
+			return "Entero";
+		}
+		else if (this.tipo == 4)
+		{
+			return "Ordinal";
+		}
+		else if (this.tipo == 5)
+		{
+			return "Real";
+		}
+		else
+		{
+			return "?????";
+		}
+	}
+	
+	public String toString()
+	{
+		String myString = "";
+				
+		myString = "{";
+		myString += this.id;
+		myString += ", ";
+		myString += this.getNombreTipo();
+		myString += ", '";
+		myString += this.getValor();
+		myString += "', ";
+		myString += this.eliminado;
+		myString += '}';
+		
+		return myString;
 	}
 }
