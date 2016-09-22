@@ -25,7 +25,12 @@ public class ventanaPrincipal extends JFrame {
 	private JTable tablaCSV;
 	private JTable tablaFrecuencia;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) 
+	{
+		LectorCSV lect = new LectorCSV();
+		DatosCSV datos = new DatosCSV();
+		lect.cargarCSV("SacramentocrimeJanuary2006.csv", datos);
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -63,9 +68,9 @@ public class ventanaPrincipal extends JFrame {
 		
 		JMenuItem mntmSalir = new JMenuItem("Salir");
 		mnArchivo.add(mntmSalir);
-		mntmSalir.addActionListener((ActionEvent event)->{
-			System.exit(0);
-		});
+		//mntmSalir.addActionListener((ActionEvent event)->{
+			//System.exit(0);
+		//});
 		
 		/*Grid Principal*/
 		contentPane = new JPanel();

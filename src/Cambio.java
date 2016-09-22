@@ -20,6 +20,13 @@ public class Cambio
 	 */
 	private Integer tipo = 0;
 	
+	public Cambio()
+	{
+		this.id = 0;
+		this.nodos = new LinkedList<NodoCambios>();
+		this.tipo = 0;
+	}
+	
 	public Cambio(Integer id, LinkedList<NodoCambios> nodos, Integer tipo) 
 	{
 		this.id = id;
