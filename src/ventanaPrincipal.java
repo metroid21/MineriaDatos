@@ -10,6 +10,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.awt.GridBagLayout;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -30,7 +33,9 @@ public class ventanaPrincipal extends JFrame {
 		LectorCSV lect = new LectorCSV();
 		DatosCSV datos = new DatosCSV();
 		lect.cargarCSV("SacramentocrimeJanuary2006.csv", datos);
-		
+		datos.escribirArchivoString("ejemplo.txt");
+		datos.escribirArchivoCSV("ejemplo.csv");
+				
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {

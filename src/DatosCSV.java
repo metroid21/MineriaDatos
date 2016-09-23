@@ -1,3 +1,6 @@
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 
 public class DatosCSV 
@@ -86,7 +89,7 @@ public class DatosCSV
 	}
 	
 	public String toString()
-	{
+	{	
 		String valorResultante = "";
 		
 		//Recuperamos los atributos
@@ -96,7 +99,7 @@ public class DatosCSV
 			
 			LinkedList<NodoCSV> listaAtributos = this.atributos.getNodos();
 			
-			for (Integer i = 0; i < listaAtributos.size(); i++)
+			for (int i = 0; i < listaAtributos.size(); i++)
 			{
 				valorResultante = valorResultante + "    " + listaAtributos.get(i) + "\n";
 			}
@@ -108,17 +111,21 @@ public class DatosCSV
 			valorResultante = "Sin Atributos\n";
 		}
 		
+		System.out.println(valorResultante);
+		
 		//Recuperamos los datos
-		if (this.getDatos() != null)
+		if (this.datos != null)
 		{
 			for (int j = 0; j < this.datos.size(); j++)
 			{
 				LinkedList<NodoCSV> nodos = this.datos.get(j).getNodos();
 				
-				for (Integer i = 0; i < nodos.size(); i++)
+				for (int i = 0; i < nodos.size(); i++)
 				{
 					valorResultante = valorResultante + "  " + nodos.get(i) + "\n";
 				}
+				
+				valorResultante += "\n";
 			}
 
 			valorResultante += "\n";
@@ -128,6 +135,139 @@ public class DatosCSV
 			valorResultante = "Sin Datos del CSV\n";
 		}
 		
+		//System.out.println(valorResultante);
+		
 		return valorResultante;
 	}
+
+	public void escribirArchivoString(String nombreArchivo)
+	{	
+		PrintWriter writer;
+		
+		try 
+		{
+			writer = new PrintWriter(nombreArchivo, "UTF-8");
+			
+			//Recuperamos los atributos
+			if (this.atributos != null)
+			{
+				writer.print("Atributos:\n");
+				
+				LinkedList<NodoCSV> listaAtributos = this.atributos.getNodos();
+				
+				for (int i = 0; i < listaAtributos.size(); i++)
+				{
+					writer.print("    " + listaAtributos.get(i) + "\n");
+				}
+				
+				writer.print("\n");
+			}
+			else
+			{
+				writer.print("Sin Atributos\n");
+			}
+						
+			//Recuperamos los datos
+			if (this.datos != null)
+			{
+				for (int j = 0; j < this.datos.size(); j++)
+				{
+					LinkedList<NodoCSV> nodos = this.datos.get(j).getNodos();
+					
+					writer.print("  " + this.datos.get(j).getId() + "\n");
+					
+					for (int i = 0; i < nodos.size(); i++)
+					{
+						writer.print("    " + nodos.get(i) + "\n");
+					}
+					
+					writer.print("\n");
+				}
+
+				writer.print("\n");
+			}
+			else
+			{
+				writer.print("Sin Datos del CSV\n");
+			}
+
+			writer.close();
+		} 
+		catch (FileNotFoundException e1) 
+		{
+			//e1.printStackTrace();
+		} 
+		catch (UnsupportedEncodingException e1) 
+		{
+			//e1.printStackTrace();
+		}
+	}
+	
+	public void escribirArchivoCSV(String nombreArchivo)
+	{	
+		PrintWriter writer;
+		
+		try 
+		{
+			writer = new PrintWriter(nombreArchivo, "UTF-8");
+			
+			//Recuperamos los atributos
+			if (this.atributos != null)
+			{				
+				LinkedList<NodoCSV> listaAtributos = this.atributos.getNodos();
+				
+				for (int i = 0; i < listaAtributos.size(); i++)
+				{
+					if (i == listaAtributos.size()-1)
+					{
+						writer.print(listaAtributos.get(i).getValor());
+					}
+					else
+					{
+						writer.print(listaAtributos.get(i).getValor() + ",");
+					}
+				}
+				
+				writer.print("\n");
+			}
+						
+			//Recuperamos los datos
+			if (this.datos != null)
+			{
+				for (int j = 0; j < this.datos.size(); j++)
+				{
+					LinkedList<NodoCSV> nodos = this.datos.get(j).getNodos();
+										
+					for (int i = 0; i < nodos.size(); i++)
+					{
+						writer.print(nodos.get(i).getValor());
+						
+						if (i !=nodos.size()-1)
+						{
+							writer.print(",");
+						}
+					}
+					
+					if (j != this.datos.size()-1)
+					{
+						writer.print("\n");
+					}
+				}
+			}
+			else
+			{
+				writer.print("Sin Datos del CSV\n");
+			}
+
+			writer.close();
+		} 
+		catch (FileNotFoundException e1) 
+		{
+			//e1.printStackTrace();
+		} 
+		catch (UnsupportedEncodingException e1) 
+		{
+			//e1.printStackTrace();
+		}
+	}	
 }
