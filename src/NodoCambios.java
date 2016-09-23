@@ -25,7 +25,7 @@ public class NodoCambios
 	{
 		this.idNodo       = 0;
 		this.idRegistro   = 0;
-		this.valorAntiguo = "";
+		this.valorAntiguo = ""; 
 		this.valorNuevo   = "";
 	}
 	

@@ -224,13 +224,13 @@ public class DatosCSV
 					}
 					else
 					{
-						writer.print(listaAtributos.get(i).getValor() + ",");
+						writer.print(listaAtributos.get(i).getValor()  + ",");
 					}
 				}
 				
 				writer.print("\n");
 			}
-						
+						 
 			//Recuperamos los datos
 			if (this.datos != null)
 			{

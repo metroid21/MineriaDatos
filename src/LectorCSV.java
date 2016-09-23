@@ -235,7 +235,7 @@ public class LectorCSV
 		    		myNodo.setValor(valorNodo.trim());
 		    		myNodo.setEliminado(false);
 		
-		    		if (reg.getNodos().isEmpty())
+		    		if (reg.getNodos().isEmpty()) 
 		    		{
 		    			myNodo.setId(1);
 		    		}

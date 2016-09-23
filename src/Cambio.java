@@ -7,9 +7,9 @@ public class Cambio
 	 */
 	private Integer id = 0;
 	
-	/**
+	/** 
 	 * Nodos con el registro de los cambios efectados en esta operacion
-	 */
+	 */ 
 	private LinkedList<NodoCambios> nodos = null;
 	
 	/**
