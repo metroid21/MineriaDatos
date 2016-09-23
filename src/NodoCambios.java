@@ -76,9 +76,4 @@ public class NodoCambios
 	{
 		this.valorNuevo = valorNuevo;
 	}
-	
-	public void printAdios()
-	{
-		System.out.println("Adios Mundo Cruel");
-	}
 }
