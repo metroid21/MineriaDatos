@@ -76,4 +76,9 @@ public class NodoCambios
 	{
 		this.valorNuevo = valorNuevo;
 	}
+	
+	public void printHola()
+	{
+		System.out.println("Hola Mundo");
+	}
 }
