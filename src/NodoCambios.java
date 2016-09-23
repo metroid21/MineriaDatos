@@ -79,6 +79,6 @@ public class NodoCambios
 	
 	public void printAdios()
 	{
-		System.out.println("Adios Mundo Cruel");
+		System.out.println("Adios Mundo Cruel ");
 	}
 }
