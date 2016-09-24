@@ -3,6 +3,8 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.LinkedList;
 
+import javax.swing.table.DefaultTableModel;
+
 public class DatosCSV 
 {
 	/**
@@ -25,9 +27,15 @@ public class DatosCSV
 	 */
 	private String nombreArchivo = "";
 	
+	/**
+	 * Camino hasta llegar al archivo cargado
+	 */
+	private String caminoArchivo = "";
+	
 	public DatosCSV() 
 	{
 		this.nombreArchivo = "";
+		this.caminoArchivo = "";
 		this.atributos     = new RegistroCSV();
 		this.datos         = new LinkedList<RegistroCSV>();
 		this.cambios       = new LinkedList<Cambio>();
@@ -35,7 +43,8 @@ public class DatosCSV
 
 	public DatosCSV(String archivo) 
 	{
-		this.setNombreArchivo(archivo);
+		this.nombreArchivo = archivo;
+		this.caminoArchivo = "";
 		this.atributos     = new RegistroCSV();
 		this.datos         = new LinkedList<RegistroCSV>();
 		this.cambios       = new LinkedList<Cambio>();
@@ -43,9 +52,11 @@ public class DatosCSV
 
 	public DatosCSV(RegistroCSV atributos, LinkedList<RegistroCSV> datos, LinkedList<Cambio> cambios) 
 	{
-		this.atributos = atributos;
-		this.datos = datos;
-		this.cambios = cambios;
+		this.nombreArchivo = "";
+		this.caminoArchivo = "";		
+		this.atributos     = atributos;
+		this.datos         = datos;
+		this.cambios       = cambios;
 	}
 
 	public RegistroCSV getAtributos() 
@@ -88,6 +99,16 @@ public class DatosCSV
 		this.nombreArchivo = nombreArchivo;
 	}
 	
+	public String getCaminoArchivo() 
+	{
+		return caminoArchivo;
+	}
+
+	public void setCaminoArchivo(String caminoArchivo) 
+	{
+		this.caminoArchivo = caminoArchivo;
+	}
+
 	public String toString()
 	{	
 		String valorResultante = "";
@@ -269,5 +290,59 @@ public class DatosCSV
 		{
 			//e1.printStackTrace();
 		}
+	}	
+	
+	public void actualizarFromJTable()
+	{
+		
+	}
+	
+	public String[] getAtributosAsStringArray()
+	{
+		String arreglo[] = new String[this.atributos.getNodos().size()];
+		
+		for (int i = 0; i < this.atributos.getNodos().size(); i++)
+		{
+			arreglo[i] = this.atributos.getNodos().get(i).getValor();
+		}
+		
+		return arreglo;
+	}
+	
+	public Object[][] getDatosAsObjectArray()
+	{
+		Object arreglo[][] = new String[this.datos.size()][this.atributos.getNodos().size()];
+		
+		for (int i = 0; i < this.datos.size(); i++)
+		{
+			for (int j = 0; j < this.datos.get(i).getNodos().size(); j++)
+			{
+				arreglo[i][j] = this.datos.get(i).getNodos().get(j).getValor();
+			}
+		}
+				
+		return arreglo;
+	}
+	
+	public DefaultTableModel getDatosAsTableModel()
+	{
+		DefaultTableModel modelo = new DefaultTableModel();
+		
+		for (int i = 0; i < this.atributos.getNodos().size(); i++)
+		{
+			modelo.addColumn(this.atributos.getNodos().get(i).getValor());
+		}
+
+		for (int i = 0; i < this.datos.size(); i++)
+		{
+			Object[] newRow = new Object[this.datos.get(i).getNodos().size()];
+			for (int j = 0; j < this.datos.get(i).getNodos().size(); j++)
+			{
+				newRow[j] = this.datos.get(i).getNodos().get(j).getValor();
+			}
+			modelo.addRow(newRow);
+		}
+				
+		return modelo;
 	}	
 }

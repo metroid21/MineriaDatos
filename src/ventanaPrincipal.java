@@ -1,9 +1,12 @@
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JMenuBar;
 import javax.swing.JButton;
 import javax.swing.JMenu;
@@ -23,28 +26,30 @@ import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTable;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class ventanaPrincipal<E> extends JFrame {
 
 	private JPanel contentPane;
-	private JTable tablaCSV;
+	private DatosCSV datos = new DatosCSV();
+	private DefaultTableModel modeloTablaCSV;
 	private JTable tablaFrecuencia;
 	private JTextField textFieldNuevoAtributo;
+	private JFileChooser chooser = new JFileChooser();
+	private JTable tablaCSV;
+	private JScrollPane scrollPaneCSV;
 
 	public static void main(String[] args) 
-	{
-		LectorCSV lect = new LectorCSV();
-		DatosCSV datos = new DatosCSV();
-		lect.cargarCSV("SacramentocrimeJanuary2006.csv", datos);
-		datos.escribirArchivoString("ejemplo.txt");
-		datos.escribirArchivoCSV("ejemplo.csv");
-				
+	{					
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					ventanaPrincipal frame = new ventanaPrincipal();
+					frame.pack();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -56,7 +61,8 @@ public class ventanaPrincipal<E> extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ventanaPrincipal() {
+	public ventanaPrincipal() 
+	{
 		setTitle("Proyecto MIneria");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 398);
@@ -76,12 +82,87 @@ public class ventanaPrincipal<E> extends JFrame {
 		/*Elementos del menú Archivo*/
 		
 		JMenuItem mntmAbrir = new JMenuItem("Leer",iconoAbrir);
+		mntmAbrir.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) 
+			{
+				 FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos CSV", "csv");
+				 chooser.setCurrentDirectory(new java.io.File("."));
+				 chooser.setDialogTitle("Leer CSV");
+				 chooser.setApproveButtonText("Leer");
+				 chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				 chooser.setFileFilter(filter);
+				 
+				 if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) 
+				 {
+					 LectorCSV lect = new LectorCSV();
+					 lect.cargarCSV(chooser.getSelectedFile().getAbsolutePath(), datos);
+					 
+					 datos.setNombreArchivo(chooser.getSelectedFile().getName());
+					 datos.setCaminoArchivo(chooser.getSelectedFile().getAbsolutePath());
+					 					 
+					 tablaCSV = new JTable(datos.getDatosAsTableModel());
+					 
+					 System.out.println("Archivo Leido");
+				 } 
+				 else 
+				 {
+					System.out.println("No seleccion ");
+				 }
+			}
+		});
 		mnArchivo.add(mntmAbrir);
 	
 		JMenuItem mntmGuardar = new JMenuItem("Guardar",iconoGuardar);
+		mntmGuardar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) 
+			{
+				if (!datos.getAtributos().getNodos().isEmpty())
+				{
+					 chooser.setCurrentDirectory(new java.io.File("."));
+					 chooser.setDialogTitle("Guardar CSV");
+					 chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+					 chooser.setApproveButtonText("Guardar");
+					 
+					 if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) 
+					 {				 				
+						 String archivo = chooser.getSelectedFile().getAbsolutePath();
+						 					 
+						 if (!archivo.endsWith(".csv") && !archivo.endsWith(".dat"))
+						 {
+							 archivo += ".csv";
+						 }
+						 
+						 if (archivo.endsWith(".dat"))
+						 {
+							 datos.escribirArchivoString(archivo);
+						 }
+						 else
+						 {
+							 datos.escribirArchivoCSV(archivo);
+						 }
+						 
+						 
+						 System.out.println("Archivo Guardado");
+					 } 
+					 else 
+					 {
+						System.out.println("No seleccion");
+					 }
+				}
+			}
+		});
 		mnArchivo.add(mntmGuardar);
 		
 		JMenuItem mntmSalir = new JMenuItem("Salir",iconoSalir);
+		mntmSalir.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) 
+			{
+				System.exit(0);
+			}
+		});
 		mnArchivo.add(mntmSalir);
 		
 		JMenu mnPreprocesamiento = new JMenu("Preprocesamiento");
@@ -92,16 +173,13 @@ public class ventanaPrincipal<E> extends JFrame {
 		
 		JMenu mnDatamining = new JMenu("DataMining");
 		menuBar.add(mnDatamining);
-		//mntmSalir.addActionListener((ActionEvent event)->{
-			//System.exit(0);
-		//});
 		
 		/*Grid Principal*/
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
-		JScrollPane scrollPaneCSV = new JScrollPane();
+		scrollPaneCSV = new JScrollPane();
 		
 		JScrollPane scrollPaneFrecuencia = new JScrollPane();
 		
@@ -135,7 +213,7 @@ public class ventanaPrincipal<E> extends JFrame {
 		
 		JComboBox comboBoxClases = new JComboBox();
 		
-		JButton btnAadir = new JButton("Añadir");
+		JButton btnAadir = new JButton("A�adir");
 		
 		JButton btnQuitar = new JButton("Quitar");
 		
@@ -193,11 +271,11 @@ public class ventanaPrincipal<E> extends JFrame {
 		scrollPaneAtributos.setViewportView(listaAtributos);
 		panel.setLayout(gl_panel);
 		
-		
 		tablaFrecuencia = new JTable();
 		scrollPaneFrecuencia.setViewportView(tablaFrecuencia);
 		
-		tablaCSV = new JTable();
+		tablaCSV = new JTable(modeloTablaCSV);
+        tablaCSV.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		scrollPaneCSV.setViewportView(tablaCSV);
 		contentPane.setLayout(gl_contentPane);
 	}
