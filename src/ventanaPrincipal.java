@@ -31,6 +31,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.ActionListener;
 
 public class ventanaPrincipal<E> extends JFrame {
 
@@ -63,7 +64,7 @@ public class ventanaPrincipal<E> extends JFrame {
 	 */
 	public ventanaPrincipal() 
 	{
-		setTitle("Proyecto MIneria");
+		setTitle("Proyecto Mineria");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 398);
 		
@@ -213,13 +214,23 @@ public class ventanaPrincipal<E> extends JFrame {
 		
 		JComboBox comboBoxClases = new JComboBox();
 		
-		JButton btnAadir = new JButton("Añadir");
+		JButton btnAadir = new JButton("Aï¿½adir");
 		
 		JButton btnQuitar = new JButton("Quitar");
 		
 		JScrollPane scrollPaneAtributos = new JScrollPane();
 		
+		contentPane.setLayout(gl_contentPane);
+		
 		JButton btnActualizar = new JButton("Actualizar");
+		btnActualizar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				tablaCSV = new JTable();
+				tablaCSV.setModel(datos.getDatosAsTableModel());
+		        tablaCSV.setPreferredScrollableViewportSize(new Dimension(500, 70));
+				scrollPaneCSV.setViewportView(tablaCSV);
+			}
+		});
 		
 		textFieldNuevoAtributo = new JTextField();
 		textFieldNuevoAtributo.setColumns(10);
@@ -274,9 +285,6 @@ public class ventanaPrincipal<E> extends JFrame {
 		tablaFrecuencia = new JTable();
 		scrollPaneFrecuencia.setViewportView(tablaFrecuencia);
 		
-		tablaCSV = new JTable(modeloTablaCSV);
-        tablaCSV.setPreferredScrollableViewportSize(new Dimension(500, 70));
-		scrollPaneCSV.setViewportView(tablaCSV);
-		contentPane.setLayout(gl_contentPane);
+		
 	}
 }
