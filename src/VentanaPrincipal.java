@@ -33,7 +33,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 
-public class ventanaPrincipal<E> extends JFrame {
+public class VentanaPrincipal<E> extends JFrame {
 
 	private JPanel contentPane;
 	private DatosCSV datos = new DatosCSV();
@@ -49,7 +49,7 @@ public class ventanaPrincipal<E> extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					ventanaPrincipal frame = new ventanaPrincipal();
+					VentanaPrincipal frame = new VentanaPrincipal();
 					frame.pack();
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -62,7 +62,7 @@ public class ventanaPrincipal<E> extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public ventanaPrincipal() 
+	public VentanaPrincipal() 
 	{
 		setTitle("Proyecto Mineria");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
