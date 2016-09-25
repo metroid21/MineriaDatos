@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import javax.swing.JMenuBar;
 import javax.swing.JButton;
 import javax.swing.JMenu;
@@ -231,14 +232,25 @@ public class VentanaPrincipal<E> extends JFrame {
             {
                 JComboBox comboBox = (JComboBox) event.getSource();
                 int selected = comboBox.getSelectedIndex()-1;
-        
-                tablaFrecuencia.setModel(datos.getTablaFrecuencia(selected));
-                tablaFrecuencia.setPreferredScrollableViewportSize(new Dimension(500, 70));
-                scrollPaneFrecuencia.setViewportView(tablaFrecuencia);                
-            }
+                
+                if (selected >= 0)
+                {
+                    DefaultTableModel modelo = datos.getTablaFrecuencia(selected);
+                    tablaFrecuencia.setModel(modelo);
+                    tablaFrecuencia.setPreferredScrollableViewportSize(new Dimension(500, 70));
+                    tablaFrecuencia.setAutoCreateRowSorter(true);        		
+            		scrollPaneFrecuencia.setViewportView(tablaFrecuencia);                               	
+                }
+                else
+                {
+                    tablaFrecuencia.setModel(new DefaultTableModel());
+                    tablaFrecuencia.setPreferredScrollableViewportSize(new Dimension(500, 70));
+                    scrollPaneFrecuencia.setViewportView(tablaFrecuencia);   
+                }
+             }
         });
 		
-		JButton btnAadir = new JButton("A�adir");
+		JButton btnAadir = new JButton("Agregar");
 		
 		JButton btnQuitar = new JButton("Quitar");
 		

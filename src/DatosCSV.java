@@ -373,13 +373,13 @@ public class DatosCSV
 		}
 
 		DefaultTableModel modelo = new DefaultTableModel();
-
+		
 		modelo.addColumn("Atributo");
 		modelo.addColumn("Repeticiones");
 		
 		for (int i = 0; i < datosAtributo.size(); i++)
 		{
-			Object[] newRow = {datosAtributo.get(i), contadorPosiciones.get(i)};
+			Object[] newRow = {datosAtributo.get(i), String.format("%05d", contadorPosiciones.get(i))};
 			modelo.addRow(newRow);
 		}
 		
