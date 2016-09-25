@@ -20,6 +20,7 @@ import java.awt.GridBagLayout;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.Icon;
@@ -49,6 +50,8 @@ public class VentanaPrincipal<E> extends JFrame {
 	private JScrollPane scrollPaneCSV;
 	private JComboBox comboBoxClases;
 	private JScrollPane scrollPaneFrecuencia;
+	private JList<? extends E> listaAtributos;
+	private JScrollPane scrollPaneAtributos;
 
 	public static void main(String[] args) 
 	{					
@@ -63,6 +66,42 @@ public class VentanaPrincipal<E> extends JFrame {
 				}
 			}
 		});
+	}
+	
+	private void actualizarModelos()
+	{
+		 //Cargamos los cambios en un modelo de tabla
+		 modeloTablaCSV = datos.getDatosAsTableModel();
+		 tablaCSV.setModel(modeloTablaCSV);
+		 tablaCSV.setPreferredScrollableViewportSize(new Dimension(500, 70));
+		 scrollPaneCSV.setViewportView(tablaCSV);
+		 
+		 //Actualizamos el Select de la Clase
+		 DefaultComboBoxModel aModel = new DefaultComboBoxModel(datos.getAtributosAsStringArray());
+		 aModel.insertElementAt("Selecionar", 0);
+		 aModel.setSelectedItem("Selecionar");
+		 comboBoxClases.setModel(aModel);
+		 
+		 //Actualizamos la lista de los Atributos
+		 DefaultListModel lModel = new DefaultListModel();
+		 
+		 for (int i = 0; i < datos.getAtributos().getNodos().size(); i++)
+		 {
+			 if (! datos.getAtributos().getNodos().get(i).isEliminado())
+			 {
+				 lModel.addElement(datos.getAtributos().getNodos().get(i).getValor());
+			 }
+		 }
+		 
+		 listaAtributos.setModel(lModel);
+		 scrollPaneAtributos.setViewportView(listaAtributos);
+		 
+		 //Actualizamos el contador de Registros de la Tabla de Frecuencia
+         DefaultTableModel modelo = datos.getTablaFrecuencia("");
+         tablaFrecuencia.setModel(modelo);
+         tablaFrecuencia.setPreferredScrollableViewportSize(new Dimension(500, 70));
+         tablaFrecuencia.setAutoCreateRowSorter(true);        		
+         scrollPaneFrecuencia.setViewportView(tablaFrecuencia);                               	
 	}
 
 	public VentanaPrincipal() 
@@ -90,6 +129,7 @@ public class VentanaPrincipal<E> extends JFrame {
 			@Override
 			public void mouseReleased(MouseEvent e) 
 			{
+				//Creamos la estructura para abrir archivos
 				 FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos CSV", "csv");
 				 chooser.setCurrentDirectory(new java.io.File("."));
 				 chooser.setDialogTitle("Leer CSV");
@@ -99,22 +139,21 @@ public class VentanaPrincipal<E> extends JFrame {
 				 
 				 if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) 
 				 {
+					 //Leemos el archivo csv
 					 LectorCSV lect = new LectorCSV();
 					 lect.cargarCSV(chooser.getSelectedFile().getAbsolutePath(), datos);
 					 
 					 datos.setNombreArchivo(chooser.getSelectedFile().getName());
 					 datos.setCaminoArchivo(chooser.getSelectedFile().getAbsolutePath());
-					 					 
-					 modeloTablaCSV=datos.getDatosAsTableModel();
-					 tablaCSV.setModel(modeloTablaCSV);
-					 tablaCSV.setPreferredScrollableViewportSize(new Dimension(500, 70));
-					 scrollPaneCSV.setViewportView(tablaCSV);
+					 			
+					 actualizarModelos();
 					 
-					 DefaultComboBoxModel aModel = new DefaultComboBoxModel(datos.getAtributosAsStringArray());
-					 aModel.insertElementAt("Selecionar", 0);
-					 aModel.setSelectedItem("Selecionar");
-					 comboBoxClases.setModel(aModel);
-					 
+		             DefaultTableModel modelo = datos.getTablaFrecuencia("");
+	                 tablaFrecuencia.setModel(modelo);
+	                 tablaFrecuencia.setPreferredScrollableViewportSize(new Dimension(500, 70));
+	                 tablaFrecuencia.setAutoCreateRowSorter(true);        		
+	                 scrollPaneFrecuencia.setViewportView(tablaFrecuencia);                               	
+
 					 System.out.println("Archivo Leido");
 					 
 				 } 
@@ -233,28 +272,42 @@ public class VentanaPrincipal<E> extends JFrame {
                 JComboBox comboBox = (JComboBox) event.getSource();
                 int selected = comboBox.getSelectedIndex()-1;
                 
-                if (selected >= 0)
-                {
-                    DefaultTableModel modelo = datos.getTablaFrecuencia(selected);
-                    tablaFrecuencia.setModel(modelo);
-                    tablaFrecuencia.setPreferredScrollableViewportSize(new Dimension(500, 70));
-                    tablaFrecuencia.setAutoCreateRowSorter(true);        		
-            		scrollPaneFrecuencia.setViewportView(tablaFrecuencia);                               	
-                }
-                else
-                {
-                    tablaFrecuencia.setModel(new DefaultTableModel());
-                    tablaFrecuencia.setPreferredScrollableViewportSize(new Dimension(500, 70));
-                    scrollPaneFrecuencia.setViewportView(tablaFrecuencia);   
-                }
+                DefaultTableModel modelo = datos.getTablaFrecuencia(comboBox.getSelectedItem().toString());
+                tablaFrecuencia.setModel(modelo);
+                tablaFrecuencia.setPreferredScrollableViewportSize(new Dimension(500, 70));
+                tablaFrecuencia.setAutoCreateRowSorter(true);        		
+        		scrollPaneFrecuencia.setViewportView(tablaFrecuencia);                               	
              }
         });
 		
 		JButton btnAadir = new JButton("Agregar");
+		btnAadir.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				if (textFieldNuevoAtributo.getText() != "")
+				{
+					datos.agregarAtributo(textFieldNuevoAtributo.getText());
+					textFieldNuevoAtributo.setText("");
+					actualizarModelos();
+				}
+			}
+		});
 		
 		JButton btnQuitar = new JButton("Quitar");
+		btnQuitar.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				if (listaAtributos.getSelectedValue() != "")
+				{
+					datos.eliminarAtributo(listaAtributos.getSelectedValue().toString());
+					actualizarModelos();
+				}
+			}
+		});
 		
-		JScrollPane scrollPaneAtributos = new JScrollPane();
+		scrollPaneAtributos = new JScrollPane();
 		
 		contentPane.setLayout(gl_contentPane);
 		
@@ -311,7 +364,7 @@ public class VentanaPrincipal<E> extends JFrame {
 					.addGap(5))
 		);
 		
-		JList<? extends E> listaAtributos = new JList();
+		listaAtributos = new JList();
 		scrollPaneAtributos.setViewportView(listaAtributos);
 		panel.setLayout(gl_panel);
 		

@@ -299,14 +299,24 @@ public class DatosCSV
 	
 	public String[] getAtributosAsStringArray()
 	{
-		String arreglo[] = new String[this.atributos.getNodos().size()];
+		LinkedList<String> arreglo = new LinkedList<String>();
 		
 		for (int i = 0; i < this.atributos.getNodos().size(); i++)
 		{
-			arreglo[i] = this.atributos.getNodos().get(i).getValor();
+			if (!this.atributos.getNodos().get(i).isEliminado())
+			{
+				arreglo.add(this.atributos.getNodos().get(i).getValor());
+			}
 		}
 		
-		return arreglo;
+		String[] arregloDef = new String[arreglo.size()];
+		
+		for (int i = 0; i < arreglo.size(); i++)
+		{
+			arregloDef[i] = arreglo.get(i);
+		}
+		
+		return arregloDef;
 	}
 	
 	public Object[][] getDatosAsObjectArray()
@@ -317,7 +327,10 @@ public class DatosCSV
 		{
 			for (int j = 0; j < this.datos.get(i).getNodos().size(); j++)
 			{
-				arreglo[i][j] = this.datos.get(i).getNodos().get(j).getValor();
+				if (! this.datos.get(i).getNodos().get(j).isEliminado())
+				{
+					arreglo[i][j] = this.datos.get(i).getNodos().get(j).getValor();
+				}
 			}
 		}
 				
@@ -330,15 +343,23 @@ public class DatosCSV
 		
 		for (int i = 0; i < this.atributos.getNodos().size(); i++)
 		{
-			modelo.addColumn(this.atributos.getNodos().get(i).getValor());
+			if (!this.atributos.getNodos().get(i).isEliminado())
+			{
+				modelo.addColumn(this.atributos.getNodos().get(i).getValor());
+			}
 		}
 
 		for (int i = 0; i < this.datos.size(); i++)
 		{
 			Object[] newRow = new Object[this.datos.get(i).getNodos().size()];
+			int k = 0;
 			for (int j = 0; j < this.datos.get(i).getNodos().size(); j++)
 			{
-				newRow[j] = this.datos.get(i).getNodos().get(j).getValor();
+				if (!this.datos.get(i).getNodos().get(j).isEliminado())
+				{
+					newRow[k] = this.datos.get(i).getNodos().get(j).getValor();
+					k++;
+				}
 			}
 			modelo.addRow(newRow);
 		}
@@ -346,43 +367,185 @@ public class DatosCSV
 		return modelo;
 	}	
 	
-	public DefaultTableModel getTablaFrecuencia(int indexAtributos)
+	private Integer getCantidadAtributos()
 	{
+		int cantidad = 0;
+		
+		for (int i = 0; i < this.atributos.getNodos().size(); i++)
+		{
+			if (!this.atributos.getNodos().get(i).isEliminado())
+			{
+				cantidad++;
+			}
+		}
+			
+		return cantidad;
+	}
+	
+	public DefaultTableModel getTablaFrecuencia(String nombreAtributo)
+	{
+		int indexAtributos = this.atributoStringToIndex(nombreAtributo);
+		
 		if (indexAtributos < 0 || indexAtributos > this.atributos.getNodos().size())
 		{
-			return null;
+			DefaultTableModel modelo = new DefaultTableModel();
+
+			modelo.addColumn("Descripcion");
+			modelo.addColumn("Datos de Descripcion");
+
+			Object[] newRow = {"Total Registros ", this.datos.size()};
+			modelo.addRow(newRow);
+			
+			Object[] newRow1 = {"Total Atributos ", this.getCantidadAtributos()};
+			modelo.addRow(newRow1);
+			
+			Object[] newRow2 = {"Archivo CSV ", this.getNombreArchivo()};
+			modelo.addRow(newRow2);
+			
+			Object[] newRow3 = {"Frontend", "Luis Fernando Guiterrez Gonzalez"};
+			modelo.addRow(newRow3);
+
+			Object[] newRow4 = {"Backend", "Jonathan Elias Sandoval Talamantes"};
+			modelo.addRow(newRow4);
+
+			Object[] newRow5 = {"Clase", "Mineria de Datos, CUCEI"};
+			modelo.addRow(newRow5);
+
+			return modelo;
 		}
-		
-		LinkedList<String>  datosAtributo      = new LinkedList<String>();
-		LinkedList<Integer> contadorPosiciones = new LinkedList<Integer>();
-			
-		for (int i = 0; i < this.datos.size(); i++)
+		else
 		{
-			String valor = this.datos.get(i).getNodos().get(indexAtributos).getValor();
-			int pos = datosAtributo.indexOf(valor);
-			
-			if (pos >= 0)
+			LinkedList<String>  datosAtributo      = new LinkedList<String>();
+			LinkedList<Integer> contadorPosiciones = new LinkedList<Integer>();
+				
+			for (int i = 0; i < this.datos.size(); i++)
 			{
-				contadorPosiciones.set(pos, contadorPosiciones.get(pos)+1);
+				if (this.datos.get(i).getNodos().get(indexAtributos).isEliminado())
+				{
+					continue;
+				}
+				
+				String valor = this.datos.get(i).getNodos().get(indexAtributos).getValor();
+				int pos = datosAtributo.indexOf(valor);
+				
+				if (pos >= 0)
+				{
+					contadorPosiciones.set(pos, contadorPosiciones.get(pos)+1);
+				}
+				else
+				{
+					contadorPosiciones.add(1);
+					datosAtributo.add(valor);
+				}
+			}
+	
+			DefaultTableModel modelo = new DefaultTableModel();
+			
+			modelo.addColumn("Atributo");
+			modelo.addColumn("Repeticiones");
+			
+			for (int i = 0; i < datosAtributo.size(); i++)
+			{
+				Object[] newRow = {datosAtributo.get(i), String.format("%05d", contadorPosiciones.get(i))};
+				modelo.addRow(newRow);
+			}
+			
+			return modelo;
+		}
+	}
+	
+	public void agregarAtributo(String nombreNuevo)
+	{
+		if (nombreNuevo.trim() != "")
+		{
+			String nombreFinal = nombreNuevo.replace(' ', '_');
+			
+			//Creamos el Cambio
+			Cambio nuevoCambio = null;
+			
+			if (cambios.isEmpty())
+			{
+				nuevoCambio = new Cambio(1, 1);
 			}
 			else
 			{
-				contadorPosiciones.add(1);
-				datosAtributo.add(valor);
+				nuevoCambio = new Cambio(cambios.size()+1, 1);
+			}
+
+			//Agregamos el cambio a los atributos
+			NodoCSV nodoAtributo = new NodoCSV();
+			nodoAtributo.setEliminado(false);
+			nodoAtributo.setId(this.atributos.getNodos().size()+1);
+			nodoAtributo.setValor(nombreFinal);
+			
+			this.atributos.getNodos().add(nodoAtributo);
+			
+			nuevoCambio.getNodos().add(new NodoCambios(0, nodoAtributo.getId(), "true", "false"));
+			
+			//Le agregamos el atributo a todos los nodos
+			int tamAtributos = this.atributos.getNodos().size();
+			
+			for (int i = 0; i < this.datos.size(); i++)
+			{
+				NodoCSV nodo = new NodoCSV(tamAtributos, 4, "", false);
+				this.datos.get(i).getNodos().add(nodo);
+				nuevoCambio.getNodos().add(new NodoCambios(nodo.getId(), tamAtributos, "true", "false"));
+			}			
+			
+			this.cambios.add(nuevoCambio);
+		}
+	}
+	
+	private int atributoStringToIndex(String nombreAtributo)
+	{
+		int indexAtributo = -1;
+		if (nombreAtributo.trim() != "")
+		{
+			for (int i = 0; i < this.atributos.getNodos().size(); i++)
+			{
+				if (this.atributos.getNodos().get(i).getValor() == nombreAtributo ||
+					this.atributos.getNodos().get(i).toString() == nombreAtributo)
+				{
+					indexAtributo = i;
+					break;
+				}
 			}
 		}
 
-		DefaultTableModel modelo = new DefaultTableModel();
+		return indexAtributo;
+	}
+	
+	public void eliminarAtributo(String nombreAtributo)
+	{		
+		int indexAtributo = this.atributoStringToIndex(nombreAtributo);
 		
-		modelo.addColumn("Atributo");
-		modelo.addColumn("Repeticiones");
-		
-		for (int i = 0; i < datosAtributo.size(); i++)
-		{
-			Object[] newRow = {datosAtributo.get(i), String.format("%05d", contadorPosiciones.get(i))};
-			modelo.addRow(newRow);
+		if (indexAtributo >= 0 && indexAtributo < this.atributos.getNodos().size())
+		{			
+			//Creamos el Cambio
+			Cambio nuevoCambio = null;
+			
+			if (cambios.isEmpty())
+			{
+				nuevoCambio = new Cambio(1, 1);
+			}
+			else
+			{
+				nuevoCambio = new Cambio(cambios.size()+1, 1);
+			}
+
+			//Agregamos el cambio a los atributos
+			this.atributos.getNodos().get(indexAtributo).setEliminado(true);
+			nuevoCambio.getNodos().add(new NodoCambios(0, indexAtributo, "false", "true"));
+			
+			//Actualizamos a los datos		
+			for (int i = 0; i < this.datos.size(); i++)
+			{
+				this.datos.get(i).getNodos().get(indexAtributo).setEliminado(true);
+				nuevoCambio.getNodos().add(new NodoCambios(i, indexAtributo, "false", "true"));
+			}			
+			
+			this.cambios.add(nuevoCambio);			
 		}
-		
-		return modelo;
+
 	}
 }
