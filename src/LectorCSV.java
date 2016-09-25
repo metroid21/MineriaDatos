@@ -88,6 +88,10 @@ public class LectorCSV
 		        		{
 		        			estado = 4;
 		        		}
+		        		else if (myChar == ',')
+		        		{
+		        			estado = 8;
+		        		}
 		        		else
 		        		{
 		        			valorNodo += myChar;
@@ -218,6 +222,10 @@ public class LectorCSV
 		        		{
 		        			estado = 4;
 		        		}
+		        		else if (myChar == ',')
+		        		{
+		        			estado = 8;
+		        		}		        		
 		        		else
 		        		{
 		        			valorNodo += myChar;

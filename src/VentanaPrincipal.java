@@ -16,6 +16,9 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.awt.GridBagLayout;
+
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.Icon;
@@ -43,6 +46,8 @@ public class VentanaPrincipal<E> extends JFrame {
 	private JFileChooser chooser = new JFileChooser();
 	private JTable tablaCSV = new JTable();;
 	private JScrollPane scrollPaneCSV;
+	private JComboBox comboBoxClases;
+	private JScrollPane scrollPaneFrecuencia;
 
 	public static void main(String[] args) 
 	{					
@@ -103,6 +108,11 @@ public class VentanaPrincipal<E> extends JFrame {
 					 tablaCSV.setModel(modeloTablaCSV);
 					 tablaCSV.setPreferredScrollableViewportSize(new Dimension(500, 70));
 					 scrollPaneCSV.setViewportView(tablaCSV);
+					 
+					 DefaultComboBoxModel aModel = new DefaultComboBoxModel(datos.getAtributosAsStringArray());
+					 aModel.insertElementAt("Selecionar", 0);
+					 aModel.setSelectedItem("Selecionar");
+					 comboBoxClases.setModel(aModel);
 					 
 					 System.out.println("Archivo Leido");
 					 
@@ -184,7 +194,7 @@ public class VentanaPrincipal<E> extends JFrame {
 		
 		scrollPaneCSV = new JScrollPane();
 		
-		JScrollPane scrollPaneFrecuencia = new JScrollPane();
+		scrollPaneFrecuencia = new JScrollPane();
 		
 		JPanel panel = new JPanel();
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
@@ -214,7 +224,19 @@ public class VentanaPrincipal<E> extends JFrame {
 		
 		JLabel lblClase = new JLabel("Clase:");
 		
-		JComboBox comboBoxClases = new JComboBox();
+		comboBoxClases = new JComboBox();
+		comboBoxClases.addActionListener(new ActionListener() 
+		{
+            public void actionPerformed(ActionEvent event) 
+            {
+                JComboBox comboBox = (JComboBox) event.getSource();
+                int selected = comboBox.getSelectedIndex()-1;
+        
+                tablaFrecuencia.setModel(datos.getTablaFrecuencia(selected));
+                tablaFrecuencia.setPreferredScrollableViewportSize(new Dimension(500, 70));
+                scrollPaneFrecuencia.setViewportView(tablaFrecuencia);                
+            }
+        });
 		
 		JButton btnAadir = new JButton("A�adir");
 		

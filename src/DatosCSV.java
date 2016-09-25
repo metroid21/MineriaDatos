@@ -345,4 +345,44 @@ public class DatosCSV
 				
 		return modelo;
 	}	
+	
+	public DefaultTableModel getTablaFrecuencia(int indexAtributos)
+	{
+		if (indexAtributos < 0 || indexAtributos > this.atributos.getNodos().size())
+		{
+			return null;
+		}
+		
+		LinkedList<String>  datosAtributo      = new LinkedList<String>();
+		LinkedList<Integer> contadorPosiciones = new LinkedList<Integer>();
+			
+		for (int i = 0; i < this.datos.size(); i++)
+		{
+			String valor = this.datos.get(i).getNodos().get(indexAtributos).getValor();
+			int pos = datosAtributo.indexOf(valor);
+			
+			if (pos >= 0)
+			{
+				contadorPosiciones.set(pos, contadorPosiciones.get(pos)+1);
+			}
+			else
+			{
+				contadorPosiciones.add(1);
+				datosAtributo.add(valor);
+			}
+		}
+
+		DefaultTableModel modelo = new DefaultTableModel();
+
+		modelo.addColumn("Atributo");
+		modelo.addColumn("Repeticiones");
+		
+		for (int i = 0; i < datosAtributo.size(); i++)
+		{
+			Object[] newRow = {datosAtributo.get(i), contadorPosiciones.get(i)};
+			modelo.addRow(newRow);
+		}
+		
+		return modelo;
+	}
 }
