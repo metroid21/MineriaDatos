@@ -1,4 +1,3 @@
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 
@@ -32,6 +31,7 @@ import javax.swing.JTextField;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
+import java.awt.Color;
 
 public class VentanaPrincipal<E> extends JFrame {
 
@@ -103,8 +103,11 @@ public class VentanaPrincipal<E> extends JFrame {
 					 datos.setCaminoArchivo(chooser.getSelectedFile().getAbsolutePath());
 					 					 
 					 tablaCSV = new JTable(datos.getDatosAsTableModel());
+					 tablaCSV.setPreferredScrollableViewportSize(new Dimension(500, 70));
+					 scrollPaneCSV.setViewportView(tablaCSV);
 					 
 					 System.out.println("Archivo Leido");
+					 
 				 } 
 				 else 
 				 {
@@ -177,6 +180,7 @@ public class VentanaPrincipal<E> extends JFrame {
 		
 		/*Grid Principal*/
 		contentPane = new JPanel();
+		contentPane.setBackground(new Color(255, 250, 240));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
@@ -223,14 +227,6 @@ public class VentanaPrincipal<E> extends JFrame {
 		contentPane.setLayout(gl_contentPane);
 		
 		JButton btnActualizar = new JButton("Actualizar");
-		btnActualizar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				tablaCSV = new JTable();
-				tablaCSV.setModel(datos.getDatosAsTableModel());
-		        tablaCSV.setPreferredScrollableViewportSize(new Dimension(500, 70));
-				scrollPaneCSV.setViewportView(tablaCSV);
-			}
-		});
 		
 		textFieldNuevoAtributo = new JTextField();
 		textFieldNuevoAtributo.setColumns(10);
