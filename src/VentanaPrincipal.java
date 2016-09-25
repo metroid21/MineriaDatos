@@ -41,7 +41,7 @@ public class VentanaPrincipal<E> extends JFrame {
 	private JTable tablaFrecuencia;
 	private JTextField textFieldNuevoAtributo;
 	private JFileChooser chooser = new JFileChooser();
-	private JTable tablaCSV;
+	private JTable tablaCSV = new JTable();;
 	private JScrollPane scrollPaneCSV;
 
 	public static void main(String[] args) 
@@ -59,9 +59,6 @@ public class VentanaPrincipal<E> extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public VentanaPrincipal() 
 	{
 		setTitle("Proyecto Mineria");
@@ -102,7 +99,8 @@ public class VentanaPrincipal<E> extends JFrame {
 					 datos.setNombreArchivo(chooser.getSelectedFile().getName());
 					 datos.setCaminoArchivo(chooser.getSelectedFile().getAbsolutePath());
 					 					 
-					 tablaCSV = new JTable(datos.getDatosAsTableModel());
+					 modeloTablaCSV=datos.getDatosAsTableModel();
+					 tablaCSV.setModel(modeloTablaCSV);
 					 tablaCSV.setPreferredScrollableViewportSize(new Dimension(500, 70));
 					 scrollPaneCSV.setViewportView(tablaCSV);
 					 
@@ -227,6 +225,11 @@ public class VentanaPrincipal<E> extends JFrame {
 		contentPane.setLayout(gl_contentPane);
 		
 		JButton btnActualizar = new JButton("Actualizar");
+		btnActualizar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				modeloTablaCSV.fireTableDataChanged();
+			}
+		});
 		
 		textFieldNuevoAtributo = new JTextField();
 		textFieldNuevoAtributo.setColumns(10);
