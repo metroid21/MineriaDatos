@@ -4,8 +4,15 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListDataEvent;
+import javax.swing.event.ListDataListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableRowSorter;
 import javax.swing.JMenuBar;
 import javax.swing.JButton;
@@ -19,6 +26,7 @@ import java.io.UnsupportedEncodingException;
 import java.awt.GridBagLayout;
 
 import javax.swing.ComboBoxModel;
+import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
@@ -28,6 +36,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.JTable;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -37,6 +47,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.Color;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
 
 public class VentanaPrincipal<E> extends JFrame {
 
@@ -46,12 +58,13 @@ public class VentanaPrincipal<E> extends JFrame {
 	private JTable tablaFrecuencia;
 	private JTextField textFieldNuevoAtributo;
 	private JFileChooser chooser = new JFileChooser();
-	private JTable tablaCSV = new JTable();;
+	private JTable tablaCSV;
 	private JScrollPane scrollPaneCSV;
 	private JComboBox comboBoxClases;
 	private JScrollPane scrollPaneFrecuencia;
 	private JList<? extends E> listaAtributos;
 	private JScrollPane scrollPaneAtributos;
+	private ListDataListener listDataListener;
 
 	public static void main(String[] args) 
 	{					
@@ -370,7 +383,41 @@ public class VentanaPrincipal<E> extends JFrame {
 		
 		tablaFrecuencia = new JTable();
 		scrollPaneFrecuencia.setViewportView(tablaFrecuencia);
-		
-		
+
+		tablaCSV = new JTable();
+		tablaCSV.addPropertyChangeListener(new PropertyChangeListener() 
+		{
+			public void propertyChange(PropertyChangeEvent evt) 
+			{
+				if (evt.getPropertyName().equals("tableCellEditor"))
+				{
+					String source = evt.getSource().toString();
+					
+					int changeColumIndexB = source.indexOf(",editingColumn=");
+					int changeRowIndexB   = source.indexOf(",editingRow=");
+					int changeGridColorB  = source.indexOf(",gridColor=");
+
+					int changeColumIndexE = changeColumIndexB + 15;
+					int changeRowIndexE   = changeRowIndexB   + 12;
+
+					String changeColum = source.substring(changeColumIndexE, changeRowIndexB);
+					String changeRow   = source.substring(changeRowIndexE, changeGridColorB);
+					
+					int col = Integer.parseInt(changeColum);
+					int row = Integer.parseInt(changeRow);
+					
+					if (row >= 0 && col >= 0)
+					{						
+						String val = tablaCSV.getValueAt(row, col).toString();
+						
+						datos.actualizarFromCellJTable(row, col, val);
+						
+						System.out.println(changeColum + " " + changeRow);
+						System.out.println(val);
+					}
+				}
+			}
+		});
+		scrollPaneCSV.setViewportView(tablaCSV);
 	}
 }

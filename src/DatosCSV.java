@@ -223,7 +223,7 @@ public class DatosCSV
 			//e1.printStackTrace();
 		}
 	}
-	
+		
 	public void escribirArchivoCSV(String nombreArchivo)
 	{	
 		PrintWriter writer;
@@ -231,25 +231,23 @@ public class DatosCSV
 		try 
 		{
 			writer = new PrintWriter(nombreArchivo, "UTF-8");
-			
+						
 			//Recuperamos los atributos
 			if (this.atributos != null)
 			{				
 				LinkedList<NodoCSV> listaAtributos = this.atributos.getNodos();
 				
+				String atrData = "";
 				for (int i = 0; i < listaAtributos.size(); i++)
 				{
-					if (i == listaAtributos.size()-1)
+					if (!listaAtributos.get(i).isEliminado())
 					{
-						writer.print(listaAtributos.get(i).getValor());
-					}
-					else
-					{
-						writer.print(listaAtributos.get(i).getValor()  + ",");
+						atrData += listaAtributos.get(i).getValor()  + ",";
 					}
 				}
 				
-				writer.print("\n");
+				atrData = atrData.substring(0, atrData.length()-1);
+				writer.println(atrData);
 			}
 						 
 			//Recuperamos los datos
@@ -258,21 +256,20 @@ public class DatosCSV
 				for (int j = 0; j < this.datos.size(); j++)
 				{
 					LinkedList<NodoCSV> nodos = this.datos.get(j).getNodos();
-										
+
+					String regData = "";
+					
 					for (int i = 0; i < nodos.size(); i++)
 					{
-						writer.print(nodos.get(i).getValor());
-						
-						if (i !=nodos.size()-1)
+						if (!nodos.get(i).isEliminado())
 						{
-							writer.print(",");
+							regData += nodos.get(i).getValor() + ",";
 						}
 					}
 					
-					if (j != this.datos.size()-1)
-					{
-						writer.print("\n");
-					}
+					regData = regData.substring(0, regData.length()-1);
+					
+					writer.println(regData);
 				}
 			}
 			else
@@ -292,9 +289,95 @@ public class DatosCSV
 		}
 	}	
 	
-	public void actualizarFromJTable()
+	private Integer getCantidadAtributos()
 	{
+		int cantidad = 0;
 		
+		for (int i = 0; i < this.atributos.getNodos().size(); i++)
+		{
+			if (!this.atributos.getNodos().get(i).isEliminado())
+			{
+				cantidad++;
+			}
+		}
+			
+		return cantidad;
+	}
+
+	private Integer getCantidadDatos()
+	{
+		int cantidad = 0;
+		
+		for (int i = 0; i < this.datos.size(); i++)
+		{			
+			for (int j = 0; j < this.datos.get(i).getNodos().size(); j++)
+			{
+				if (!this.datos.get(i).getNodos().get(j).isEliminado())
+				{
+					cantidad++;
+					break;
+				}
+			}
+		}
+			
+		return cantidad;
+	}
+	
+	public boolean actualizarFromCellJTable(int row, int col, String value)
+	{
+		for (int i = 0, k = 0; i < this.datos.size(); i++)
+		{
+			boolean eliminado = false;
+			for (int j = 0, l = 0; j < this.datos.get(i).getNodos().size(); j++)
+			{
+				if (!this.datos.get(i).getNodos().get(j).isEliminado())
+				{
+					if (row == k && col == l)
+					{
+						String valorA = this.datos.get(i).getNodos().get(j).getValor();
+						
+						if (valorA == value)
+						{
+							return false;
+						}
+						else
+						{
+							//Creamos el Cambio
+							Cambio nuevoCambio = null;
+							
+							if (cambios.isEmpty())
+							{
+								nuevoCambio = new Cambio(1, 3);
+							}
+							else
+							{
+								nuevoCambio = new Cambio(cambios.size()+1, 3);
+							}
+							
+							NodoCambios nodoC = new NodoCambios(i,j,valorA,value);
+							nuevoCambio.getNodos().add(nodoC);
+							this.cambios.add(nuevoCambio);
+							
+							this.datos.get(i).getNodos().get(j).setValor(value);
+							return true;
+						}
+					}
+					
+					l++;
+				}
+				else
+				{
+					eliminado = true;
+				}
+			}
+			
+			if (!eliminado)
+			{
+				k++;
+			}
+		}
+		
+		return false;
 	}
 	
 	public String[] getAtributosAsStringArray()
@@ -321,16 +404,27 @@ public class DatosCSV
 	
 	public Object[][] getDatosAsObjectArray()
 	{
-		Object arreglo[][] = new String[this.datos.size()][this.atributos.getNodos().size()];
+		Object arreglo[][] = new String[this.getCantidadDatos()][this.getCantidadAtributos()];
 		
-		for (int i = 0; i < this.datos.size(); i++)
+		for (int i = 0, k = 0; i < this.datos.size(); i++)
 		{
-			for (int j = 0; j < this.datos.get(i).getNodos().size(); j++)
+			boolean eliminado = false;
+			for (int j = 0, l = 0; j < this.datos.get(i).getNodos().size(); j++)
 			{
-				if (! this.datos.get(i).getNodos().get(j).isEliminado())
+				if (!this.datos.get(i).getNodos().get(j).isEliminado())
 				{
-					arreglo[i][j] = this.datos.get(i).getNodos().get(j).getValor();
+					arreglo[k][l] = this.datos.get(i).getNodos().get(j).getValor();
+					l++;
 				}
+				else
+				{
+					eliminado = true;
+				}
+			}
+			
+			if (!eliminado)
+			{
+				k++;
 			}
 		}
 				
@@ -353,35 +447,27 @@ public class DatosCSV
 		{
 			Object[] newRow = new Object[this.datos.get(i).getNodos().size()];
 			int k = 0;
+			boolean eliminado = true;
+			
 			for (int j = 0; j < this.datos.get(i).getNodos().size(); j++)
 			{
 				if (!this.datos.get(i).getNodos().get(j).isEliminado())
 				{
 					newRow[k] = this.datos.get(i).getNodos().get(j).getValor();
 					k++;
+					eliminado = false;
 				}
 			}
-			modelo.addRow(newRow);
+			
+			if (!eliminado)
+			{
+				modelo.addRow(newRow);
+			}
 		}
 				
 		return modelo;
 	}	
-	
-	private Integer getCantidadAtributos()
-	{
-		int cantidad = 0;
 		
-		for (int i = 0; i < this.atributos.getNodos().size(); i++)
-		{
-			if (!this.atributos.getNodos().get(i).isEliminado())
-			{
-				cantidad++;
-			}
-		}
-			
-		return cantidad;
-	}
-	
 	public DefaultTableModel getTablaFrecuencia(String nombreAtributo)
 	{
 		int indexAtributos = this.atributoStringToIndex(nombreAtributo);
@@ -393,7 +479,7 @@ public class DatosCSV
 			modelo.addColumn("Descripcion");
 			modelo.addColumn("Datos de Descripcion");
 
-			Object[] newRow = {"Total Registros ", this.datos.size()};
+			Object[] newRow = {"Total Registros ", this.getCantidadDatos()};
 			modelo.addRow(newRow);
 			
 			Object[] newRow1 = {"Total Atributos ", this.getCantidadAtributos()};
@@ -443,6 +529,9 @@ public class DatosCSV
 			
 			modelo.addColumn("Atributo");
 			modelo.addColumn("Repeticiones");
+			
+			Object[] totalRow = {"Registros Distintos", String.format("%05d", contadorPosiciones.size())};
+			modelo.addRow(totalRow);
 			
 			for (int i = 0; i < datosAtributo.size(); i++)
 			{
