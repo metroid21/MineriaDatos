@@ -49,6 +49,7 @@ import java.awt.event.ActionListener;
 import java.awt.Color;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
+import javax.swing.JTextPane;
 
 public class VentanaPrincipal<E> extends JFrame {
 
@@ -65,6 +66,7 @@ public class VentanaPrincipal<E> extends JFrame {
 	private JList<? extends E> listaAtributos;
 	private JScrollPane scrollPaneAtributos;
 	private ListDataListener listDataListener;
+	private JTable tableCalculo;
 
 	public static void main(String[] args) 
 	{					
@@ -239,6 +241,24 @@ public class VentanaPrincipal<E> extends JFrame {
 		JMenu mnDatamining = new JMenu("DataMining");
 		menuBar.add(mnDatamining);
 		
+		JMenuItem mntmIngresarExprecionregular = new JMenuItem("Ingresar ExprecionRegular");
+		mntmIngresarExprecionregular.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						try {
+							ExpresionRegular frame = new ExpresionRegular();
+							frame.setVisible(true);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+		});
+		mnDatamining.add(mntmIngresarExprecionregular);
+		
 		/*Grid Principal*/
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 250, 240));
@@ -250,30 +270,47 @@ public class VentanaPrincipal<E> extends JFrame {
 		scrollPaneFrecuencia = new JScrollPane();
 		
 		JPanel panel = new JPanel();
+		
+		JScrollPane scrollPaneCalculo = new JScrollPane();
+		
+		JTextPane txtpnMensajes = new JTextPane();
+		txtpnMensajes.setText("Mesajes Consola");
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.TRAILING)
-				.addGroup(gl_contentPane.createSequentialGroup()
+				.addGroup(Alignment.LEADING, gl_contentPane.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 217, GroupLayout.PREFERRED_SIZE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
-						.addComponent(scrollPaneFrecuencia, GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
-						.addComponent(scrollPaneCSV, GroupLayout.DEFAULT_SIZE, 543, Short.MAX_VALUE))
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addComponent(txtpnMensajes, GroupLayout.DEFAULT_SIZE, 766, Short.MAX_VALUE)
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addComponent(panel, GroupLayout.PREFERRED_SIZE, 217, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+								.addComponent(scrollPaneCSV, GroupLayout.DEFAULT_SIZE, 543, Short.MAX_VALUE)
+								.addGroup(gl_contentPane.createSequentialGroup()
+									.addComponent(scrollPaneFrecuencia, GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(scrollPaneCalculo, GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)))))
 					.addContainerGap())
 		);
 		gl_contentPane.setVerticalGroup(
-			gl_contentPane.createParallelGroup(Alignment.TRAILING)
+			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup()
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
-						.addComponent(panel, GroupLayout.DEFAULT_SIZE, 313, Short.MAX_VALUE)
+					.addComponent(txtpnMensajes, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addComponent(panel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
 						.addGroup(gl_contentPane.createSequentialGroup()
-							.addGap(19)
-							.addComponent(scrollPaneCSV, GroupLayout.DEFAULT_SIZE, 185, Short.MAX_VALUE)
+							.addComponent(scrollPaneCSV, GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(scrollPaneFrecuencia, GroupLayout.PREFERRED_SIZE, 103, GroupLayout.PREFERRED_SIZE)))
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+								.addComponent(scrollPaneCalculo, GroupLayout.PREFERRED_SIZE, 103, GroupLayout.PREFERRED_SIZE)
+								.addComponent(scrollPaneFrecuencia, GroupLayout.PREFERRED_SIZE, 103, GroupLayout.PREFERRED_SIZE))))
 					.addGap(12))
 		);
+		
+		tableCalculo = new JTable();
+		scrollPaneCalculo.setViewportView(tableCalculo);
 		
 		JLabel lblClase = new JLabel("Clase:");
 		
@@ -337,25 +374,26 @@ public class VentanaPrincipal<E> extends JFrame {
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel.createSequentialGroup()
-					.addContainerGap()
-					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
-						.addComponent(textFieldNuevoAtributo, GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
-						.addComponent(scrollPaneAtributos, GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
-						.addGroup(gl_panel.createParallelGroup(Alignment.LEADING, false)
-							.addGroup(gl_panel.createSequentialGroup()
-								.addComponent(lblClase)
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addComponent(comboBoxClases, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-							.addGroup(gl_panel.createSequentialGroup()
-								.addGap(16)
-								.addComponent(btnAadir)
-								.addPreferredGap(ComponentPlacement.UNRELATED)
-								.addComponent(btnQuitar))))
-					.addGap(92))
-				.addGroup(gl_panel.createSequentialGroup()
-					.addGap(47)
+					.addGap(55)
 					.addComponent(btnActualizar)
-					.addContainerGap(65, Short.MAX_VALUE))
+					.addContainerGap(57, Short.MAX_VALUE))
+				.addGroup(gl_panel.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(textFieldNuevoAtributo, GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
+					.addGap(24))
+				.addGroup(Alignment.TRAILING, gl_panel.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
+						.addComponent(scrollPaneAtributos, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
+						.addGroup(Alignment.LEADING, gl_panel.createSequentialGroup()
+							.addComponent(btnAadir)
+							.addGap(12)
+							.addComponent(btnQuitar))
+						.addGroup(Alignment.LEADING, gl_panel.createSequentialGroup()
+							.addComponent(lblClase)
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addComponent(comboBoxClases, 0, 119, Short.MAX_VALUE)))
+					.addGap(24))
 		);
 		gl_panel.setVerticalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
@@ -365,16 +403,16 @@ public class VentanaPrincipal<E> extends JFrame {
 						.addComponent(lblClase)
 						.addComponent(comboBoxClases, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
+					.addComponent(scrollPaneAtributos)
+					.addGap(10)
+					.addComponent(textFieldNuevoAtributo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnQuitar)
 						.addComponent(btnAadir))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(scrollPaneAtributos, GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(textFieldNuevoAtributo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-					.addGap(18)
 					.addComponent(btnActualizar)
-					.addGap(5))
+					.addContainerGap())
 		);
 		
 		listaAtributos = new JList();
