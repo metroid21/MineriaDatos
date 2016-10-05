@@ -1,6 +1,8 @@
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 
 import javax.swing.table.DefaultTableModel;
@@ -532,7 +534,25 @@ public class DatosCSV
 			
 			Object[] totalRow = {"Registros Distintos", String.format("%05d", contadorPosiciones.size())};
 			modelo.addRow(totalRow);
-			
+
+			Object[] mediaRow = {"Media", this.getMedia(nombreAtributo)};
+			modelo.addRow(mediaRow);
+
+			Object[] medianaRow = {"Mediana", this.getMediana(nombreAtributo)};
+			modelo.addRow(medianaRow);
+
+			Object[] modaRow = {"Moda", this.getModa(nombreAtributo)};
+			modelo.addRow(modaRow);
+
+			Object[] desviacionRow = {"Desviacion", this.getDesviacionEstandar(nombreAtributo)};
+			modelo.addRow(desviacionRow);
+
+			Object[] minimoRow = {"Minimo", this.getMenor(nombreAtributo)};
+			modelo.addRow(minimoRow);
+
+			Object[] maximoRow = {"Maximo", this.getMayor(nombreAtributo)};
+			modelo.addRow(maximoRow);
+
 			for (int i = 0; i < datosAtributo.size(); i++)
 			{
 				Object[] newRow = {datosAtributo.get(i), String.format("%05d", contadorPosiciones.get(i))};
@@ -635,6 +655,264 @@ public class DatosCSV
 			
 			this.cambios.add(nuevoCambio);			
 		}
-
 	}
+	
+	//Funciones Estadísticas
+	public double getMedia(String nombreAtributo)
+	{
+		int indexAtributo = this.atributoStringToIndex(nombreAtributo);
+		
+		if (indexAtributo >= 0 && indexAtributo < this.atributos.getNodos().size())
+		{
+			double promedio  = 0;
+			int cantidadFila = 0;
+			
+			for (int i = 0; i < datos.size(); i++)
+			{
+				NodoCSV nodo = datos.get(i).getNodos().get(indexAtributo);
+				
+				if (nodo.isEliminado())
+				{
+					continue;
+				}
+				else
+				{
+					cantidadFila++;
+				}
+				
+				if (nodo.getTipo() != 3 && nodo.getTipo() != 5)
+				{
+					return -777777;
+				}
+				else
+				{
+					promedio = promedio + Double.parseDouble(nodo.getValor());
+				}
+			}
+			
+			promedio = promedio / cantidadFila;
+			
+			return promedio;
+		}
+		
+		return -777777;
+	}
+	
+	public String getModa(String nombreAtributo)
+	{
+		int indexAtributo = this.atributoStringToIndex(nombreAtributo);
+		
+		if (indexAtributo >= 0 && indexAtributo < this.atributos.getNodos().size())
+		{
+			LinkedList<String>  datosAtributo      = new LinkedList<String>();
+			LinkedList<Integer> contadorPosiciones = new LinkedList<Integer>();
+				
+			for (int i = 0; i < this.datos.size(); i++)
+			{
+				if (this.datos.get(i).getNodos().get(indexAtributo).isEliminado())
+				{
+					continue;
+				}
+				
+				String valor = this.datos.get(i).getNodos().get(indexAtributo).getValor();
+				int pos = datosAtributo.indexOf(valor);
+				
+				if (pos >= 0)
+				{
+					contadorPosiciones.set(pos, contadorPosiciones.get(pos)+1);
+				}
+				else
+				{
+					contadorPosiciones.add(1);
+					datosAtributo.add(valor);
+				}
+			}
+			
+			int indexMayor = 0;
+			double mayor   = contadorPosiciones.get(0);
+			
+			for (int i = 1; i < contadorPosiciones.size(); i++)
+			{
+				if (contadorPosiciones.get(i) > mayor)
+				{
+					mayor = contadorPosiciones.get(i);
+					indexMayor = i;
+				}
+			}
+			
+			return datosAtributo.get(indexMayor);
+		}
+		
+		return "No Existe";
+	}
+
+	public double getMediana(String nombreAtributo)
+	{
+		int indexAtributo = this.atributoStringToIndex(nombreAtributo);
+		
+		if (indexAtributo >= 0 && indexAtributo < this.atributos.getNodos().size())
+		{
+			LinkedList<Double>  datosAtributo = new LinkedList<Double>();
+				
+			for (int i = 0; i < this.datos.size(); i++)
+			{
+				NodoCSV nodo = datos.get(i).getNodos().get(indexAtributo);
+
+				if (nodo.isEliminado())
+				{
+					continue;
+				}
+				
+				if (nodo.getTipo() != 3 && nodo.getTipo() != 5)
+				{
+					return -777777;
+				}
+				
+				datosAtributo.add(Double.parseDouble(nodo.getValor()));
+			}
+
+			Collections.sort(datosAtributo, new Comparator<Double>() 
+			{
+		         @Override
+		         public int compare(Double o1, Double o2) 
+		         {
+		             if (o1 > o2)
+		             {
+		            	 return -1;
+		             }
+		             else if (o1 < o2)
+		             {
+		            	 return 1;
+		             }
+		             else
+		             {
+		            	 return 0;
+		             }
+		         }
+		    });
+						
+			return datosAtributo.get(datosAtributo.size()/2);
+		}
+		
+		return -777777;
+	}
+
+	public double getMenor(String nombreAtributo)
+	{
+		int indexAtributo = this.atributoStringToIndex(nombreAtributo);
+		
+		if (indexAtributo >= 0 && indexAtributo < this.atributos.getNodos().size())
+		{
+			double menor = 0;
+			
+			for (int i = 0; i < datos.size(); i++)
+			{
+				NodoCSV nodo = datos.get(i).getNodos().get(indexAtributo);
+				
+				if (nodo.getTipo() != 3 && nodo.getTipo() != 5)
+				{
+					return -777777;
+				}
+				else
+				{
+					if (i == 0)
+					{
+						menor =  Float.parseFloat(nodo.getValor());
+						continue;
+					}
+	 
+					if (!nodo.isEliminado() && menor > Float.parseFloat(nodo.getValor()))
+					{
+						menor = Float.parseFloat(nodo.getValor());
+					}
+				}
+			}
+						
+			return menor;
+		}
+		
+		return -777777;
+	}
+
+	public double getMayor(String nombreAtributo)
+	{
+		int indexAtributo = this.atributoStringToIndex(nombreAtributo);
+		
+		if (indexAtributo >= 0 && indexAtributo < this.atributos.getNodos().size())
+		{
+			double mayor = 0;
+			
+			for (int i = 0; i < datos.size(); i++)
+			{
+				NodoCSV nodo = datos.get(i).getNodos().get(indexAtributo);
+
+				if (nodo.getTipo() != 3 && nodo.getTipo() != 5)
+				{
+					return -777777;
+				}
+				else
+				{
+
+					if (i == 0)
+					{
+						mayor =  Float.parseFloat(nodo.getValor());
+						continue;
+					}				
+					
+					if (!nodo.isEliminado() && mayor < Float.parseFloat(nodo.getValor()))
+					{
+						mayor = Float.parseFloat(nodo.getValor());
+					}
+				}
+			}
+						
+			return mayor;
+		}
+		
+		return -777777;
+	}
+
+	public double getDesviacionEstandar(String nombreAtributo)
+	{
+		int indexAtributo = this.atributoStringToIndex(nombreAtributo);
+		
+		if (indexAtributo >= 0 && indexAtributo < this.atributos.getNodos().size())
+		{
+			double promedio = this.getMedia(nombreAtributo);
+			double acumulacion = 0;
+			int cantidadFilas  = 0;
+			
+			for (int i = 0; i < datos.size(); i++)
+			{
+				NodoCSV nodo = datos.get(i).getNodos().get(indexAtributo);
+				
+				if (nodo.isEliminado())
+				{
+					continue;
+				}
+				else
+				{
+					cantidadFilas++;
+				}
+
+				if (nodo.getTipo() != 3 && nodo.getTipo() != 5)
+				{
+					return -777777;
+				}
+				else
+				{
+					float valor = Float.parseFloat(nodo.getValor());
+					acumulacion = acumulacion + Math.pow((valor-promedio),2);
+				}
+			}
+			
+			acumulacion = (acumulacion/(cantidadFilas-1));
+			acumulacion = Math.sqrt(acumulacion);
+						
+			return acumulacion;
+		}
+		
+		return -777777;
+	}
+
 }
