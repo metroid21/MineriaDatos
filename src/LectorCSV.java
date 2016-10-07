@@ -1,48 +1,22 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
+ 
 public class LectorCSV 
-{
-	void cargarCSV(String nombreArchivo, DatosCSV datosLeidos)
+{ 
+	DatosCSV cargarCSV(String nombreArchivo)
 	{
 		int iteracionesRegistro = 0;
+		DatosCSV datosNuevos = new DatosCSV();
 		
-		try 
+		try  
 		{
 			//Creamos las variables
 			FileReader f = new FileReader(nombreArchivo);
 			BufferedReader b = new BufferedReader(f);
 			String cadena = ""; 
-			RegistroCSV reg = null;
-			
-			//Ejecutamos los primeros cambios de eliminacion
-			Cambio cambioLectura = new Cambio();
-			
-			cambioLectura.setTipo(3);
-			
-			if (datosLeidos.getCambios().isEmpty())
-			{
-				cambioLectura.setId(1);
-			}
-			else
-			{
-				cambioLectura.setId(datosLeidos.getCambios().getLast().getId()+1);
-			}			
-			
-			//Eliminamos los datos actuales
-			for (int i = 0; i < datosLeidos.getDatos().size(); i++)
-			{
-				RegistroCSV reg1 = datosLeidos.getDatos().get(i); 
-				
-				for (int j = 0; j < reg1.getNodos().size(); j++)
-				{
-					NodoCambios nodo = new NodoCambios(j, i, "false", "true");
-					reg1.getNodos().get(j).setEliminado(true);
-					cambioLectura.getNodos().add(nodo);
-				}
-			}
-			
+			RegistroCSV<NodoCSV> reg = null;
+						
 			NodoCSV myNodo = new NodoCSV();
 			String valorNodo = ""; 
 
@@ -51,15 +25,15 @@ public class LectorCSV
 		    {		    	
 		    	String myCad = cadena;
 		    	int estado = 1;
-				reg = new RegistroCSV();
+				reg = new RegistroCSV<NodoCSV>();
 				
-			    if (datosLeidos.getDatos().isEmpty())
+			    if (datosNuevos.getDatos().isEmpty())
 			    {
 			    	reg.setId(1);
 			    }
 			    else
 			    {
-			    	reg.setId(datosLeidos.getDatos().getLast().getId()+1);
+			    	reg.setId(datosNuevos.getDatos().getLast().getId()+1);
 			    }
 		    									
 				myCad += ",";
@@ -112,7 +86,6 @@ public class LectorCSV
 		        		}
 		        		else if (myChar == ',')
 		        		{
-		        			myNodo.setTipo(3);
 		        			estado = 8;
 		        		}
 		        		else
@@ -125,7 +98,6 @@ public class LectorCSV
 		        	{
 		        		if (myChar == ',')
 		        		{
-		        			myNodo.setTipo(2);
 		        			estado = 8;
 		        		}
 		        		else
@@ -165,7 +137,6 @@ public class LectorCSV
 		        		}
 		        		else if (myChar == ',')
 		        		{
-		        			myNodo.setTipo(5);
 		        			estado = 8;
 		        		}
 		        		else
@@ -178,7 +149,6 @@ public class LectorCSV
 		        	{
 		        		if (myChar == ',')
 		        		{
-		        			myNodo.setTipo(2);
 		        			estado = 8;
 		        		}
 		        	}
@@ -197,10 +167,7 @@ public class LectorCSV
 		        		}
 		        		       				        		
 		        		reg.getNodos().add(myNodo);
-		        		
-						NodoCambios nodo = new NodoCambios(reg.getId(), myNodo.getId(), "true", "false");
-						cambioLectura.getNodos().add(nodo);
-		        		
+		        				        		
 		        		myNodo = new NodoCSV();
 		        		valorNodo = "";
 		        		
@@ -260,30 +227,176 @@ public class LectorCSV
 		        			    
 		        if (iteracionesRegistro == 0)
 		        {
+		        	RegistroCSV<NodoAtributo> misAtributos = new RegistroCSV<NodoAtributo>();
+		        	
 		        	for (int k = 0; k < reg.getNodos().size(); k++)
 		        	{
-		        		reg.getNodos().get(k).setTipo(1);
+		        		NodoAtributo nodoNuevo = new NodoAtributo();
+		        		NodoCSV nodoViejo = reg.getNodos().get(k);
+
+		        		nodoNuevo.setEliminado(nodoViejo.isEliminado());
+		        		nodoNuevo.setValor(nodoViejo.getValor());
+		        		nodoNuevo.setId(nodoViejo.getId());
+		        		
+		        		misAtributos.getNodos().add(nodoNuevo);
 		        	}
 		        	
-		        	datosLeidos.setAtributos(reg);
+		        	datosNuevos.setAtributos(misAtributos);
 		        }
 		        else
 		        {
-		        	datosLeidos.getDatos().add(reg);
+		        	datosNuevos.getDatos().add(reg);
 		        }
 		        
 		        iteracionesRegistro++;
 		    }
 		    		
 			b.close();
-			
-			//Guardamos los cambios
-			datosLeidos.getCambios().add(cambioLectura);
 		} 
 		catch (IOException e) 
 		{
-			System.out.println("Archivo no Encontrado");
-			//e.printStackTrace();
+			return null;
 		}
+		
+		return datosNuevos;
+	}
+
+	DatosCSV cargarCSVDelimitadores(String nombreArchivo)
+	{
+		DatosCSV datosNuevos = new DatosCSV();
+		String cadena = ""; 
+		
+		try 
+		{
+			//Creamos las variables
+			FileReader f = new FileReader(nombreArchivo);
+			BufferedReader b = new BufferedReader(f);
+			String cadenaTemp = "";
+						
+			//Cargamos el archivo CSV
+		    while((cadenaTemp = b.readLine())!=null) 
+		    {		    
+		    	cadena += cadenaTemp;
+		    }
+		    		
+			b.close();
+		} 
+		catch (IOException e) 
+		{
+			return null;
+		}
+		
+		//Comenzamos la lectura de caracteres por caracteres
+		String temp = "";
+		boolean analizandoAtributos = true;
+		NodoAtributo nodoActualAtributo = new NodoAtributo();
+		NodoCSV nodoActualCSV = new NodoCSV();
+		RegistroCSV<NodoAtributo> atributosActuales = new RegistroCSV<NodoAtributo>();
+		RegistroCSV<NodoCSV> registroActual = new RegistroCSV<NodoCSV>();
+		int contadorRegistro = 1;
+		int contadorNodo = 0;
+		boolean comillasOn = false;
+		
+		for (int i = 0; i < cadena.length(); i++)
+		{
+			char letra = cadena.charAt(i);
+			
+			if (analizandoAtributos)
+			{
+				if (letra == '~' && !comillasOn)
+				{
+					atributosActuales.getNodos().add(nodoActualAtributo);
+					nodoActualAtributo = new NodoAtributo();
+					contadorNodo = 0;
+				}
+				else if (letra == '%' && !comillasOn)
+				{
+					datosNuevos.setAtributos(atributosActuales);
+					analizandoAtributos = false;
+				}
+				else if (letra == '"')
+				{
+					comillasOn = !comillasOn;
+				}
+				else if (letra == '|' && !comillasOn)
+				{
+					if (contadorNodo == 0)
+					{
+						nodoActualAtributo.setId(Integer.parseInt(temp));
+					}
+					else if (contadorNodo == 1)
+					{
+						nodoActualAtributo.setValor(temp);
+					}
+					else if (contadorNodo == 2)
+					{
+						nodoActualAtributo.setTipo(Integer.parseInt(temp));
+					}
+					else if (contadorNodo == 3)
+					{
+						nodoActualAtributo.setExpresionRegular(temp);
+					}
+					else if (contadorNodo == 4)
+					{
+						nodoActualAtributo.setEliminado(Boolean.parseBoolean(temp));
+					}
+					
+					contadorNodo++;
+					temp = "";
+				}
+				else
+				{
+					temp += letra;
+				}
+			}
+			else
+			{
+				if (letra == '~' && !comillasOn)
+				{
+					registroActual.getNodos().add(nodoActualCSV);
+					nodoActualCSV = new NodoCSV();
+					contadorNodo = 0;
+				}
+				else if (letra == '%' && !comillasOn)
+				{
+					//END
+				}
+				else if (letra == '*' && !comillasOn)
+				{
+					registroActual.setId(contadorRegistro);
+					datosNuevos.getDatos().add(registroActual);
+					registroActual = new RegistroCSV<NodoCSV>();
+					contadorRegistro++;
+				}
+				else if (letra == '|' && !comillasOn)
+				{
+					if (contadorNodo == 0)
+					{
+						nodoActualCSV.setId(Integer.parseInt(temp));
+					}
+					else if (contadorNodo == 1)
+					{
+						nodoActualCSV.setValor(temp);
+					}
+					else if (contadorNodo == 2)
+					{
+						nodoActualCSV.setEliminado(Boolean.parseBoolean(temp));
+					}
+					
+					contadorNodo++;
+					temp = "";
+				}
+				else if (letra == '"')
+				{
+					comillasOn = !comillasOn;
+				}
+				else
+				{
+					temp += letra;
+				}
+			}
+		}
+		
+		return datosNuevos;
 	}
 }

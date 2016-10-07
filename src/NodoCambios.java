@@ -3,13 +3,13 @@ public class NodoCambios
 {
 	/**
 	 * Identificador del Nodo afectado por el cambio
-	 */
+	 */ 
 	private Integer idNodo = 0;
 	
 	/**
 	 * Identificador del Registro afectado por el cambio
 	 */
-	private Integer idRegistro = 0;
+	private Integer idRegistro = 0; 
 	
 	/**
 	 * Valor antiguo antes del cambio

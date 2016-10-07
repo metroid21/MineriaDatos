@@ -4,7 +4,7 @@ public class Cambio
 {
 	/**
 	 * Identificador de la Instancia
-	 */
+	 */ 
 	private Integer id = 0;
 	
 	/** 

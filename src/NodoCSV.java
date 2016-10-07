@@ -1,42 +1,31 @@
-
+ 
 public class NodoCSV 
 {
 	/**
 	 * Identificador de la instancia
 	 */
 	private Integer id = 0;
-	
+		
 	/**
-	 * Valor 1: Atributo
-	 * Valor 2: Nominal
-	 * Valor 3: Entero
-	 * Valor 4: Ordinal
-	 * Valor 5: Real
-	 */
-	private Integer tipo = 0;
-	
-	/**
-	 * Valor de dicho objeto como cadena
+	 * Valor de dicho objeto como cadena 
 	 */
 	private String valor = "";
 	
 	/**
 	 * Responde si fue eliminada la instancia durante el programa
 	 */
-	private boolean eliminado = true;
+	private boolean eliminado = true; 
 	
-	public NodoCSV()
+	public NodoCSV() 
 	{
 		this.id        = 0;
-		this.tipo      = 0;
 		this.valor     = "";
 		this.eliminado = true;
 	}
 
-	public NodoCSV(Integer iden, Integer tipor, String val, boolean elim)
+	public NodoCSV(Integer iden, String val, boolean elim)
 	{
 		this.id        = iden;
-		this.tipo      = tipor;
 		this.valor     = val;
 		this.eliminado = elim;
 	}
@@ -50,17 +39,7 @@ public class NodoCSV
 	{ 
 		this.id = id;
 	}
-	
-	public Integer getTipo() 
-	{
-		return tipo;
-	}
-	
-	public void setTipo(Integer tipo) 
-	{
-		this.tipo = tipo;
-	}
-	
+		
 	public String getValor() 
 	{
 		return valor;
@@ -80,35 +59,7 @@ public class NodoCSV
 	{
 		this.eliminado = eliminado;
 	}
-	
-	public String getNombreTipo()
-	{
-		if (this.tipo == 1)
-		{
-			return "Atributo";
-		}
-		else if (this.tipo == 2)
-		{
-			return "Nominal";
-		}
-		else if (this.tipo == 3)
-		{
-			return "Entero";
-		}
-		else if (this.tipo == 4)
-		{
-			return "Ordinal";
-		}
-		else if (this.tipo == 5)
-		{
-			return "Real";
-		}
-		else
-		{
-			return "?????";
-		}
-	}
-	
+		
 	public String toString()
 	{
 		String myString = "";
@@ -116,11 +67,9 @@ public class NodoCSV
 		myString = "{";
 		myString += this.id;
 		myString += ", ";
-		myString += this.getNombreTipo();
-		myString += ", '";
-		myString += this.getValor();
-		myString += "', ";
 		myString += this.eliminado;
+		myString += ", ";
+		myString += this.valor;
 		myString += '}';
 		
 		return myString;

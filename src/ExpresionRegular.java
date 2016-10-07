@@ -77,3 +77,4 @@ public class ExpresionRegular extends JFrame {
 		panelPrincipal.setLayout(gl_panelPrincipal);
 	}
 }
+
