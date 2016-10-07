@@ -320,7 +320,7 @@ public class VentanaPrincipal<E> extends JFrame {
 		setContentPane(contentPane);
 		
 		scrollPaneCSV = new JScrollPane();
-		
+		 
 		scrollPaneFrecuencia = new JScrollPane();
 		
 		JPanel panel = new JPanel();

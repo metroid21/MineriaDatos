@@ -1,7 +1,7 @@
 
 public class NodoAtributo extends NodoCSV
 {
-	/**
+	/** 
 	 * Valor 1: Atributo
 	 * Valor 2: Nominal
 	 * Valor 3: Entero

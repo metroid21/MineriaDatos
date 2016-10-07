@@ -13,7 +13,7 @@ public class DatosCSV
 	 * Registro con los atributos
 	 */
 	private RegistroCSV<NodoAtributo> atributos = null;
-	
+	 
 	/**
 	 * Lista de registro con los datos
 	 */

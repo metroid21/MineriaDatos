@@ -7,7 +7,7 @@ public class NodoCSV
 	private Integer id = 0;
 		
 	/**
-	 * Valor de dicho objeto como cadena
+	 * Valor de dicho objeto como cadena 
 	 */
 	private String valor = "";
 	

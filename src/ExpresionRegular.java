@@ -89,7 +89,7 @@ public class ExpresionRegular extends JFrame {
 	private JComboBox comboBox;
 	private JButton btnGuardar;
 	private JButton btnFiltrar;
-	private DatosCSV datos;
+	private DatosCSV datos; 
 	private JComboBox comboTipo;
 	
 	public JComboBox getComboBox() 

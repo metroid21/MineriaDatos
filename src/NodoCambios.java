@@ -3,7 +3,7 @@ public class NodoCambios
 {
 	/**
 	 * Identificador del Nodo afectado por el cambio
-	 */
+	 */ 
 	private Integer idNodo = 0;
 	
 	/**
