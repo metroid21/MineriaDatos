@@ -76,7 +76,7 @@ public class VentanaPrincipal<E> extends JFrame {
 	{					
 		EventQueue.invokeLater(new Runnable() 
 		{
-			public void run()  
+			public void run() 
 			{
 				try 
 				{
