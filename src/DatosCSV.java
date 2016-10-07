@@ -8,16 +8,16 @@ import java.util.LinkedList;
 import javax.swing.table.DefaultTableModel;
 
 public class DatosCSV 
-{
+{    
 	/**
 	 * Registro con los atributos
 	 */
-	private RegistroCSV atributos = null;
+	private RegistroCSV<NodoAtributo> atributos = null;
 	
 	/**
 	 * Lista de registro con los datos
 	 */
-	private LinkedList<RegistroCSV> datos = null;
+	private LinkedList<RegistroCSV<NodoCSV>> datos = null;
 	
 	/**
 	 * Lista de registros con los cambios realizados
@@ -33,13 +33,13 @@ public class DatosCSV
 	 * Camino hasta llegar al archivo cargado
 	 */
 	private String caminoArchivo = "";
-	
+		
 	public DatosCSV() 
 	{
 		this.nombreArchivo = "";
 		this.caminoArchivo = "";
-		this.atributos     = new RegistroCSV();
-		this.datos         = new LinkedList<RegistroCSV>();
+		this.atributos     = new RegistroCSV<NodoAtributo>();
+		this.datos         = new LinkedList<RegistroCSV<NodoCSV>>();
 		this.cambios       = new LinkedList<Cambio>();
 	}
 
@@ -47,12 +47,12 @@ public class DatosCSV
 	{
 		this.nombreArchivo = archivo;
 		this.caminoArchivo = "";
-		this.atributos     = new RegistroCSV();
-		this.datos         = new LinkedList<RegistroCSV>();
+		this.atributos     = new RegistroCSV<NodoAtributo>();
+		this.datos         = new LinkedList<RegistroCSV<NodoCSV>>();
 		this.cambios       = new LinkedList<Cambio>();
 	}
 
-	public DatosCSV(RegistroCSV atributos, LinkedList<RegistroCSV> datos, LinkedList<Cambio> cambios) 
+	public DatosCSV(RegistroCSV<NodoAtributo> atributos, LinkedList<RegistroCSV<NodoCSV>> datos, LinkedList<Cambio> cambios) 
 	{
 		this.nombreArchivo = "";
 		this.caminoArchivo = "";		
@@ -61,22 +61,22 @@ public class DatosCSV
 		this.cambios       = cambios;
 	}
 
-	public RegistroCSV getAtributos() 
+	public RegistroCSV<NodoAtributo> getAtributos() 
 	{
 		return atributos;
 	}
 	
-	public void setAtributos(RegistroCSV atributos) 
+	public void setAtributos(RegistroCSV<NodoAtributo> atributos) 
 	{
 		this.atributos = atributos;
 	}
 	
-	public LinkedList<RegistroCSV> getDatos() 
+	public LinkedList<RegistroCSV<NodoCSV>> getDatos() 
 	{
 		return datos;
 	}
 	
-	public void setDatos(LinkedList<RegistroCSV> datos) 
+	public void setDatos(LinkedList<RegistroCSV<NodoCSV>> datos) 
 	{
 		this.datos = datos;
 	}
@@ -120,7 +120,7 @@ public class DatosCSV
 		{
 			valorResultante = "Atributos:\n";
 			
-			LinkedList<NodoCSV> listaAtributos = this.atributos.getNodos();
+			LinkedList<NodoAtributo> listaAtributos = this.atributos.getNodos();
 			
 			for (int i = 0; i < listaAtributos.size(); i++)
 			{
@@ -176,7 +176,7 @@ public class DatosCSV
 			{
 				writer.print("Atributos:\n");
 				
-				LinkedList<NodoCSV> listaAtributos = this.atributos.getNodos();
+				LinkedList<NodoAtributo> listaAtributos = this.atributos.getNodos();
 				
 				for (int i = 0; i < listaAtributos.size(); i++)
 				{
@@ -225,7 +225,93 @@ public class DatosCSV
 			//e1.printStackTrace();
 		}
 	}
+
+	public void escribirArchivoDelimitadores(String nombreArchivo)
+	{	
+		PrintWriter writer;
 		
+		try 
+		{
+			writer = new PrintWriter(nombreArchivo, "UTF-8");
+			
+			//Recuperamos los atributos
+			if (this.atributos != null)
+			{			
+				LinkedList<NodoAtributo> listaAtributos = this.atributos.getNodos();
+				
+				for (int i = 0; i < listaAtributos.size(); i++)
+				{
+					writer.print(listaAtributos.get(i).getId());
+					writer.print('|'); 
+					writer.print(listaAtributos.get(i).getValor());
+					writer.print('|');
+					writer.print(listaAtributos.get(i).getTipo());
+					writer.print('|');
+					writer.print('"');
+					writer.print(listaAtributos.get(i).getExpresionRegular());
+					writer.print('"');
+					writer.print('|');
+					writer.print(listaAtributos.get(i).isEliminado());
+					writer.print('|');
+					writer.print("~");
+				}
+			}
+			else
+			{
+				writer.print('|');
+				writer.print('|');
+				writer.print('|');
+				writer.print('|');
+				writer.print('|');
+				writer.print("~");
+			}
+			
+			writer.print('%');
+			
+			//Recuperamos los datos
+			if (this.datos != null)
+			{
+				for (int j = 0; j < this.datos.size(); j++)
+				{
+					LinkedList<NodoCSV> nodos = this.datos.get(j).getNodos();
+					
+					for (int i = 0; i < nodos.size(); i++)
+					{
+						writer.print(nodos.get(i).getId());
+						writer.print('|');
+						writer.print(nodos.get(i).getValor());
+						writer.print('|');
+						writer.print(nodos.get(i).isEliminado());
+						writer.print('|');
+						writer.print("~");
+					}
+					
+					writer.print('*');
+				}
+			}
+			else
+			{
+				writer.print('|');
+				writer.print('|');
+				writer.print('|');
+				writer.print("~");
+				writer.print('*');
+			}
+			
+			writer.print('%');
+
+			writer.close();
+		} 
+		catch (FileNotFoundException e1) 
+		{
+			//e1.printStackTrace();
+		} 
+		catch (UnsupportedEncodingException e1) 
+		{
+			//e1.printStackTrace();
+		}
+	}
+
 	public void escribirArchivoCSV(String nombreArchivo)
 	{	
 		PrintWriter writer;
@@ -237,7 +323,7 @@ public class DatosCSV
 			//Recuperamos los atributos
 			if (this.atributos != null)
 			{				
-				LinkedList<NodoCSV> listaAtributos = this.atributos.getNodos();
+				LinkedList<NodoAtributo> listaAtributos = this.atributos.getNodos();
 				
 				String atrData = "";
 				for (int i = 0; i < listaAtributos.size(); i++)
@@ -382,6 +468,60 @@ public class DatosCSV
 		return false;
 	}
 	
+	public String getExpresionRegular(String nombreAtributo)
+	{
+		for (int i = 0; i < this.atributos.getNodos().size(); i++)
+		{
+			if (!this.atributos.getNodos().get(i).isEliminado() && 
+				 this.atributos.getNodos().get(i).getValor() == nombreAtributo)
+			{
+				return this.atributos.getNodos().get(i).getExpresionRegular();
+			}
+		}
+		
+		return "";
+	}
+
+	public Integer getTipo(String nombreAtributo)
+	{
+		for (int i = 0; i < this.atributos.getNodos().size(); i++)
+		{
+			if (!this.atributos.getNodos().get(i).isEliminado() && 
+				 this.atributos.getNodos().get(i).getValor() == nombreAtributo)
+			{
+				return this.atributos.getNodos().get(i).getTipo();
+			}
+		}
+		
+		return -1;
+	}
+
+	public void setExpresionRegular(String nombreAtributo, String nuevaExpresion)
+	{		
+		for (int k = 0; k < this.atributos.getNodos().size(); k++)
+		{			
+			if ((!this.atributos.getNodos().get(k).isEliminado()) && 
+			   (this.atributos.getNodos().get(k).getValor() == nombreAtributo))
+			{				
+				this.atributos.getNodos().get(k).setExpresionRegular(nuevaExpresion);
+				break;
+			}
+		}
+	}
+
+	public void setTipo(String nombreAtributo, Integer nuevoTipo)
+	{
+		for (int i = 0; i < this.atributos.getNodos().size(); i++)
+		{
+			if (!this.atributos.getNodos().get(i).isEliminado() && 
+				 this.atributos.getNodos().get(i).getValor() == nombreAtributo)
+			{
+				this.atributos.getNodos().get(i).setTipo(nuevoTipo);
+				break;
+			}
+		}
+	}
+
 	public String[] getAtributosAsStringArray()
 	{
 		LinkedList<String> arreglo = new LinkedList<String>();
@@ -532,27 +672,6 @@ public class DatosCSV
 			modelo.addColumn("Atributo");
 			modelo.addColumn("Repeticiones");
 			
-			Object[] totalRow = {"Registros Distintos", String.format("%05d", contadorPosiciones.size())};
-			modelo.addRow(totalRow);
-
-			Object[] mediaRow = {"Media", this.getMedia(nombreAtributo)};
-			modelo.addRow(mediaRow);
-
-			Object[] medianaRow = {"Mediana", this.getMediana(nombreAtributo)};
-			modelo.addRow(medianaRow);
-
-			Object[] modaRow = {"Moda", this.getModa(nombreAtributo)};
-			modelo.addRow(modaRow);
-
-			Object[] desviacionRow = {"Desviacion", this.getDesviacionEstandar(nombreAtributo)};
-			modelo.addRow(desviacionRow);
-
-			Object[] minimoRow = {"Minimo", this.getMenor(nombreAtributo)};
-			modelo.addRow(minimoRow);
-
-			Object[] maximoRow = {"Maximo", this.getMayor(nombreAtributo)};
-			modelo.addRow(maximoRow);
-
 			for (int i = 0; i < datosAtributo.size(); i++)
 			{
 				Object[] newRow = {datosAtributo.get(i), String.format("%05d", contadorPosiciones.get(i))};
@@ -562,6 +681,139 @@ public class DatosCSV
 			return modelo;
 		}
 	}
+	
+	public DefaultTableModel getTablaEstadistica(String nombreAtributo)
+	{
+		int indexAtributos = this.atributoStringToIndex(nombreAtributo);
+		
+		if (indexAtributos < 0 || indexAtributos > this.atributos.getNodos().size())
+		{
+			DefaultTableModel modelo = new DefaultTableModel();
+
+			modelo.addColumn("Descripcion");
+			modelo.addColumn("Datos de Descripcion");
+
+			Object[] newRow = {"Total Registros ", this.getCantidadDatos()};
+			modelo.addRow(newRow);
+			
+			Object[] newRow1 = {"Total Atributos ", this.getCantidadAtributos()};
+			modelo.addRow(newRow1);
+			
+			Object[] newRow2 = {"Archivo CSV ", this.getNombreArchivo()};
+			modelo.addRow(newRow2);
+			
+			Object[] newRow3 = {"Frontend", "Luis Fernando Guiterrez Gonzalez"};
+			modelo.addRow(newRow3);
+
+			Object[] newRow4 = {"Backend", "Jonathan Elias Sandoval Talamantes"};
+			modelo.addRow(newRow4);
+
+			Object[] newRow5 = {"Clase", "Mineria de Datos, CUCEI"};
+			modelo.addRow(newRow5);
+
+			return modelo;
+		}
+		else
+		{
+			LinkedList<String>  datosAtributo      = new LinkedList<String>();
+			LinkedList<Integer> contadorPosiciones = new LinkedList<Integer>();
+				
+			for (int i = 0; i < this.datos.size(); i++)
+			{
+				if (this.datos.get(i).getNodos().get(indexAtributos).isEliminado())
+				{
+					continue;
+				}
+				
+				String valor = this.datos.get(i).getNodos().get(indexAtributos).getValor();
+				int pos = datosAtributo.indexOf(valor);
+				
+				if (pos >= 0)
+				{
+					contadorPosiciones.set(pos, contadorPosiciones.get(pos)+1);
+				}
+				else
+				{
+					contadorPosiciones.add(1);
+					datosAtributo.add(valor);
+				}
+			}
+	
+			DefaultTableModel modelo = new DefaultTableModel();
+			
+			modelo.addColumn("Descripcion");
+			modelo.addColumn("Datos de Descripcion");
+			
+			Object[] totalRow = {"Registros Distintos", contadorPosiciones.size()};
+			modelo.addRow(totalRow);
+
+			double val = this.getMedia(nombreAtributo);
+			if (val == -777777)
+			{
+				Object[] mediaRow = {"Media", "No Calculable"};
+				modelo.addRow(mediaRow);
+			}
+			else
+			{
+				Object[] mediaRow = {"Media", val};
+				modelo.addRow(mediaRow);
+			}
+
+			val = this.getMediana(nombreAtributo);
+			if (val == -777777)
+			{
+				Object[] mediaRow = {"Mediana", "No Calculable"};
+				modelo.addRow(mediaRow);
+			}
+			else
+			{
+				Object[] mediaRow = {"Mediana", val};
+				modelo.addRow(mediaRow);
+			}
+
+			Object[] modaRow = {"Moda", this.getModa(nombreAtributo)};
+			modelo.addRow(modaRow);
+
+			val = this.getDesviacionEstandar(nombreAtributo);
+			if (val == -777777)
+			{
+				Object[] mediaRow = {"Desviacion", "No Calculable"};
+				modelo.addRow(mediaRow);
+			}
+			else
+			{
+				Object[] mediaRow = {"Desviacion", val};
+				modelo.addRow(mediaRow);
+			}
+
+			val = this.getMenor(nombreAtributo);
+			if (val == -777777)
+			{
+				Object[] mediaRow = {"Minimo", "No Calculable"};
+				modelo.addRow(mediaRow);
+			}
+			else
+			{
+				Object[] mediaRow = {"Minimo", val};
+				modelo.addRow(mediaRow);
+			}
+
+			val = this.getMayor(nombreAtributo);
+			if (val == -777777)
+			{
+				Object[] mediaRow = {"Maximo", "No Calculable"};
+				modelo.addRow(mediaRow);
+			}
+			else
+			{
+				Object[] mediaRow = {"Maximo", val};
+				modelo.addRow(mediaRow);
+			}
+			
+			return modelo;
+		}
+	}
+
 	
 	public void agregarAtributo(String nombreNuevo)
 	{
@@ -582,7 +834,7 @@ public class DatosCSV
 			}
 
 			//Agregamos el cambio a los atributos
-			NodoCSV nodoAtributo = new NodoCSV();
+			NodoAtributo nodoAtributo = new NodoAtributo();
 			nodoAtributo.setEliminado(false);
 			nodoAtributo.setId(this.atributos.getNodos().size()+1);
 			nodoAtributo.setValor(nombreFinal);
@@ -596,7 +848,7 @@ public class DatosCSV
 			
 			for (int i = 0; i < this.datos.size(); i++)
 			{
-				NodoCSV nodo = new NodoCSV(tamAtributos, 4, "", false);
+				NodoCSV nodo = new NodoCSV(tamAtributos, "", false);
 				this.datos.get(i).getNodos().add(nodo);
 				nuevoCambio.getNodos().add(new NodoCambios(nodo.getId(), tamAtributos, "true", "false"));
 			}			
@@ -667,6 +919,12 @@ public class DatosCSV
 			double promedio  = 0;
 			int cantidadFila = 0;
 			
+			if (this.atributos.getNodos().get(indexAtributo).getTipo() != 3 && 
+				this.atributos.getNodos().get(indexAtributo).getTipo() != 5)
+			{
+				return -777777;
+			}
+			
 			for (int i = 0; i < datos.size(); i++)
 			{
 				NodoCSV nodo = datos.get(i).getNodos().get(indexAtributo);
@@ -678,14 +936,6 @@ public class DatosCSV
 				else
 				{
 					cantidadFila++;
-				}
-				
-				if (nodo.getTipo() != 3 && nodo.getTipo() != 5)
-				{
-					return -777777;
-				}
-				else
-				{
 					promedio = promedio + Double.parseDouble(nodo.getValor());
 				}
 			}
@@ -754,6 +1004,12 @@ public class DatosCSV
 		{
 			LinkedList<Double>  datosAtributo = new LinkedList<Double>();
 				
+			if (this.atributos.getNodos().get(indexAtributo).getTipo() != 3 && 
+				this.atributos.getNodos().get(indexAtributo).getTipo() != 5)
+			{
+				return -777777;
+			}
+
 			for (int i = 0; i < this.datos.size(); i++)
 			{
 				NodoCSV nodo = datos.get(i).getNodos().get(indexAtributo);
@@ -762,12 +1018,7 @@ public class DatosCSV
 				{
 					continue;
 				}
-				
-				if (nodo.getTipo() != 3 && nodo.getTipo() != 5)
-				{
-					return -777777;
-				}
-				
+								
 				datosAtributo.add(Double.parseDouble(nodo.getValor()));
 			}
 
@@ -805,26 +1056,25 @@ public class DatosCSV
 		{
 			double menor = 0;
 			
+			if (this.atributos.getNodos().get(indexAtributo).getTipo() != 3 && 
+				this.atributos.getNodos().get(indexAtributo).getTipo() != 5)
+			{
+				return -777777;
+			}
+
 			for (int i = 0; i < datos.size(); i++)
 			{
 				NodoCSV nodo = datos.get(i).getNodos().get(indexAtributo);
 				
-				if (nodo.getTipo() != 3 && nodo.getTipo() != 5)
+				if (i == 0)
 				{
-					return -777777;
+					menor =  Float.parseFloat(nodo.getValor());
+					continue;
 				}
-				else
+ 
+				if (!nodo.isEliminado() && menor > Float.parseFloat(nodo.getValor()))
 				{
-					if (i == 0)
-					{
-						menor =  Float.parseFloat(nodo.getValor());
-						continue;
-					}
-	 
-					if (!nodo.isEliminado() && menor > Float.parseFloat(nodo.getValor()))
-					{
-						menor = Float.parseFloat(nodo.getValor());
-					}
+					menor = Float.parseFloat(nodo.getValor());
 				}
 			}
 						
@@ -842,27 +1092,25 @@ public class DatosCSV
 		{
 			double mayor = 0;
 			
+			if (this.atributos.getNodos().get(indexAtributo).getTipo() != 3 && 
+				this.atributos.getNodos().get(indexAtributo).getTipo() != 5)
+			{
+				return -777777;
+			}
+
 			for (int i = 0; i < datos.size(); i++)
 			{
 				NodoCSV nodo = datos.get(i).getNodos().get(indexAtributo);
 
-				if (nodo.getTipo() != 3 && nodo.getTipo() != 5)
+				if (i == 0)
 				{
-					return -777777;
-				}
-				else
+					mayor =  Float.parseFloat(nodo.getValor());
+					continue;
+				}				
+				
+				if (!nodo.isEliminado() && mayor < Float.parseFloat(nodo.getValor()))
 				{
-
-					if (i == 0)
-					{
-						mayor =  Float.parseFloat(nodo.getValor());
-						continue;
-					}				
-					
-					if (!nodo.isEliminado() && mayor < Float.parseFloat(nodo.getValor()))
-					{
-						mayor = Float.parseFloat(nodo.getValor());
-					}
+					mayor = Float.parseFloat(nodo.getValor());
 				}
 			}
 						
@@ -881,7 +1129,13 @@ public class DatosCSV
 			double promedio = this.getMedia(nombreAtributo);
 			double acumulacion = 0;
 			int cantidadFilas  = 0;
-			
+
+			if (this.atributos.getNodos().get(indexAtributo).getTipo() != 3 && 
+				this.atributos.getNodos().get(indexAtributo).getTipo() != 5)
+			{
+				return -777777;
+			}
+
 			for (int i = 0; i < datos.size(); i++)
 			{
 				NodoCSV nodo = datos.get(i).getNodos().get(indexAtributo);
@@ -893,14 +1147,6 @@ public class DatosCSV
 				else
 				{
 					cantidadFilas++;
-				}
-
-				if (nodo.getTipo() != 3 && nodo.getTipo() != 5)
-				{
-					return -777777;
-				}
-				else
-				{
 					float valor = Float.parseFloat(nodo.getValor());
 					acumulacion = acumulacion + Math.pow((valor-promedio),2);
 				}

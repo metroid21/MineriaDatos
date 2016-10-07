@@ -9,7 +9,7 @@ public class NodoCambios
 	/**
 	 * Identificador del Registro afectado por el cambio
 	 */
-	private Integer idRegistro = 0;
+	private Integer idRegistro = 0; 
 	
 	/**
 	 * Valor antiguo antes del cambio
