@@ -3,8 +3,9 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.LinkedList; 
+import java.util.LinkedList;
 
+import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
 
 public class DatosCSV 
@@ -583,14 +584,16 @@ public class DatosCSV
 			{
 				modelo.addColumn(this.atributos.getNodos().get(i).getValor());
 			}
+			
 		}
-
+		modelo.addColumn("Agregar");
+		modelo.addColumn("Eliminar");
 		for (int i = 0; i < this.datos.size(); i++)
 		{
-			Object[] newRow = new Object[this.datos.get(i).getNodos().size()];
+			Object[] newRow = new Object[this.datos.get(i).getNodos().size()+2];
 			int k = 0;
 			boolean eliminado = true;
-			
+
 			for (int j = 0; j < this.datos.get(i).getNodos().size(); j++)
 			{
 				if (!this.datos.get(i).getNodos().get(j).isEliminado())
@@ -600,13 +603,14 @@ public class DatosCSV
 					eliminado = false;
 				}
 			}
-			
 			if (!eliminado)
 			{
+				newRow[newRow.length-2]="Agregar";
+				newRow[newRow.length-1]="Eliminar";
 				modelo.addRow(newRow);
 			}
-		}
-				
+			
+		}		
 		return modelo;
 	}	
 		

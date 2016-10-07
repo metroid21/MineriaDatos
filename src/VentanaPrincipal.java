@@ -13,11 +13,15 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 import javax.swing.JMenuBar;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.io.FileNotFoundException;
@@ -47,10 +51,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.Color;
+import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
 import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
  
 public class VentanaPrincipal<E> extends JFrame {
  
@@ -97,8 +103,13 @@ public class VentanaPrincipal<E> extends JFrame {
 		 //Cargamos los cambios en un modelo de tabla
 		 modeloTablaCSV = datos.getDatosAsTableModel();
 		 tablaCSV.setModel(modeloTablaCSV);
+		 tablaCSV.getColumn("Agregar").setCellRenderer(new ButtonRenderer());
+		 tablaCSV.getColumn("Agregar").setCellEditor(new ButtonEditor(new JCheckBox()));
+		 tablaCSV.getColumn("Eliminar").setCellRenderer(new ButtonRenderer());
+		 tablaCSV.getColumn("Eliminar").setCellEditor(new ButtonEditor(new JCheckBox()));
 		 tablaCSV.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		 scrollPaneCSV.setViewportView(tablaCSV);
+		 
 		 
 		 //Actualizamos el Select de la Clase
 		 DefaultComboBoxModel<String> aModel = new DefaultComboBoxModel<String>(datos.getAtributosAsStringArray());
@@ -537,7 +548,83 @@ public class VentanaPrincipal<E> extends JFrame {
 			}
 		});
 		scrollPaneCSV.setViewportView(tablaCSV);
+		
 	}
 	
 	
+}
+
+class ButtonRenderer extends JButton implements TableCellRenderer {
+
+	  public ButtonRenderer() {
+	    setOpaque(true);
+	  }
+
+	  public Component getTableCellRendererComponent(JTable table, Object value,
+	      boolean isSelected, boolean hasFocus, int row, int column) {
+	    if (isSelected) {
+	      setForeground(table.getSelectionForeground());
+	      setBackground(table.getSelectionBackground());
+	    } else {
+	      setForeground(table.getForeground());
+	      setBackground(UIManager.getColor("Button.background"));
+	    }
+	    setText((value == null) ? "" : value.toString());
+	    return this;
+	  }
+}
+
+class ButtonEditor extends DefaultCellEditor {
+	  protected JButton button;
+
+	  private String label;
+
+	  private boolean isPushed;
+
+	  public ButtonEditor(JCheckBox checkBox) {
+	    super(checkBox);
+	    button = new JButton();
+	    button.setOpaque(true);
+	    button.addActionListener(new ActionListener() {
+	      public void actionPerformed(ActionEvent e) {
+	        fireEditingStopped();
+	      }
+	    });
+	  }
+
+	  public Component getTableCellEditorComponent(JTable table, Object value,
+	      boolean isSelected, int row, int column) {
+	    if (isSelected) {
+	      button.setForeground(table.getSelectionForeground());
+	      button.setBackground(table.getSelectionBackground());
+	    } else {
+	      button.setForeground(table.getForeground());
+	      button.setBackground(table.getBackground());
+	    }
+	    label = (value == null) ? "" : value.toString();
+	    button.setText(label);
+	    isPushed = true;
+	    return button;
+	  }
+
+	  public Object getCellEditorValue() {
+	    if (isPushed) {
+	      // 
+	      // 
+	      JOptionPane.showMessageDialog(button, label + ": Ouch!");
+	      //((DefaultTableModel)this.getModel()).removeRow(rowToRemove);
+	      // System.out.println(label + ": Ouch!");
+	    }
+	    isPushed = false;
+	    return new String(label);
+	  }
+
+	  public boolean stopCellEditing() {
+	    isPushed = false;
+	    return super.stopCellEditing();
+	  }
+
+	  protected void fireEditingStopped() {
+	    super.fireEditingStopped();
+	  }
 }
