@@ -26,6 +26,7 @@ public class ExpresionRegular extends JFrame {
 		panelPrincipal = new JPanel();
 		panelPrincipal.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(panelPrincipal);
+		setResizable(false);
 		
 		JScrollPane panelTabla = new JScrollPane();
 		
