@@ -93,7 +93,7 @@ import java.awt.BorderLayout;
  	private JComboBox comboTipo;
  	
  	public JComboBox getComboBox() 
- 	{
+ 	{ 
  		return comboBox;
  	}
  
