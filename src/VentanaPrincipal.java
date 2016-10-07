@@ -320,13 +320,13 @@ public class VentanaPrincipal<E> extends JFrame {
 		setContentPane(contentPane);
 		
 		scrollPaneCSV = new JScrollPane();
-		 
+		
 		scrollPaneFrecuencia = new JScrollPane();
 		
 		JPanel panel = new JPanel();
 		
 		JScrollPane scrollPaneCalculo = new JScrollPane();
-		 
+		
 		txtEstado = new JLabel("Bienvenido");
 		txtEstado.setHorizontalAlignment(SwingConstants.CENTER);
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
