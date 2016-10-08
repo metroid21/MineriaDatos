@@ -2,7 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
  
-public class LectorCSV 
+public class LectorCSV  
 { 
 	DatosCSV cargarCSV(String nombreArchivo)
 	{
