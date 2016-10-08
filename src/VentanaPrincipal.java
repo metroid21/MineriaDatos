@@ -345,6 +345,7 @@ public class VentanaPrincipal<E> extends JFrame {
 			        int modelIndex =  tablaCSV.convertRowIndexToModel(indice);
 			        DefaultTableModel model = (DefaultTableModel) tablaCSV.getModel();
 			        model.removeRow(modelIndex);
+			        datos.eliminarRegistro(modelIndex);
 			    }
 
 			}
@@ -467,6 +468,12 @@ public class VentanaPrincipal<E> extends JFrame {
 			public void actionPerformed(ActionEvent e) 
 			{
 				modeloTablaCSV.fireTableDataChanged();
+				int indice = tablaCSV.getSelectedRow();
+				int indiceColumna = tablaCSV.getColumnCount();
+				String[] datos = new String[indiceColumna];
+				System.out.println(tablaCSV.getValueAt(1, 1));
+				
+				
 			}
 		});
 		

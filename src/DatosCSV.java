@@ -1,6 +1,7 @@
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -587,7 +588,7 @@ public class DatosCSV
 		}
 		for (int i = 0; i < this.datos.size(); i++)
 		{
-			Object[] newRow = new Object[this.datos.get(i).getNodos().size()+2];
+			Object[] newRow = new Object[this.datos.get(i).getNodos().size()];
 			int k = 0;
 			boolean eliminado = true;
 
@@ -608,6 +609,7 @@ public class DatosCSV
 		}		
 		return modelo;
 	}	
+	
 		
 	public DefaultTableModel getTablaFrecuencia(String nombreAtributo)
 	{
@@ -854,6 +856,68 @@ public class DatosCSV
 			
 			this.cambios.add(nuevoCambio);
 		}
+	}
+	public void eliminarRegistro(int indice){
+		//Creamos el Cambio
+		Cambio nuevoCambio = null;
+		if (cambios.isEmpty())
+		{
+			nuevoCambio = new Cambio(1, 1);
+		}
+		else
+		{
+			nuevoCambio = new Cambio(cambios.size()+1, 1);
+		}
+		for (int j = 0; j < this.datos.get(indice).getNodos().size(); j++)
+		{
+			this.datos.get(indice).getNodos().get(j).setEliminado(true);
+		}
+		this.cambios.add(nuevoCambio);			
+
+	}
+	
+	public void agregarRegistro(int indice,String Valor){
+		RegistroCSV<NodoCSV> registroCompleto = null;
+		LinkedList<NodoCSV> conjuntoDeNodos = null;
+		NodoCSV nuevoRegistro = null;
+		
+		//Creamos el Cambio
+		Cambio nuevoCambio = null;
+		if (cambios.isEmpty())
+		{
+			nuevoCambio = new Cambio(1, 1);
+		}
+		else
+		{
+			nuevoCambio = new Cambio(cambios.size()+1, 1);
+		}
+		for (int j = 0; j < this.datos.get(indice).getNodos().size(); j++)
+		{
+			nuevoRegistro.setId(j);
+			nuevoRegistro.setValor(Valor);
+			nuevoRegistro.setEliminado(false);
+			conjuntoDeNodos.set(j, nuevoRegistro);
+		}
+		
+		registroCompleto.setNodos(conjuntoDeNodos);
+		this.datos.add(indice, registroCompleto);
+	}
+	
+	public void imprimirFilas(){
+		//Total de registros this.datos.size();
+		//Total de columnas this.datos.get(i).getNodos().size()
+		for (int i = 0; i < 5; i++)
+		{
+			
+			for (int j = 0; j < this.datos.get(i).getNodos().size(); j++)
+			{
+			
+				if (!this.datos.get(i).getNodos().get(j).isEliminado())
+				{
+					System.out.println(this.datos.get(i).getNodos().get(j).getId());
+				}
+			}
+		}		
 	}
 	
 	private int atributoStringToIndex(String nombreAtributo)
@@ -1159,5 +1223,7 @@ public class DatosCSV
 		
 		return -777777;
 	}
+	
+
 
 }
