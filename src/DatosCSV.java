@@ -586,8 +586,6 @@ public class DatosCSV
 			}
 			
 		}
-		modelo.addColumn("Agregar");
-		modelo.addColumn("Eliminar");
 		for (int i = 0; i < this.datos.size(); i++)
 		{
 			Object[] newRow = new Object[this.datos.get(i).getNodos().size()+2];
@@ -605,8 +603,6 @@ public class DatosCSV
 			}
 			if (!eliminado)
 			{
-				newRow[newRow.length-2]="Agregar";
-				newRow[newRow.length-1]="Eliminar";
 				modelo.addRow(newRow);
 			}
 			

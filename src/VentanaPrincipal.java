@@ -103,10 +103,6 @@ public class VentanaPrincipal<E> extends JFrame {
 		 //Cargamos los cambios en un modelo de tabla
 		 modeloTablaCSV = datos.getDatosAsTableModel();
 		 tablaCSV.setModel(modeloTablaCSV);
-		 tablaCSV.getColumn("Agregar").setCellRenderer(new ButtonRenderer());
-		 tablaCSV.getColumn("Agregar").setCellEditor(new ButtonEditor(new JCheckBox()));
-		 tablaCSV.getColumn("Eliminar").setCellRenderer(new ButtonRenderer());
-		 tablaCSV.getColumn("Eliminar").setCellEditor(new ButtonEditor(new JCheckBox()));
 		 tablaCSV.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		 scrollPaneCSV.setViewportView(tablaCSV);
 		 
@@ -340,6 +336,34 @@ public class VentanaPrincipal<E> extends JFrame {
 		
 		txtEstado = new JLabel("Bienvenido");
 		txtEstado.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JButton btnEliminarFila = new JButton("Eliminar Fila");
+		btnEliminarFila.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int indice = tablaCSV.getSelectedRow();
+			    if(indice != -1) {
+			        int modelIndex =  tablaCSV.convertRowIndexToModel(indice);
+			        DefaultTableModel model = (DefaultTableModel) tablaCSV.getModel();
+			        model.removeRow(modelIndex);
+			    }
+
+			}
+		});
+		
+		JButton btnAgregarFila = new JButton("Agregar Fila");
+		btnAgregarFila.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int indice = tablaCSV.getSelectedRow();
+				DefaultTableModel model = (DefaultTableModel) tablaCSV.getModel();
+			    if(indice != -1) {
+			    	model.insertRow(indice+1, new Object[]{});
+			    }
+			    else
+			    {
+			    	model.addRow(new Object[]{});
+			    }
+			}
+		});
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -350,12 +374,16 @@ public class VentanaPrincipal<E> extends JFrame {
 							.addComponent(panel, GroupLayout.PREFERRED_SIZE, 217, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-								.addComponent(scrollPaneCSV, GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
 								.addGroup(gl_contentPane.createSequentialGroup()
-									.addComponent(scrollPaneFrecuencia, GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE)
+									.addComponent(scrollPaneFrecuencia, GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
 									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(scrollPaneCalculo, GroupLayout.DEFAULT_SIZE, 274, Short.MAX_VALUE))))
-						.addComponent(txtEstado, GroupLayout.DEFAULT_SIZE, 764, Short.MAX_VALUE))
+									.addComponent(scrollPaneCalculo, GroupLayout.DEFAULT_SIZE, 269, Short.MAX_VALUE))
+								.addComponent(scrollPaneCSV, GroupLayout.DEFAULT_SIZE, 531, Short.MAX_VALUE)
+								.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
+									.addComponent(btnEliminarFila)
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addComponent(btnAgregarFila))))
+						.addComponent(txtEstado, GroupLayout.DEFAULT_SIZE, 754, Short.MAX_VALUE))
 					.addContainerGap())
 		);
 		gl_contentPane.setVerticalGroup(
@@ -365,14 +393,18 @@ public class VentanaPrincipal<E> extends JFrame {
 					.addComponent(txtEstado)
 					.addGap(18)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(panel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(scrollPaneCSV, GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+						.addComponent(panel, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
+							.addComponent(scrollPaneCSV, GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+								.addComponent(btnAgregarFila)
+								.addComponent(btnEliminarFila))
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 								.addComponent(scrollPaneCalculo, GroupLayout.PREFERRED_SIZE, 103, GroupLayout.PREFERRED_SIZE)
 								.addComponent(scrollPaneFrecuencia, GroupLayout.PREFERRED_SIZE, 103, GroupLayout.PREFERRED_SIZE))))
-					.addGap(12))
+					.addGap(9))
 		);
 		
 		tableCalculo = new JTable();
@@ -554,77 +586,3 @@ public class VentanaPrincipal<E> extends JFrame {
 	
 }
 
-class ButtonRenderer extends JButton implements TableCellRenderer {
-
-	  public ButtonRenderer() {
-	    setOpaque(true);
-	  }
-
-	  public Component getTableCellRendererComponent(JTable table, Object value,
-	      boolean isSelected, boolean hasFocus, int row, int column) {
-	    if (isSelected) {
-	      setForeground(table.getSelectionForeground());
-	      setBackground(table.getSelectionBackground());
-	    } else {
-	      setForeground(table.getForeground());
-	      setBackground(UIManager.getColor("Button.background"));
-	    }
-	    setText((value == null) ? "" : value.toString());
-	    return this;
-	  }
-}
-
-class ButtonEditor extends DefaultCellEditor {
-	  protected JButton button;
-
-	  private String label;
-
-	  private boolean isPushed;
-
-	  public ButtonEditor(JCheckBox checkBox) {
-	    super(checkBox);
-	    button = new JButton();
-	    button.setOpaque(true);
-	    button.addActionListener(new ActionListener() {
-	      public void actionPerformed(ActionEvent e) {
-	        fireEditingStopped();
-	      }
-	    });
-	  }
-
-	  public Component getTableCellEditorComponent(JTable table, Object value,
-	      boolean isSelected, int row, int column) {
-	    if (isSelected) {
-	      button.setForeground(table.getSelectionForeground());
-	      button.setBackground(table.getSelectionBackground());
-	    } else {
-	      button.setForeground(table.getForeground());
-	      button.setBackground(table.getBackground());
-	    }
-	    label = (value == null) ? "" : value.toString();
-	    button.setText(label);
-	    isPushed = true;
-	    return button;
-	  }
-
-	  public Object getCellEditorValue() {
-	    if (isPushed) {
-	      // 
-	      // 
-	      JOptionPane.showMessageDialog(button, label + ": Ouch!");
-	      //((DefaultTableModel)this.getModel()).removeRow(rowToRemove);
-	      // System.out.println(label + ": Ouch!");
-	    }
-	    isPushed = false;
-	    return new String(label);
-	  }
-
-	  public boolean stopCellEditing() {
-	    isPushed = false;
-	    return super.stopCellEditing();
-	  }
-
-	  protected void fireEditingStopped() {
-	    super.fireEditingStopped();
-	  }
-}
