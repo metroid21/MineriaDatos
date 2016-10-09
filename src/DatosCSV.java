@@ -859,10 +859,12 @@ public class DatosCSV
 			this.cambios.add(nuevoCambio);
 		}
 	}
-	public void eliminarRegistro(int indice, String comprobar){
+	
+	public void eliminarRegistro(int indice)
+	{	
 		//Creamos el Cambio
 		Cambio nuevoCambio = null;
-		int indiceInterno=indice;
+		
 		if (cambios.isEmpty())
 		{
 			nuevoCambio = new Cambio(1, 1);
@@ -871,22 +873,30 @@ public class DatosCSV
 		{
 			nuevoCambio = new Cambio(cambios.size()+1, 1);
 		}
-		for (int j = 0; j < this.datos.get(indice).getNodos().size(); j++)
+		
+		int k=-1;
+		for (int j = 0; j < this.datos.size(); j++)
 		{
-			while(true)
+			if (!this.datos.get(j).getNodos().get(0).isEliminado())
 			{
-				if(!this.datos.get(indiceInterno).getNodos().get(j).isEliminado()&&this.datos.get(indiceInterno).getNodos().get(2).getValor().equals(comprobar)){
+				k++;
+			}
+						
+			if (k == indice)
+			{
+				for (int a = 0; a < this.datos.get(j).getNodos().size(); a++)
+				{
+					this.datos.get(j).getNodos().get(a).setEliminado(true);
 					
-					this.datos.get(indiceInterno).getNodos().get(j).setEliminado(true);
-					break;
+					NodoCambios cambioS = new NodoCambios(j,a,"false", "true");
+					nuevoCambio.getNodos().add(cambioS);
 				}
-				else{
-					indiceInterno++;
-				}
+				
+				break;
 			}
 		}
+		
 		this.cambios.add(nuevoCambio);			
-
 	}
 	
 	public void agregarRegistro()

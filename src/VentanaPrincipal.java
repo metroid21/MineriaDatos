@@ -347,19 +347,13 @@ public class VentanaPrincipal<E> extends JFrame {
 		txtEstado.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JButton btnEliminarFila = new JButton("Eliminar Fila");
-		btnEliminarFila.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+		btnEliminarFila.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
 				int indice = tablaCSV.getSelectedRow();
-				String comprobar;
-			    if(indice != -1) {
-			        int modelIndex =  tablaCSV.convertRowIndexToModel(indice);
-			        DefaultTableModel model = (DefaultTableModel) tablaCSV.getModel();
-			        comprobar=(String) model.getValueAt(indice, 2);
-			        model.removeRow(modelIndex);
-			        datos.eliminarRegistro(modelIndex+balanceadorIndices,comprobar);
-			    }
-			    balanceadorIndices++;
-
+			    datos.eliminarRegistro(indice);
+			    actualizarModelos();
 			}
 		});
 		
