@@ -473,7 +473,7 @@ public class VentanaPrincipal<E> extends JFrame {
 				String[] datos = new String[indiceColumna];
 				System.out.println(tablaCSV.getValueAt(1, 1));
 				
-				
+				actualizarModelos();
 			}
 		});
 		
@@ -589,7 +589,5 @@ public class VentanaPrincipal<E> extends JFrame {
 		scrollPaneCSV.setViewportView(tablaCSV);
 		
 	}
-	
-	
 }
 

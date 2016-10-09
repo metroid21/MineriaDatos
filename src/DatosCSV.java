@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
@@ -1224,6 +1226,121 @@ public class DatosCSV
 		return -777777;
 	}
 	
+	public DefaultTableModel filtrarDatos(String nombreAtributo)
+	{
+		int indexAtributo = this.atributoStringToIndex(nombreAtributo);
+		
+		if (indexAtributo >= 0 && indexAtributo < this.atributos.getNodos().size())
+		{
+			String gramatica = this.atributos.getNodos().get(indexAtributo).getExpresionRegular();
+			Pattern pat = Pattern.compile(gramatica);
+			
+			DefaultTableModel modelo = new DefaultTableModel()
+			{
+				@Override
+			    public boolean isCellEditable(int row, int column) 
+				{
+					if (column == 0 || column == 1)
+					{
+						return false;
+					}
+					else
+					{
+						return true;
+					}
+			    }
+			};
+			
+			modelo.addColumn("Registro No.");
+			modelo.addColumn("Nodo No.");
+			modelo.addColumn("Valor");
+			
+			for (int i = 0; i < this.datos.size(); i++)
+			{
+				Object[] newRow = new Object[3];
+				boolean eliminado = true;
 
+				if (!this.datos.get(i).getNodos().get(indexAtributo).isEliminado())
+				{
+					Matcher mat = pat.matcher(this.datos.get(i).getNodos().get(indexAtributo).getValor());
+				    
+				    if (!mat.matches())
+				    {
+						newRow[0] = i;
+						newRow[1] = indexAtributo;
+						newRow[2] = this.datos.get(i).getNodos().get(indexAtributo).getValor();
+						eliminado = false;					    	
+				    }
+				}
+				
+				if (!eliminado)
+				{
+					modelo.addRow(newRow);
+				}
+			}		
+			
+			return modelo;
+		}
+		
+		return null;
+	}
 
+	public DefaultTableModel filtrarDatos(String nombreAtributo, boolean match)
+	{
+		int indexAtributo = this.atributoStringToIndex(nombreAtributo);
+		
+		if (indexAtributo >= 0 && indexAtributo < this.atributos.getNodos().size())
+		{
+			String gramatica = this.atributos.getNodos().get(indexAtributo).getExpresionRegular();
+			Pattern pat = Pattern.compile(gramatica);
+			
+			DefaultTableModel modelo = new DefaultTableModel()
+			{
+				@Override
+			    public boolean isCellEditable(int row, int column) 
+				{
+					if (column == 0 || column == 1)
+					{
+						return false;
+					}
+					else
+					{
+						return true;
+					}
+			    }
+			};
+			
+			modelo.addColumn("Registro No.");
+			modelo.addColumn("Nodo No.");
+			modelo.addColumn("Valor");
+			
+			for (int i = 0; i < this.datos.size(); i++)
+			{
+				Object[] newRow = new Object[3];
+				boolean eliminado = true;
+
+				if (!this.datos.get(i).getNodos().get(indexAtributo).isEliminado())
+				{
+					Matcher mat = pat.matcher(this.datos.get(i).getNodos().get(indexAtributo).getValor());
+				    
+				    if (mat.matches() == match)
+				    {
+						newRow[0] = i;
+						newRow[1] = indexAtributo;
+						newRow[2] = this.datos.get(i).getNodos().get(indexAtributo).getValor();
+						eliminado = false;					    	
+				    }
+				}
+				
+				if (!eliminado)
+				{
+					modelo.addRow(newRow);
+				}
+			}		
+			
+			return modelo;
+		}
+		
+		return null;
+	}
 }

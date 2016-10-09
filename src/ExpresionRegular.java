@@ -84,13 +84,15 @@ import java.awt.BorderLayout;
  public class ExpresionRegular extends JFrame {
  
  	private JPanel panelPrincipal;
- 	private JTable tablaAtributos;
+ 	private JTable tablaFiltro;
  	private JTextField txtGramatica;
  	private JComboBox comboBox;
  	private JButton btnGuardar;
- 	private JButton btnFiltrar;
+ 	private JButton btnFiltrarDistinto;
  	private DatosCSV datos;
  	private JComboBox comboTipo;
+ 	private JScrollPane panelTabla;
+ 	private JButton btnFiltrar;
  	
  	public JComboBox getComboBox() 
  	{ 
@@ -111,13 +113,13 @@ import java.awt.BorderLayout;
  	{
  		setTitle("Expresiones Regulares");
  		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
- 		setBounds(100, 100, 578, 292);
+ 		setBounds(100, 100, 554, 292);
  		panelPrincipal = new JPanel();
  		panelPrincipal.setBorder(new EmptyBorder(5, 5, 5, 5));
  		setContentPane(panelPrincipal);
  		setResizable(false);
  		
- 		JScrollPane panelTabla = new JScrollPane();
+ 		panelTabla = new JScrollPane();
  		
  		comboBox = new JComboBox();
  		comboBox.addActionListener(new ActionListener() 
@@ -135,16 +137,18 @@ import java.awt.BorderLayout;
                  	txtGramatica.setEnabled(false);
                  	comboTipo.setEnabled(false);
                  	btnGuardar.setEnabled(false);
+                 	btnFiltrarDistinto.setEnabled(false);
                  	btnFiltrar.setEnabled(false);
                  }
                  else
                  {
-                     txtGramatica.setText(datos.getExpresionRegular(item));
-                     comboTipo.setSelectedIndex(datos.getTipo(item));         
+                    txtGramatica.setText(datos.getExpresionRegular(item));
+                    comboTipo.setSelectedIndex(datos.getTipo(item));         
                      
-                     txtGramatica.setEnabled(true);
+                    txtGramatica.setEnabled(true);
                  	comboTipo.setEnabled(true);
                  	btnGuardar.setEnabled(true);
+                 	btnFiltrarDistinto.setEnabled(true);
                  	btnFiltrar.setEnabled(true);
                  }
               }
@@ -167,53 +171,77 @@ import java.awt.BorderLayout;
  			}
  		});
  		
- 		btnFiltrar = new JButton("Filtrar");
+ 		btnFiltrarDistinto = new JButton("Filtrar Distinto");
+ 		btnFiltrarDistinto.addActionListener(new ActionListener() 
+ 		{
+ 			public void actionPerformed(ActionEvent e) 
+ 			{
+ 				String atributo  = comboBox.getSelectedItem().toString();
+ 				DefaultTableModel modelo = datos.filtrarDatos(atributo, false);
+ 				tablaFiltro.setModel(modelo);
+ 				tablaFiltro.setPreferredScrollableViewportSize(new Dimension(500, 70));
+ 			}
+ 		});
  		
  		comboTipo = new JComboBox();
  		comboTipo.setModel(new DefaultComboBoxModel(new String[] {"Selecionar", "?????", "Nominal", "Entero", "Ordinal", "Real"}));
+ 		
+ 		btnFiltrar = new JButton("Filtrar");
+ 		btnFiltrar.addActionListener(new ActionListener() 
+ 		{
+ 			public void actionPerformed(ActionEvent e) 
+ 			{
+ 				String atributo  = comboBox.getSelectedItem().toString();
+ 				DefaultTableModel modelo = datos.filtrarDatos(atributo, true);
+ 				tablaFiltro.setModel(modelo);
+ 				tablaFiltro.setPreferredScrollableViewportSize(new Dimension(500, 70));
+ 			}
+ 		});
+ 		btnFiltrar.setEnabled(false);
  		GroupLayout gl_panelPrincipal = new GroupLayout(panelPrincipal);
  		gl_panelPrincipal.setHorizontalGroup(
- 			gl_panelPrincipal.createParallelGroup(Alignment.TRAILING)
+ 			gl_panelPrincipal.createParallelGroup(Alignment.LEADING)
  				.addGroup(gl_panelPrincipal.createSequentialGroup()
  					.addContainerGap()
- 					.addGroup(gl_panelPrincipal.createParallelGroup(Alignment.TRAILING)
+ 					.addGroup(gl_panelPrincipal.createParallelGroup(Alignment.LEADING)
  						.addGroup(gl_panelPrincipal.createSequentialGroup()
- 							.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, 133, GroupLayout.PREFERRED_SIZE)
- 							.addGap(18)
+ 							.addComponent(panelTabla, GroupLayout.PREFERRED_SIZE, 525, GroupLayout.PREFERRED_SIZE)
+ 							.addContainerGap())
+ 						.addGroup(Alignment.TRAILING, gl_panelPrincipal.createSequentialGroup()
+ 							.addGroup(gl_panelPrincipal.createParallelGroup(Alignment.TRAILING)
+ 								.addComponent(comboBox, Alignment.LEADING, 0, 167, Short.MAX_VALUE)
+ 								.addComponent(comboTipo, 0, 167, Short.MAX_VALUE))
+ 							.addPreferredGap(ComponentPlacement.RELATED)
+ 							.addGroup(gl_panelPrincipal.createParallelGroup(Alignment.LEADING)
+ 								.addComponent(btnFiltrarDistinto)
+ 								.addComponent(txtGramatica, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+ 							.addPreferredGap(ComponentPlacement.RELATED)
  							.addGroup(gl_panelPrincipal.createParallelGroup(Alignment.LEADING, false)
- 								.addComponent(txtGramatica)
- 								.addComponent(comboTipo, 0, 149, Short.MAX_VALUE))
- 							.addPreferredGap(ComponentPlacement.UNRELATED)
- 							.addComponent(btnGuardar)
- 							.addPreferredGap(ComponentPlacement.UNRELATED)
- 							.addComponent(btnFiltrar)
- 							.addGap(18))
- 						.addComponent(panelTabla, GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE))
- 					.addContainerGap())
-		);
+ 								.addComponent(btnFiltrar, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+ 								.addComponent(btnGuardar, GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))
+ 							.addGap(56))))
+ 		);
  		gl_panelPrincipal.setVerticalGroup(
  			gl_panelPrincipal.createParallelGroup(Alignment.TRAILING)
  				.addGroup(gl_panelPrincipal.createSequentialGroup()
+ 					.addContainerGap(28, Short.MAX_VALUE)
+ 					.addGroup(gl_panelPrincipal.createParallelGroup(Alignment.BASELINE)
+ 						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+ 						.addComponent(txtGramatica, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)
+ 						.addComponent(btnFiltrar))
+ 					.addPreferredGap(ComponentPlacement.RELATED)
  					.addGroup(gl_panelPrincipal.createParallelGroup(Alignment.LEADING)
- 						.addGroup(gl_panelPrincipal.createSequentialGroup()
- 							.addContainerGap(12, Short.MAX_VALUE)
- 							.addGroup(gl_panelPrincipal.createParallelGroup(Alignment.LEADING)
- 								.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
- 								.addGroup(gl_panelPrincipal.createParallelGroup(Alignment.BASELINE)
- 									.addComponent(btnGuardar)
- 									.addComponent(btnFiltrar)))
- 							.addGap(18))
- 						.addGroup(gl_panelPrincipal.createSequentialGroup()
- 							.addComponent(txtGramatica, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)
- 							.addPreferredGap(ComponentPlacement.RELATED)
- 							.addComponent(comboTipo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
- 							.addPreferredGap(ComponentPlacement.RELATED)))
-					.addComponent(panelTabla, GroupLayout.PREFERRED_SIZE, 180, GroupLayout.PREFERRED_SIZE)
+ 						.addGroup(gl_panelPrincipal.createParallelGroup(Alignment.BASELINE)
+ 							.addComponent(btnFiltrarDistinto)
+ 							.addComponent(btnGuardar))
+ 						.addComponent(comboTipo, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+ 					.addPreferredGap(ComponentPlacement.RELATED)
+ 					.addComponent(panelTabla, GroupLayout.PREFERRED_SIZE, 180, GroupLayout.PREFERRED_SIZE)
  					.addContainerGap())
  		);
 		
- 		tablaAtributos = new JTable();
- 		panelTabla.setViewportView(tablaAtributos);
+ 		tablaFiltro = new JTable();
+ 		panelTabla.setViewportView(tablaFiltro);
  		panelPrincipal.setLayout(gl_panelPrincipal);
 		
      	txtGramatica.setText("");
@@ -222,6 +250,42 @@ import java.awt.BorderLayout;
      	txtGramatica.setEnabled(false);
      	comboTipo.setEnabled(false);
      	btnGuardar.setEnabled(false);
+     	btnFiltrarDistinto.setEnabled(false);
      	btnFiltrar.setEnabled(false);
+     	
+		tablaFiltro.addPropertyChangeListener(new PropertyChangeListener() 
+		{
+			public void propertyChange(PropertyChangeEvent evt) 
+			{			
+				if (evt.getPropertyName().equals("tableCellEditor"))
+				{			
+					String source = evt.getSource().toString();
+					
+					int changeColumIndexB = source.indexOf(",editingColumn=");
+					int changeRowIndexB   = source.indexOf(",editingRow=");
+					int changeGridColorB  = source.indexOf(",gridColor=");
+
+					int changeColumIndexE = changeColumIndexB + 15;
+					int changeRowIndexE   = changeRowIndexB   + 12;
+
+					String changeColum = source.substring(changeColumIndexE, changeRowIndexB);
+					String changeRow   = source.substring(changeRowIndexE, changeGridColorB);
+					
+					int col = Integer.parseInt(changeColum);
+					int row = Integer.parseInt(changeRow);
+					
+					if (row >= 0 && col >= 0)
+					{						
+						int reg    = Integer.parseInt(tablaFiltro.getValueAt(row, 0).toString());
+						int nodo   = Integer.parseInt(tablaFiltro.getValueAt(row, 1).toString());
+						String val = tablaFiltro.getValueAt(row, 2).toString();
+						
+						datos.actualizarFromCellJTable(reg, nodo, val);
+					}
+				}
+			}
+		});
+		
+		panelTabla.setViewportView(tablaFiltro);
  	}
  }
