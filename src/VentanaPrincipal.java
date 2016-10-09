@@ -473,7 +473,7 @@ public class VentanaPrincipal<E> extends JFrame {
 					valFila[i]=(String) tablaCSV.getValueAt(tablaCSV.getRowCount()-1, i);
 				}
 				datos.agregarRegistro(valFila);
-				datos.imprimirFilas();
+				actualizarModelos();
 			}
 		});
 		
@@ -589,7 +589,5 @@ public class VentanaPrincipal<E> extends JFrame {
 		scrollPaneCSV.setViewportView(tablaCSV);
 		
 	}
-	
-	
 }
 
