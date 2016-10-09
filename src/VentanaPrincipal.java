@@ -80,6 +80,7 @@ public class VentanaPrincipal<E> extends JFrame {
 	private JMenuItem mntmIngresarExprecionregular;
 	private ExpresionRegular ventanaExpresiones; 
 	private AgregarAtributo ventanaAtributo;
+	private int balanceadorIndices;
 	
 
 	
@@ -105,6 +106,7 @@ public class VentanaPrincipal<E> extends JFrame {
 	
 	private void actualizarModelos()
 	{
+		balanceadorIndices=0;
 		 //Cargamos los cambios en un modelo de tabla
 		 modeloTablaCSV = datos.getDatosAsTableModel();
 		 tablaCSV.setModel(modeloTablaCSV);
@@ -347,12 +349,15 @@ public class VentanaPrincipal<E> extends JFrame {
 		btnEliminarFila.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				int indice = tablaCSV.getSelectedRow();
+				String comprobar;
 			    if(indice != -1) {
 			        int modelIndex =  tablaCSV.convertRowIndexToModel(indice);
 			        DefaultTableModel model = (DefaultTableModel) tablaCSV.getModel();
+			        comprobar=(String) model.getValueAt(indice, 2);
 			        model.removeRow(modelIndex);
-			        datos.eliminarRegistro(modelIndex);
+			        datos.eliminarRegistro(modelIndex+balanceadorIndices,comprobar);
 			    }
+			    balanceadorIndices++;
 
 			}
 		});
