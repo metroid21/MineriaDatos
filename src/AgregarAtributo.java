@@ -40,7 +40,7 @@ public class AgregarAtributo extends JFrame {
 	}
 	
 	public AgregarAtributo(String[] nomColumnas) {
-		String[] valFila = new String[nomColumnas.length];
+		final String[] valFila = new String[nomColumnas.length];
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 777, 177);
