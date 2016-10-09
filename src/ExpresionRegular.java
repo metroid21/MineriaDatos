@@ -276,7 +276,7 @@ import java.awt.BorderLayout;
 						int reg    = Integer.parseInt(tablaFiltro.getValueAt(row, 0).toString());
 						int nodo   = Integer.parseInt(tablaFiltro.getValueAt(row, 1).toString());
 						String val = tablaFiltro.getValueAt(row, 2).toString();
-						
+												
 						datos.actualizarFromCellJTable(reg, nodo, val);
 					}
 				}

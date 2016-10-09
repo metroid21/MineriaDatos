@@ -889,13 +889,9 @@ public class DatosCSV
 
 	}
 	
-	public void agregarRegistro(String[] valFila){
+	public void agregarRegistro()
+	{
 		RegistroCSV<NodoCSV> registroCompleto = new RegistroCSV<NodoCSV>();
-		LinkedList<NodoCSV> conjuntoDeNodos = new LinkedList<NodoCSV>();
-		for(int i=0;i<valFila.length;i++){
-			NodoCSV nuevoRegistro = new NodoCSV();
-			conjuntoDeNodos.addLast(nuevoRegistro);
-		}
 		
 		//Creamos el Cambio
 		Cambio nuevoCambio = null;
@@ -907,13 +903,23 @@ public class DatosCSV
 		{
 			nuevoCambio = new Cambio(cambios.size()+1, 1);
 		}
-		for(int i=0;i<valFila.length;i++){
-			conjuntoDeNodos.get(i).setId(i);
-			conjuntoDeNodos.get(i).setValor(valFila[i]);;
-			conjuntoDeNodos.get(i).setEliminado(false);;
+
+		registroCompleto.setId(this.getDatos().getLast().getId()+1);
+		
+		for (int i = 0; i < this.getDatos().getLast().getNodos().size(); i++)
+		{
+			NodoCambios nodoC = new NodoCambios(registroCompleto.getId(), i, "false", "true");
+			NodoCSV nodo = new NodoCSV();
+			nodo.setEliminado(false);
+			nodo.setId(i);
+			nodo.setValor("");
+			
+			registroCompleto.getNodos().add(nodo);
+			nuevoCambio.getNodos().add(nodoC);
 		}
-		registroCompleto.setNodos(conjuntoDeNodos);
-		this.datos.addLast(registroCompleto);
+		
+
+		this.datos.add(registroCompleto);
 		this.cambios.add(nuevoCambio);	
 		
 	}
@@ -1277,13 +1283,14 @@ public class DatosCSV
 
 				if (!this.datos.get(i).getNodos().get(indexAtributo).isEliminado())
 				{
-					Matcher mat = pat.matcher(this.datos.get(i).getNodos().get(indexAtributo).getValor());
+					String val = this.datos.get(i).getNodos().get(indexAtributo).getValor();
+					Matcher mat = pat.matcher(val);
 				    
 				    if (!mat.matches())
 				    {
 						newRow[0] = i;
 						newRow[1] = indexAtributo;
-						newRow[2] = this.datos.get(i).getNodos().get(indexAtributo).getValor();
+						newRow[2] = val;
 						eliminado = false;					    	
 				    }
 				}
@@ -1336,13 +1343,14 @@ public class DatosCSV
 
 				if (!this.datos.get(i).getNodos().get(indexAtributo).isEliminado())
 				{
-					Matcher mat = pat.matcher(this.datos.get(i).getNodos().get(indexAtributo).getValor());
+					String val = this.datos.get(i).getNodos().get(indexAtributo).getValor();						
+					Matcher mat = pat.matcher(val);
 				    
 				    if (mat.matches() == match)
 				    {
 						newRow[0] = i;
 						newRow[1] = indexAtributo;
-						newRow[2] = this.datos.get(i).getNodos().get(indexAtributo).getValor();
+						newRow[2] = val;
 						eliminado = false;					    	
 				    }
 				}

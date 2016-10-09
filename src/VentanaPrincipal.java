@@ -364,11 +364,12 @@ public class VentanaPrincipal<E> extends JFrame {
 		});
 		
 		JButton btnAgregarFila = new JButton("Agregar Fila");
-		btnAgregarFila.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				DefaultTableModel model = (DefaultTableModel) tablaCSV.getModel();
-				model.insertRow(tablaCSV.getRowCount(),new Object[]{});
-			    
+		btnAgregarFila.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				datos.agregarRegistro();
+				actualizarModelos();
 			}
 		});
 		btnAgregarFila.setToolTipText("Recuerde actualizar despues de ingresar los datos");
@@ -474,11 +475,6 @@ public class VentanaPrincipal<E> extends JFrame {
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
-				String[] valFila = new String[tablaCSV.getColumnCount()];
-				for(int i=0;i<tablaCSV.getColumnCount();i++){
-					valFila[i]=(String) tablaCSV.getValueAt(tablaCSV.getRowCount()-1, i);
-				}
-				datos.agregarRegistro(valFila);
 				actualizarModelos();
 			}
 		});
