@@ -108,6 +108,15 @@ import java.awt.BorderLayout;
  	{
  		this.datos = d;
  	}
+ 	
+ 	public void setEnableBtn(boolean x)
+ 	{
+     	txtGramatica.setEnabled(x);
+     	comboTipo.setEnabled(x);
+     	btnGuardar.setEnabled(x);
+     	btnFiltrarDistinto.setEnabled(x);
+     	btnFiltrar.setEnabled(x);
+ 	}
  
  	public ExpresionRegular() 
  	{
@@ -134,22 +143,14 @@ import java.awt.BorderLayout;
                  	txtGramatica.setText("");
                  	comboTipo.setSelectedIndex(-1);
                  	
-                 	txtGramatica.setEnabled(false);
-                 	comboTipo.setEnabled(false);
-                 	btnGuardar.setEnabled(false);
-                 	btnFiltrarDistinto.setEnabled(false);
-                 	btnFiltrar.setEnabled(false);
+                 	setEnableBtn(false);
                  }
                  else
                  {
                     txtGramatica.setText(datos.getExpresionRegular(item));
                     comboTipo.setSelectedIndex(datos.getTipo(item));         
                      
-                    txtGramatica.setEnabled(true);
-                 	comboTipo.setEnabled(true);
-                 	btnGuardar.setEnabled(true);
-                 	btnFiltrarDistinto.setEnabled(true);
-                 	btnFiltrar.setEnabled(true);
+                    setEnableBtn(true);
                  }
               }
  		});
@@ -247,11 +248,7 @@ import java.awt.BorderLayout;
      	txtGramatica.setText("");
      	comboTipo.setSelectedIndex(-1);
      	
-     	txtGramatica.setEnabled(false);
-     	comboTipo.setEnabled(false);
-     	btnGuardar.setEnabled(false);
-     	btnFiltrarDistinto.setEnabled(false);
-     	btnFiltrar.setEnabled(false);
+     	setEnableBtn(false);
      	
 		tablaFiltro.addPropertyChangeListener(new PropertyChangeListener() 
 		{

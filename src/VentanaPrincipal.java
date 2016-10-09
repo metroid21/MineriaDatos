@@ -122,6 +122,7 @@ public class VentanaPrincipal<E> extends JFrame {
 		 rModel.insertElementAt("Selecionar", 0);
 		 rModel.setSelectedItem("Selecionar");
 		 ventanaExpresiones.getComboBox().setModel(rModel);
+		 ventanaExpresiones.setEnableBtn(false);
 
 		 //Actualizamos la lista de los Atributos
 		 DefaultListModel lModel = new DefaultListModel();
