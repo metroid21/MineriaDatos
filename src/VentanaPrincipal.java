@@ -27,7 +27,9 @@ import java.awt.event.ActionEvent;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.awt.GridBagLayout;
+import java.awt.List;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultCellEditor;
@@ -77,7 +79,10 @@ public class VentanaPrincipal<E> extends JFrame {
 	private JLabel txtEstado;
 	private JMenuItem mntmIngresarExprecionregular;
 	private ExpresionRegular ventanaExpresiones; 
+	private AgregarAtributo ventanaAtributo;
+	
 
+	
 	public static void main(String[] args) 
 	{					
 		EventQueue.invokeLater(new Runnable() 
@@ -143,6 +148,7 @@ public class VentanaPrincipal<E> extends JFrame {
 	public VentanaPrincipal() 
 	{
 		ventanaExpresiones = new ExpresionRegular();
+		
 		datos = null;
 		setTitle("Proyecto Mineria");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -354,17 +360,12 @@ public class VentanaPrincipal<E> extends JFrame {
 		JButton btnAgregarFila = new JButton("Agregar Fila");
 		btnAgregarFila.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int indice = tablaCSV.getSelectedRow();
 				DefaultTableModel model = (DefaultTableModel) tablaCSV.getModel();
-			    if(indice != -1) {
-			    	model.insertRow(indice+1, new Object[]{});
-			    }
-			    else
-			    {
-			    	model.addRow(new Object[]{});
-			    }
+				model.insertRow(tablaCSV.getRowCount(),new Object[]{});
+			    
 			}
 		});
+		btnAgregarFila.setToolTipText("Recuerde actualizar despues de ingresar los datos");
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -467,13 +468,12 @@ public class VentanaPrincipal<E> extends JFrame {
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
-				modeloTablaCSV.fireTableDataChanged();
-				int indice = tablaCSV.getSelectedRow();
-				int indiceColumna = tablaCSV.getColumnCount();
-				String[] datos = new String[indiceColumna];
-				System.out.println(tablaCSV.getValueAt(1, 1));
-				
-				
+				String[] valFila = new String[tablaCSV.getColumnCount()];
+				for(int i=0;i<tablaCSV.getColumnCount();i++){
+					valFila[i]=(String) tablaCSV.getValueAt(tablaCSV.getRowCount()-1, i);
+				}
+				datos.agregarRegistro(valFila);
+				datos.imprimirFilas();
 			}
 		});
 		

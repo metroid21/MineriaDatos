@@ -876,10 +876,13 @@ public class DatosCSV
 
 	}
 	
-	public void agregarRegistro(int indice,String Valor){
-		RegistroCSV<NodoCSV> registroCompleto = null;
-		LinkedList<NodoCSV> conjuntoDeNodos = null;
-		NodoCSV nuevoRegistro = null;
+	public void agregarRegistro(String[] valFila){
+		RegistroCSV<NodoCSV> registroCompleto = new RegistroCSV<NodoCSV>();
+		LinkedList<NodoCSV> conjuntoDeNodos = new LinkedList<NodoCSV>();
+		for(int i=0;i<valFila.length;i++){
+			NodoCSV nuevoRegistro = new NodoCSV();
+			conjuntoDeNodos.addLast(nuevoRegistro);
+		}
 		
 		//Creamos el Cambio
 		Cambio nuevoCambio = null;
@@ -891,22 +894,22 @@ public class DatosCSV
 		{
 			nuevoCambio = new Cambio(cambios.size()+1, 1);
 		}
-		for (int j = 0; j < this.datos.get(indice).getNodos().size(); j++)
-		{
-			nuevoRegistro.setId(j);
-			nuevoRegistro.setValor(Valor);
-			nuevoRegistro.setEliminado(false);
-			conjuntoDeNodos.set(j, nuevoRegistro);
+		for(int i=0;i<valFila.length;i++){
+			conjuntoDeNodos.get(i).setId(i);
+			conjuntoDeNodos.get(i).setValor(valFila[i]);;
+			conjuntoDeNodos.get(i).setEliminado(false);;
 		}
-		
 		registroCompleto.setNodos(conjuntoDeNodos);
-		this.datos.add(indice, registroCompleto);
+		this.datos.addLast(registroCompleto);
+		this.cambios.add(nuevoCambio);	
+		
 	}
 	
 	public void imprimirFilas(){
 		//Total de registros this.datos.size();
 		//Total de columnas this.datos.get(i).getNodos().size()
-		for (int i = 0; i < 5; i++)
+		//Agarrar ultimo nodo this.datos.getLast.getNodos()
+		for (int i = 0; i < this.datos.size(); i++)
 		{
 			
 			for (int j = 0; j < this.datos.get(i).getNodos().size(); j++)
@@ -914,7 +917,8 @@ public class DatosCSV
 			
 				if (!this.datos.get(i).getNodos().get(j).isEliminado())
 				{
-					System.out.println(this.datos.get(i).getNodos().get(j).getId());
+					System.out.println(this.datos.get(i).getNodos().get(j).getValor());
+					//this.datos.addLast(e);
 				}
 			}
 		}		
