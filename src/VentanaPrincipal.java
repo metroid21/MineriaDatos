@@ -437,6 +437,11 @@ public class VentanaPrincipal<E> extends JFrame {
                     algoritmo2.crearModelo();
                     //System.out.println(zero.getModelo().toString());
                     System.out.println(algoritmo2.getExactitud());
+
+                    NaiveBayes algoritmo3 = new NaiveBayes(datos);
+                    algoritmo3.crearModelo();
+                    //System.out.println(zero.getModelo().toString());
+                    System.out.println(algoritmo3.getExactitud());
                  }
               }
  		});

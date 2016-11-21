@@ -5,7 +5,7 @@ public class MatrizReglas
 	private LinkedList<String> headerArriba;
 	private LinkedList<String> headerLados;
 	private String nombreAtributo;
-	private int[][] matriz;
+	private double[][] matriz;
 	
 	MatrizReglas()
 	{
@@ -35,12 +35,12 @@ public class MatrizReglas
 		this.headerLados = headerLados;
 	}
 
-	public int[][] getMatriz() 
+	public double[][] getMatriz() 
 	{
 		return matriz;
 	}
 
-	public void setMatriz(int[][] matriz) 
+	public void setMatriz(double[][] matriz) 
 	{
 		this.matriz = matriz;
 	}
@@ -65,7 +65,7 @@ public class MatrizReglas
 			LinkedList<String> regClase = datos.getDistintos(datos.getNombreClase());
 			LinkedList<String> regAtrib = datos.getDistintos(atributo);
 			
-			int[][] matrix = new int[regAtrib.size()][regClase.size()];
+			double[][] matrix = new double[regAtrib.size()][regClase.size()];
 
 			for (int i = 0; i < regAtrib.size(); i++)
 			{
@@ -115,7 +115,7 @@ public class MatrizReglas
 		
 		for (int i = 0; i < this.getHeaderLados().size(); i++)
 		{
-			int subj = 0;
+			double subj = 0;
 			int subjP = 0;
 			
 			for (int j = 0; j < this.getHeaderArriba().size(); j++)
@@ -127,7 +127,7 @@ public class MatrizReglas
 				}
 			}
 			
-			String cadena = Integer.toString(subj) + "," + 
+			String cadena = Double.toString(subj) + "," + 
 							this.getHeaderLados().get(i) + ","+
 							this.getHeaderArriba().get(subjP);
 			
@@ -143,7 +143,7 @@ public class MatrizReglas
 		
 		for (int i = 0; i < this.getHeaderLados().size(); i++)
 		{
-			int subj = 0;
+			double subj = 0;
 			int subjP = 0;
 			
 			for (int j = 0; j < this.getHeaderArriba().size(); j++)
@@ -155,7 +155,7 @@ public class MatrizReglas
 				}
 			}
 			
-			String cadena = Integer.toString(subj) + "," + 
+			String cadena = Double.toString(subj) + "," + 
 							this.getHeaderLados().get(i) + ","+
 							this.getHeaderArriba().get(subjP);
 			
@@ -165,9 +165,9 @@ public class MatrizReglas
 		return cadenasAciertos;
 	}
 
-	public int getAciertosArriba(int pos)
+	public double getAciertosArriba(int pos)
 	{	
-		int aciertos = -1;
+		double aciertos = -1;
 		
 		if (pos >= 0 && pos < this.getHeaderArriba().size())
 		{
@@ -182,9 +182,9 @@ public class MatrizReglas
 		return aciertos;
 	}
 
-	public int getAciertosLados(int pos)
+	public double getAciertosLados(int pos)
 	{	
-		int aciertos = -1;
+		double aciertos = -1;
 		
 		if (pos >= 0 && pos < this.getHeaderLados().size())
 		{
@@ -197,6 +197,90 @@ public class MatrizReglas
 		}
 				
 		return aciertos;
+	}
+	
+	public double getPromedio(int pos)
+	{	
+		LinkedList<Double> valores = new LinkedList<Double>();
+		
+		if (pos >= 0 && pos < this.getHeaderLados().size())
+		{
+			for (int i = 0; i < this.getHeaderLados().size(); i++)
+			{
+				for (int j = 0; j < this.getMatriz()[i][pos]; j++)
+				{
+					try 
+					{
+						double x = Double.parseDouble(this.getHeaderLados().get(i));
+						valores.add(x);
+					} 
+					catch (NumberFormatException e) 
+					{
+						return -777777777;
+					}
+				}
+			}
+		}
+		
+		if (valores.isEmpty())
+		{
+			return -777777777;
+		}
+		else
+		{
+			double suma = 0;
+			
+			for (int i = 0; i < valores.size(); i++)
+			{
+				suma += valores.get(i);
+			}
+						
+			return suma/valores.size();
+		}
+	}
+	
+	public double getDesviacionEstandar(int pos)
+	{		
+		LinkedList<Double> valores = new LinkedList<Double>();
+		
+		if (pos >= 0 && pos < this.getHeaderLados().size())
+		{
+			for (int i = 0; i < this.getHeaderLados().size(); i++)
+			{
+				for (int j = 0; j < this.getMatriz()[i][pos]; j++)
+				{
+					try 
+					{
+						double x = Double.parseDouble(this.getHeaderLados().get(i));
+						valores.add(x);
+					} 
+					catch (NumberFormatException e) 
+					{
+						return -777777777;
+					}
+				}
+			}
+		}
+		
+		if (valores.isEmpty())
+		{
+			return -777777777;
+		}
+		else
+		{
+			double promedio = this.getPromedio(pos);
+			double suma = 0;
+			
+			for (int i = 0; i < valores.size(); i++)
+			{
+				suma = suma + Math.pow((valores.get(i)-promedio),2);
+			}
+			
+			suma = (suma/(valores.size()-1));
+			suma = Math.sqrt(suma);
+						
+			return suma;
+		}
 	}
 	
 	public String toString()
@@ -221,7 +305,7 @@ public class MatrizReglas
 				}
 				else
 				{
-					cad += Integer.toString(this.matriz[i-1][j-1]);
+					cad += Double.toString(this.matriz[i-1][j-1]);
 				}
 				
 				cad += "|";
