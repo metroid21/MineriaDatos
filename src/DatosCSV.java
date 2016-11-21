@@ -36,6 +36,11 @@ public class DatosCSV
 	 * Camino hasta llegar al archivo cargado
 	 */
 	private String caminoArchivo = "";
+	
+	/**
+	 * String con el nombre de la clase para los algoritmos
+	 */
+	private String nombreClase = "";
 		
 	public DatosCSV() 
 	{
@@ -112,6 +117,16 @@ public class DatosCSV
 	public void setCaminoArchivo(String caminoArchivo) 
 	{
 		this.caminoArchivo = caminoArchivo;
+	}
+
+	public String getNombreClase() 
+	{
+		return nombreClase;
+	}
+
+	public void setNombreClase(String nombreClase) 
+	{
+		this.nombreClase = nombreClase;
 	}
 
 	public String toString()
@@ -493,6 +508,20 @@ public class DatosCSV
 				 this.atributos.getNodos().get(i).getValor() == nombreAtributo)
 			{
 				return this.atributos.getNodos().get(i).getTipo();
+			}
+		}
+		
+		return -1;
+	}
+
+	public Integer getPosicionAtributo(String nombreAtributo)
+	{
+		for (int i = 0; i < this.atributos.getNodos().size(); i++)
+		{
+			if (!this.atributos.getNodos().get(i).isEliminado() && 
+				 this.atributos.getNodos().get(i).getValor() == nombreAtributo)
+			{
+				return i;
 			}
 		}
 		

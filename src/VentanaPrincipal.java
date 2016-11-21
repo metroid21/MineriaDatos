@@ -416,7 +416,26 @@ public class VentanaPrincipal<E> extends JFrame {
 		JLabel lblClase = new JLabel("Clase:");
 		
 		comboBoxClases = new JComboBox();
-		
+ 		comboBoxClases.addActionListener(new ActionListener() 
+ 		{
+             public void actionPerformed(ActionEvent event) 
+             {
+                 JComboBox comboBoxN = (JComboBox) event.getSource();
+                 String item = comboBoxN.getSelectedItem().toString();
+                 
+                 if (item != "Selecionar" && item != "")
+                 {
+                    datos.setNombreClase(item);
+                    System.out.println(datos.getNombreClase());
+                    
+                    ZeroR zero = new ZeroR(datos);
+                    zero.crearModelo();
+                    //System.out.println(zero.getModelo().toString());
+                    System.out.println(zero.getExactitud());
+                 }
+              }
+ 		});
+
 		JButton btnAadir = new JButton("Agregar");
 		btnAadir.addActionListener(new ActionListener() 
 		{
