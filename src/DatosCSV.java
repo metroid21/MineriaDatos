@@ -846,6 +846,31 @@ public class DatosCSV
 		}
 	}
 
+	public LinkedList<String> getDistintos(String atributo)
+	{
+		LinkedList<String> valores = new LinkedList<String>();
+		
+		int pos = this.getPosicionAtributo(atributo);
+		
+		if (pos != -1)
+		{
+			for (int i = 0; i < this.datos.size(); i++)
+			{
+				RegistroCSV<NodoCSV> reg = this.datos.get(i); 
+				NodoCSV nodo = reg.getNodos().get(pos);
+				
+				if (!nodo.isEliminado())
+				{
+					if (valores.indexOf(nodo.getValor()) < 0)
+					{
+						valores.add(nodo.getValor());
+					}
+				}
+			}
+		}
+		
+		return valores;
+	}
 	
 	public void agregarAtributo(String nombreNuevo)
 	{
@@ -1044,8 +1069,7 @@ public class DatosCSV
 			double promedio  = 0;
 			int cantidadFila = 0;
 			
-			if (this.atributos.getNodos().get(indexAtributo).getTipo() != 3 && 
-				this.atributos.getNodos().get(indexAtributo).getTipo() != 5)
+			if (this.atributos.getNodos().get(indexAtributo).getTipo() != 3)
 			{
 				return -777777;
 			}
@@ -1129,8 +1153,7 @@ public class DatosCSV
 		{
 			LinkedList<Double>  datosAtributo = new LinkedList<Double>();
 				
-			if (this.atributos.getNodos().get(indexAtributo).getTipo() != 3 && 
-				this.atributos.getNodos().get(indexAtributo).getTipo() != 5)
+			if (this.atributos.getNodos().get(indexAtributo).getTipo() != 3)
 			{
 				return -777777;
 			}
@@ -1181,8 +1204,7 @@ public class DatosCSV
 		{
 			double menor = 0;
 			
-			if (this.atributos.getNodos().get(indexAtributo).getTipo() != 3 && 
-				this.atributos.getNodos().get(indexAtributo).getTipo() != 5)
+			if (this.atributos.getNodos().get(indexAtributo).getTipo() != 3)
 			{
 				return -777777;
 			}
@@ -1217,8 +1239,7 @@ public class DatosCSV
 		{
 			double mayor = 0;
 			
-			if (this.atributos.getNodos().get(indexAtributo).getTipo() != 3 && 
-				this.atributos.getNodos().get(indexAtributo).getTipo() != 5)
+			if (this.atributos.getNodos().get(indexAtributo).getTipo() != 3)
 			{
 				return -777777;
 			}
@@ -1255,8 +1276,7 @@ public class DatosCSV
 			double acumulacion = 0;
 			int cantidadFilas  = 0;
 
-			if (this.atributos.getNodos().get(indexAtributo).getTipo() != 3 && 
-				this.atributos.getNodos().get(indexAtributo).getTipo() != 5)
+			if (this.atributos.getNodos().get(indexAtributo).getTipo() != 3)
 			{
 				return -777777;
 			}

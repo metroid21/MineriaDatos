@@ -428,10 +428,15 @@ public class VentanaPrincipal<E> extends JFrame {
                     datos.setNombreClase(item);
                     System.out.println(datos.getNombreClase());
                     
-                    ZeroR zero = new ZeroR(datos);
-                    zero.crearModelo();
+                    ZeroR algoritmo = new ZeroR(datos);
+                    algoritmo.crearModelo();
                     //System.out.println(zero.getModelo().toString());
-                    System.out.println(zero.getExactitud());
+                    System.out.println(algoritmo.getExactitud());
+
+                    OneR algoritmo2 = new OneR(datos);
+                    algoritmo2.crearModelo();
+                    //System.out.println(zero.getModelo().toString());
+                    System.out.println(algoritmo2.getExactitud());
                  }
               }
  		});

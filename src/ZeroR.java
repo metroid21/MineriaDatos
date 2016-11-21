@@ -88,14 +88,14 @@ public class ZeroR
 							contadorCorrectos++;
 						}
 						
-						System.out.println(i + " " + contadorCorrectos + " " + contadorTotal + " " + 
-										   nodo.getValor() + " "  + modelo.get(interno).getValor());
+						/*System.out.println(i + " " + contadorCorrectos + " " + contadorTotal + " " + 
+										   nodo.getValor() + " "  + modelo.get(interno).getValor());*/
 					}
 					
 					interno++;
 				}
 				
-				exactitud = contadorCorrectos/contadorTotal;
+				exactitud = (contadorCorrectos/contadorTotal)*100;
 			}
 		}
 		

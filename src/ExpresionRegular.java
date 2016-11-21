@@ -185,7 +185,7 @@ import java.awt.BorderLayout;
  		});
  		
  		comboTipo = new JComboBox();
- 		comboTipo.setModel(new DefaultComboBoxModel(new String[] {"Selecionar", "?????", "Nominal", "Entero", "Ordinal", "Real"}));
+ 		comboTipo.setModel(new DefaultComboBoxModel(new String[] {"Selecionar", "?????", "Nominal", "Numerico", "Ordinal", "Booleano"}));
  		
  		btnFiltrar = new JButton("Filtrar");
  		btnFiltrar.addActionListener(new ActionListener() 

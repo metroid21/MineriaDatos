@@ -4,9 +4,9 @@ public class NodoAtributo extends NodoCSV
 	/** 
 	 * Valor 1: Atributo
 	 * Valor 2: Nominal
-	 * Valor 3: Entero
+	 * Valor 3: Numerico
 	 * Valor 4: Ordinal
-	 * Valor 5: Real
+	 * Valor 5: Booleano
 	 */
 	private Integer tipo = 0; 
 	
@@ -34,7 +34,7 @@ public class NodoAtributo extends NodoCSV
 		}
 		else if (this.tipo == 3)
 		{
-			return "Entero";
+			return "Numerico";
 		}
 		else if (this.tipo == 4)
 		{
@@ -42,7 +42,7 @@ public class NodoAtributo extends NodoCSV
 		}
 		else if (this.tipo == 5)
 		{
-			return "Real";
+			return "Booleano";
 		}
 		else
 		{
