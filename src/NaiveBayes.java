@@ -2,44 +2,44 @@ import java.util.LinkedList;
 
 public class NaiveBayes extends Algoritmo
 {			
-	NaiveBayes(DatosCSV d) 
+	NaiveBayes(DatosCSV e, DatosCSV p) 
 	{
-		super(d);
+		super(e, p);
 	}
 
-	public void crearModelo()
+	public void calcular()
 	{
-		this.modelo = null;
+		this.resultado = null;
 		
-		if (this.datos != null)
+		if (this.datosEntrenamiento != null)
 		{
 			//Conseguimos las matrices de cada atributo en relacion de la clase
 			LinkedList<MatrizReglas> matrices = new LinkedList<MatrizReglas>();
 			MatrizReglas matrizClase = new MatrizReglas();
-			LinkedList<NodoCSV> modelo = new LinkedList<NodoCSV>();
+			LinkedList<NodoCSV> resultado = new LinkedList<NodoCSV>();
 			
-			int posClase = datos.getPosicionAtributo(datos.getNombreClase());
+			int posClase = this.datosEntrenamiento.getPosicionAtributo(this.datosEntrenamiento.getNombreClase());
 			
 			if (posClase != -1)
 			{
-				for (int i = 0; i < datos.getAtributos().getNodos().size(); i++)
+				for (int i = 0; i < this.datosEntrenamiento.getAtributos().getNodos().size(); i++)
 				{
-					NodoCSV nodo = datos.getAtributos().getNodos().get(i); 
+					NodoCSV nodo = this.datosEntrenamiento.getAtributos().getNodos().get(i); 
 					
-					if (!nodo.isEliminado() && !nodo.getValor().equals(datos.getNombreClase()))
+					if (!nodo.isEliminado() && !nodo.getValor().equals(this.datosEntrenamiento.getNombreClase()))
 					{
 						MatrizReglas temp = new MatrizReglas();
-						temp.crearMatriz(this.datos, nodo.getValor());
+						temp.crearMatriz(this.datosEntrenamiento, nodo.getValor());
 						
 						if (temp.getMatriz() != null)
 						{
 							matrices.add(temp);
 						}
 					}
-					else if (nodo.getValor().equals(datos.getNombreClase()))
+					else if (nodo.getValor().equals(this.datosEntrenamiento.getNombreClase()))
 					{
 						MatrizReglas temp = new MatrizReglas();
-						temp.crearMatriz(this.datos, nodo.getValor());
+						temp.crearMatriz(this.datosEntrenamiento, nodo.getValor());
 						
 						if (temp.getMatriz() != null)
 						{
@@ -52,7 +52,7 @@ public class NaiveBayes extends Algoritmo
 			//Agregamos +1 a cada elemento para evitar que existan ceros
 			for (int i = 0; i < matrices.size(); i++)
 			{
-				if (datos.getTipo(matrices.get(i).getNombreAtributo()) == 3)
+				if (this.datosEntrenamiento.getTipo(matrices.get(i).getNombreAtributo()) == 3)
 				{
 					continue;
 				}
@@ -71,7 +71,7 @@ public class NaiveBayes extends Algoritmo
 			//Transformamo a las matrices en una matriz de probabilidad			
 			for (int i = 0; i < matrices.size(); i++)
 			{				
-				if (datos.getTipo(matrices.get(i).getNombreAtributo()) == 3)
+				if (this.datosEntrenamiento.getTipo(matrices.get(i).getNombreAtributo()) == 3)
 				{
 					continue;
 				}
@@ -111,14 +111,14 @@ public class NaiveBayes extends Algoritmo
 			
 			//System.out.println(matrizClase.toString());
 
-			//Creamos el modelo
+			//Creamos el resultado
 			if (!matrices.isEmpty())
 			{								
-				for (int i = 0; i < datos.getDatos().size(); i++)
+				for (int i = 0; i < this.datosPrueba.getDatos().size(); i++)
 				{
 					//Obtenemos la lista de valores
-					LinkedList<NodoCSV>  nodos = datos.getDatos().get(i).getNodos();
-					RegistroCSV<NodoAtributo> atributos = datos.getAtributos();
+					LinkedList<NodoCSV>  nodos = this.datosPrueba.getDatos().get(i).getNodos();
+					RegistroCSV<NodoAtributo> atributos = this.datosPrueba.getAtributos();
 					
 					String claseMayor = "";
 					double valorMayor = 0;
@@ -156,7 +156,7 @@ public class NaiveBayes extends Algoritmo
 								MatrizReglas matrizActual = matrices.get(posMatrizAtrActual);
 								
 								//Es un atributo numerico
-								if (datos.getTipo(atributos.getNodos().get(j).getValor()) == 3)
+								if (this.datosPrueba.getTipo(atributos.getNodos().get(j).getValor()) == 3)
 								{
 									String claseTemp = matrizClase.getHeaderArriba().get(c);									
 									int posClase1  = matrizActual.getHeaderArriba().indexOf(claseTemp);
@@ -183,8 +183,10 @@ public class NaiveBayes extends Algoritmo
 									int posAttr1  = matrizActual.getHeaderLados().indexOf(nodos.get(j).getValor());
 									int posClase1  = matrizActual.getHeaderArriba().indexOf(claseTemp);
 									
-									/*System.out.println(matrizActual.toString());
-									System.out.println(claseTemp + " " + posAttr1 + " " + posClase1);*/
+									/*System.out.println(claseTemp + " " + posAttr1 + " " + posClase1);
+									System.out.println(nodos.get(j).getValor());
+									System.out.println(claseTemp);
+									System.out.println(matrizActual.toString());*/
 	
 									prActual = prActual * matrizActual.getMatriz()[posAttr1][posClase1];
 								}
@@ -224,10 +226,10 @@ public class NaiveBayes extends Algoritmo
 						}
 					}
 					
-					modelo.add(new NodoCSV(1,claseMayor,false));
+					resultado.add(new NodoCSV(1,claseMayor,false));
 				}
 				
-				this.setModelo(modelo);
+				this.setResultado(resultado);
 			}
 		}
 	}

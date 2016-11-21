@@ -428,19 +428,23 @@ public class VentanaPrincipal<E> extends JFrame {
                     datos.setNombreClase(item);
                     System.out.println(datos.getNombreClase());
                     
-                    ZeroR algoritmo = new ZeroR(datos);
-                    algoritmo.crearModelo();
-                    //System.out.println(zero.getModelo().toString());
+                    LectorCSV lect = new LectorCSV();
+                    DatosCSV datosPruebas = new DatosCSV();
+                    datosPruebas = lect.cargarCSVDelimitadores("pruebas.jl");
+                                        
+                    ZeroR algoritmo = new ZeroR(datos,datosPruebas);
+                    algoritmo.calcular();
+                    //System.out.println(algoritmo.getResultado().toString());
                     System.out.println(algoritmo.getExactitud());
 
-                    OneR algoritmo2 = new OneR(datos);
-                    algoritmo2.crearModelo();
-                    //System.out.println(zero.getModelo().toString());
+                    OneR algoritmo2 = new OneR(datos,datosPruebas);
+                    algoritmo2.calcular();
+                    //System.out.println(algoritmo2.getResultado().toString());
                     System.out.println(algoritmo2.getExactitud());
 
-                    NaiveBayes algoritmo3 = new NaiveBayes(datos);
-                    algoritmo3.crearModelo();
-                    //System.out.println(zero.getModelo().toString());
+                    NaiveBayes algoritmo3 = new NaiveBayes(datos,datosPruebas);
+                    algoritmo3.calcular();
+                    //System.out.println(algoritmo3.getResultado().toString());
                     System.out.println(algoritmo3.getExactitud());
                  }
               }

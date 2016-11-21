@@ -491,7 +491,7 @@ public class DatosCSV
 		for (int i = 0; i < this.atributos.getNodos().size(); i++)
 		{
 			if (!this.atributos.getNodos().get(i).isEliminado() && 
-				 this.atributos.getNodos().get(i).getValor() == nombreAtributo)
+				 this.atributos.getNodos().get(i).getValor().equals(nombreAtributo))
 			{
 				return this.atributos.getNodos().get(i).getExpresionRegular();
 			}
@@ -505,7 +505,7 @@ public class DatosCSV
 		for (int i = 0; i < this.atributos.getNodos().size(); i++)
 		{
 			if (!this.atributos.getNodos().get(i).isEliminado() && 
-				 this.atributos.getNodos().get(i).getValor() == nombreAtributo)
+				 this.atributos.getNodos().get(i).getValor().equals(nombreAtributo))
 			{
 				return this.atributos.getNodos().get(i).getTipo();
 			}
@@ -519,7 +519,7 @@ public class DatosCSV
 		for (int i = 0; i < this.atributos.getNodos().size(); i++)
 		{
 			if (!this.atributos.getNodos().get(i).isEliminado() && 
-				 this.atributos.getNodos().get(i).getValor() == nombreAtributo)
+				 this.atributos.getNodos().get(i).getValor().equals(nombreAtributo))
 			{
 				return i;
 			}
@@ -533,7 +533,7 @@ public class DatosCSV
 		for (int k = 0; k < this.atributos.getNodos().size(); k++)
 		{			
 			if ((!this.atributos.getNodos().get(k).isEliminado()) && 
-			   (this.atributos.getNodos().get(k).getValor() == nombreAtributo))
+			   (this.atributos.getNodos().get(k).getValor().equals(nombreAtributo)))
 			{				
 				this.atributos.getNodos().get(k).setExpresionRegular(nuevaExpresion);
 				break;
@@ -546,7 +546,7 @@ public class DatosCSV
 		for (int i = 0; i < this.atributos.getNodos().size(); i++)
 		{
 			if (!this.atributos.getNodos().get(i).isEliminado() && 
-				 this.atributos.getNodos().get(i).getValor() == nombreAtributo)
+				 this.atributos.getNodos().get(i).getValor().equals(nombreAtributo))
 			{
 				this.atributos.getNodos().get(i).setTipo(nuevoTipo);
 				break;
@@ -1014,8 +1014,8 @@ public class DatosCSV
 		{
 			for (int i = 0; i < this.atributos.getNodos().size(); i++)
 			{
-				if (this.atributos.getNodos().get(i).getValor() == nombreAtributo ||
-					this.atributos.getNodos().get(i).toString() == nombreAtributo)
+				if (this.atributos.getNodos().get(i).getValor().equals(nombreAtributo) ||
+					this.atributos.getNodos().get(i).toString().equals(nombreAtributo))
 				{
 					indexAtributo = i;
 					break;

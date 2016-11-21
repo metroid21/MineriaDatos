@@ -2,36 +2,47 @@ import java.util.LinkedList;
 
 public class Algoritmo 
 {
-	protected DatosCSV datos;
-	protected LinkedList<NodoCSV> modelo;
+	protected DatosCSV datosEntrenamiento;
+	protected DatosCSV datosPrueba;
+	protected LinkedList<NodoCSV> resultado;
 	
-	Algoritmo(DatosCSV d)
+	Algoritmo(DatosCSV entrenamiento, DatosCSV prueba)
 	{
-		this.setDatos(d);
-		this.setModelo(null);
+		this.setDatosEntrenamiento(entrenamiento);
+		this.setDatosPrueba(prueba);
 	}
-	
-	public DatosCSV getDatos() 
+		
+	public DatosCSV getDatosEntrenamiento() 
 	{
-		return datos;
+		return datosEntrenamiento;
 	}
 
-	public void setDatos(DatosCSV datos) 
+	public void setDatosEntrenamiento(DatosCSV datosEntrenamiento) 
 	{
-		this.datos = datos;
+		this.datosEntrenamiento = datosEntrenamiento;
 	}
 
-	public LinkedList<NodoCSV> getModelo() 
+	public DatosCSV getDatosPrueba() 
 	{
-		return modelo;
+		return datosPrueba;
 	}
 
-	public void setModelo(LinkedList<NodoCSV> modelo) 
+	public void setDatosPrueba(DatosCSV datosPrueba) 
 	{
-		this.modelo = modelo;
+		this.datosPrueba = datosPrueba;
 	}
-	
-	public void crearModelo()
+
+	public LinkedList<NodoCSV> getResultado() 
+	{
+		return resultado;
+	}
+
+	public void setResultado(LinkedList<NodoCSV> resultado) 
+	{
+		this.resultado = resultado;
+	}
+
+	public void calcular()
 	{
 		
 	}
@@ -39,35 +50,35 @@ public class Algoritmo
 	public double getExactitud()
 	{
 		double exactitud = -1;
-		
-		if (modelo != null && datos != null)
+				
+		if (resultado != null && datosPrueba != null)
 		{
 			exactitud = 0;			
 			double contadorCorrectos = 0;
 			double contadorTotal = 0;
 			int interno = 0;
-			int posClase = datos.getPosicionAtributo(datos.getNombreClase());
-			
+			int posClase = datosPrueba.getPosicionAtributo(datosEntrenamiento.getNombreClase());
+						
 			if (posClase != -1)
 			{
-				for (int i = 0; i < datos.getDatos().size(); i++)
+				for (int i = 0; i < datosPrueba.getDatos().size(); i++)
 				{
-					RegistroCSV<NodoCSV> reg = datos.getDatos().get(i); 
+					RegistroCSV<NodoCSV> reg = datosPrueba.getDatos().get(i); 
 					NodoCSV nodo = reg.getNodos().get(posClase);
 					
 					if (!nodo.isEliminado())
 					{
 						contadorTotal++;
 						
-						if (nodo.getValor().equals(modelo.get(interno).getValor()))
+						if (nodo.getValor().equals(resultado.get(interno).getValor()))
 						{
 							contadorCorrectos++;
 						}
 						
 						//System.out.println(i + " " + contadorCorrectos + " " + contadorTotal + " " + 
-						//				   nodo.getValor() + " "  + modelo.get(interno).getValor());
+						//				   nodo.getValor() + " "  + resultado.get(interno).getValor());
 					}
-					
+										
 					interno++;
 				}
 				

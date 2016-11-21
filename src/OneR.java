@@ -2,33 +2,33 @@ import java.util.LinkedList;
 
 public class OneR extends Algoritmo
 {		
-	OneR(DatosCSV d) 
+	OneR(DatosCSV e, DatosCSV p) 
 	{
-		super(d);
+		super(e, p);
 	}
 
-	public void crearModelo()
+	public void calcular()
 	{
-		this.modelo = null;
+		this.resultado = null;
 		
-		if (this.datos != null)
+		if (this.datosEntrenamiento != null)
 		{
 			//Conseguimos las matrices de cada atributo en relacion de la clase
 			LinkedList<MatrizReglas> matrices = new LinkedList<MatrizReglas>();
-			LinkedList<NodoCSV> modelo = new LinkedList<NodoCSV>();
+			LinkedList<NodoCSV> resultado = new LinkedList<NodoCSV>();
 			
-			int posClase = datos.getPosicionAtributo(datos.getNombreClase());
+			int posClase = this.datosEntrenamiento.getPosicionAtributo(this.datosEntrenamiento.getNombreClase());
 			
 			if (posClase != -1)
 			{
-				for (int i = 0; i < datos.getAtributos().getNodos().size(); i++)
+				for (int i = 0; i < this.datosEntrenamiento.getAtributos().getNodos().size(); i++)
 				{
-					NodoCSV nodo = datos.getAtributos().getNodos().get(i); 
+					NodoCSV nodo = this.datosEntrenamiento.getAtributos().getNodos().get(i); 
 					
-					if (!nodo.isEliminado() && !nodo.getValor().equals(datos.getNombreClase()))
+					if (!nodo.isEliminado() && !nodo.getValor().equals(this.datosEntrenamiento.getNombreClase()))
 					{
 						MatrizReglas temp = new MatrizReglas();
-						temp.crearMatriz(this.datos, nodo.getValor());
+						temp.crearMatriz(this.datosEntrenamiento, nodo.getValor());
 						
 						if (temp.getMatriz() != null)
 						{
@@ -77,12 +77,12 @@ public class OneR extends Algoritmo
 				}				
 			}
 						
-			//Creamos el modelo
+			//Creamos el resultado
 			if (posMatrizMenor != -1)
 			{
 				LinkedList<String> aciertos = matrices.get(posMatrizMenor).getMayorAciertos();
 				String atributo = matrices.get(posMatrizMenor).getNombreAtributo();
-				int posAtributo = datos.getPosicionAtributo(atributo);
+				int posAtributo = this.datosEntrenamiento.getPosicionAtributo(atributo);
 				
 				//System.out.println("Matriz: ");
 				//System.out.println(matrices.get(posMatrizMenor).toString());
@@ -90,9 +90,9 @@ public class OneR extends Algoritmo
 				/*System.out.println("Reglas usadas: ");
 				System.out.println(aciertos);*/
 				
-				for (int i = 0; i < datos.getDatos().size(); i++)
+				for (int i = 0; i < this.datosPrueba.getDatos().size(); i++)
 				{
-					String aEvaluar = datos.getDatos().get(i).getNodos().get(posAtributo).getValor();
+					String aEvaluar = this.datosPrueba.getDatos().get(i).getNodos().get(posAtributo).getValor();
 					
 					for (int j = 0; j < aciertos.size(); j++)
 					{
@@ -105,7 +105,7 @@ public class OneR extends Algoritmo
 						
 						if (aEvaluar.equals(trozos[1]))
 						{
-							modelo.add(new NodoCSV(1,trozos[2],false));
+							resultado.add(new NodoCSV(1,trozos[2],false));
 							//System.out.println("Elegido: " + trozos[2]);
 							break;
 						}
@@ -114,7 +114,7 @@ public class OneR extends Algoritmo
 					}
 				}
 				
-				this.setModelo(modelo);
+				this.setResultado(resultado);
 			}
 		}
 	}
