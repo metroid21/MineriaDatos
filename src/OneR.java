@@ -46,6 +46,7 @@ public class OneR extends Algoritmo
 				double errorMenor = 1;
 				posMatrizMenor = 0;
 				
+				//Vamos iterando para conseguir la matriz con el error menor
 				for (int i = 0; i < matrices.size(); i++)
 				{
 					/*System.out.println("Matriz ");

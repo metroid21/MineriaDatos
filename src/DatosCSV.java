@@ -1425,4 +1425,27 @@ public class DatosCSV
 		
 		return null;
 	}
+
+	public int getTotal(String atributo) 
+	{
+		int cantidad = 0;
+		
+		int pos = this.getPosicionAtributo(atributo);
+		
+		if (pos != -1)
+		{
+			for (int i = 0; i < this.datos.size(); i++)
+			{
+				RegistroCSV<NodoCSV> reg = this.datos.get(i); 
+				NodoCSV nodo = reg.getNodos().get(pos);
+				
+				if (!nodo.isEliminado())
+				{
+					cantidad++;
+				}
+			}
+		}
+		
+		return cantidad;
+	}
 }

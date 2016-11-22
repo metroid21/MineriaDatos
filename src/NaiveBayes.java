@@ -68,7 +68,7 @@ public class NaiveBayes extends Algoritmo
 				//System.out.println(matrices.get(i).toString());
 			}
 
-			//Transformamo a las matrices en una matriz de probabilidad			
+			//Transformamos a las matrices en una matriz de probabilidad			
 			for (int i = 0; i < matrices.size(); i++)
 			{				
 				if (this.datosEntrenamiento.getTipo(matrices.get(i).getNombreAtributo()) == 3)

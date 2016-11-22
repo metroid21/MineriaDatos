@@ -446,6 +446,10 @@ public class VentanaPrincipal<E> extends JFrame {
                     algoritmo3.calcular();
                     //System.out.println(algoritmo3.getResultado().toString());
                     System.out.println(algoritmo3.getExactitud());
+                    
+                    CalculadorCorrelacion cor = new CalculadorCorrelacion(datos);
+                    System.out.println(cor.calcularCorrelacion("etiqueta", "tipo"));
+                    System.out.println(cor.calcularCorrelacion("edad", "colesterol"));
                  }
               }
  		});
