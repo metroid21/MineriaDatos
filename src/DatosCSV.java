@@ -1,14 +1,12 @@
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.JButton;
 import javax.swing.table.DefaultTableModel;
 
 public class DatosCSV 
@@ -1317,6 +1315,8 @@ public class DatosCSV
 			
 			DefaultTableModel modelo = new DefaultTableModel()
 			{
+				private static final long serialVersionUID = 1L;
+
 				@Override
 			    public boolean isCellEditable(int row, int column) 
 				{
@@ -1377,6 +1377,8 @@ public class DatosCSV
 			
 			DefaultTableModel modelo = new DefaultTableModel()
 			{
+				private static final long serialVersionUID = 1L;
+
 				@Override
 			    public boolean isCellEditable(int row, int column) 
 				{
@@ -1448,4 +1450,84 @@ public class DatosCSV
 		
 		return cantidad;
 	}
+	
+	public LinkedList<LinkedList<Integer>> buscarCadena(String cadena)
+	{
+		LinkedList<LinkedList<Integer>> posiciones = new LinkedList<LinkedList<Integer>>();
+		
+		int registrosEliminados = 0;
+		
+		for (int i = 0; i < this.datos.size(); i++)
+		{
+			RegistroCSV<NodoCSV> reg = this.datos.get(i);
+			boolean esRegistroEliminado = true;
+			int columnaEliminada = 0;
+			
+			for (int j = 0; j < reg.getNodos().size(); j++)
+			{
+				NodoCSV nodo = reg.getNodos().get(j);
+				
+				if (!nodo.isEliminado())
+				{
+					esRegistroEliminado = false;
+					
+					if (cadena.equals(nodo.getValor()))
+					{
+						LinkedList<Integer> punto = new LinkedList<Integer>();
+						punto.add(i-registrosEliminados);
+						punto.add(j-columnaEliminada);
+						posiciones.add(punto);
+					}
+				}
+				else
+				{
+					columnaEliminada++;
+				}
+			}
+			
+			if (esRegistroEliminado)
+			{
+				registrosEliminados++;
+			}
+		}
+		
+		return posiciones;
+	}
+	
+	public void remplazarCadena(String cadena, String cadenaRemplazo)
+	{	
+		//Creamos el Cambio
+		Cambio nuevoCambio = null;
+		
+		if (cambios.isEmpty())
+		{
+			nuevoCambio = new Cambio(1, 1);
+		}
+		else
+		{
+			nuevoCambio = new Cambio(cambios.size()+1, 1);
+		}
+
+		for (int i = 0; i < this.datos.size(); i++)
+		{
+			RegistroCSV<NodoCSV> reg = this.datos.get(i);
+			
+			for (int j = 0; j < reg.getNodos().size(); j++)
+			{
+				NodoCSV nodo = reg.getNodos().get(j);
+				
+				if (!nodo.isEliminado())
+				{
+					if (cadena.equals(nodo.getValor()))
+					{
+						nuevoCambio.getNodos().add(new NodoCambios(j, i, cadena, cadenaRemplazo));
+						nodo.setValor(cadenaRemplazo);
+					}
+				}
+			}
+		}
+		
+		this.cambios.add(nuevoCambio);			
+	}
+	
 }

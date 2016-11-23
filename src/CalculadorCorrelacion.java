@@ -125,7 +125,7 @@ public class CalculadorCorrelacion
 			}
 			
 			//Calculamos el grado de libertad
-			double gradoLibertad = (matriz.getHeaderArriba().size()-1) * (matriz.getHeaderLados().size()-1);
+			//double gradoLibertad = (matriz.getHeaderArriba().size()-1) * (matriz.getHeaderLados().size()-1);
 			//System.out.println("Grado de Libertad: " + gradoLibertad);
 			
 			//Devolvemos el valor de la correlacion
