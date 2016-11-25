@@ -17,66 +17,72 @@ import javax.swing.JTable;
 public class Levenshtein extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField textPalabra2;
-	private JTable tablaResultados;
+	private JTextField textPalabra;
+	private JTextField textSugerencia;
 
 	public Levenshtein() {
 		setResizable(false);
 		setTitle("Levenshtein");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 553, 299);
+		setBounds(100, 100, 402, 120);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		
-		JLabel lblPalabra1 = new JLabel("Palabra 1");
+		JLabel lblInstancia = new JLabel("Instancia");
 		
-		JLabel lblPalabra2 = new JLabel("Palabra 2");
+		JLabel lblPalabra = new JLabel("Palabra");
 		
-		textPalabra2 = new JTextField();
-		textPalabra2.setColumns(10);
+		textPalabra = new JTextField();
+		textPalabra.setColumns(10);
 		
 		JButton btnComparar = new JButton("Comparar");
 		
-		JComboBox comboPalabra1 = new JComboBox();
+		JComboBox comboInstancia = new JComboBox();
 		
-		JScrollPane scrollTable = new JScrollPane();
+		textSugerencia = new JTextField();
+		textSugerencia.setEditable(false);
+		textSugerencia.setColumns(10);
+		
+		JLabel lblSugerencia = new JLabel("Sugerencia");
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
 						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(lblPalabra1)
+							.addComponent(lblInstancia)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(comboPalabra1, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
+							.addComponent(comboInstancia, GroupLayout.PREFERRED_SIZE, 72, GroupLayout.PREFERRED_SIZE)
 							.addGap(18)
-							.addComponent(lblPalabra2)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(textPalabra2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(lblPalabra))
+						.addComponent(lblSugerencia))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addComponent(textSugerencia, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addComponent(textPalabra, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(btnComparar))
-						.addComponent(scrollTable, GroupLayout.PREFERRED_SIZE, 502, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(25, Short.MAX_VALUE))
+							.addComponent(btnComparar)))
+					.addContainerGap(168, Short.MAX_VALUE))
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblPalabra1)
-						.addComponent(lblPalabra2)
-						.addComponent(textPalabra2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblInstancia)
+						.addComponent(lblPalabra)
+						.addComponent(textPalabra, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnComparar)
-						.addComponent(comboPalabra1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(18)
-					.addComponent(scrollTable, GroupLayout.PREFERRED_SIZE, 179, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(29, Short.MAX_VALUE))
+						.addComponent(comboInstancia, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+						.addComponent(textSugerencia, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblSugerencia))
+					.addContainerGap(195, Short.MAX_VALUE))
 		);
-		
-		tablaResultados = new JTable();
-		scrollTable.setViewportView(tablaResultados);
 		contentPane.setLayout(gl_contentPane);
 	}
 }
