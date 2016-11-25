@@ -54,7 +54,7 @@ public class Transformaciones extends JFrame {
 		
 		JLabel lblMetodo = new JLabel("Metodo");
 		
-		JComboBox comboMetodos = new JComboBox();
+		final JComboBox comboMetodos = new JComboBox();
 		comboMetodos.setModel(new DefaultComboBoxModel(new String[] {"MIN-MAX", "Z-Score", "Escalamiento Decimal"}));
 		comboMetodos.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){

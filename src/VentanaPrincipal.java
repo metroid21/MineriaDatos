@@ -83,7 +83,7 @@ public class VentanaPrincipal<E> extends JFrame {
 	private int balanceadorIndices;
 	private Algoritmos ventanaAlgoritmos;
 	private Transformaciones ventanaTransformaciones;
-	private ventanaCorrelacion ventanaCorrelacion;
+	private VentanaCorrelacion ventanaCorrelacion;
 	private Levenshtein ventanaLevenshtein;
 
 	
@@ -156,7 +156,7 @@ public class VentanaPrincipal<E> extends JFrame {
 		ventanaExpresiones = new ExpresionRegular();
 		ventanaAlgoritmos = new Algoritmos();
 		ventanaTransformaciones= new Transformaciones();
-		ventanaCorrelacion= new ventanaCorrelacion();
+		ventanaCorrelacion= new VentanaCorrelacion();
 		ventanaLevenshtein = new Levenshtein();
 		
 		datos = null;
@@ -345,6 +345,8 @@ public class VentanaPrincipal<E> extends JFrame {
 						try{
 							
 							ventanaCorrelacion.setVisible(true);
+							ventanaCorrelacion.setDatos(datos);
+							ventanaCorrelacion.refrescarAtributos();
 						}catch(Exception e){
 							e.printStackTrace();
 						}

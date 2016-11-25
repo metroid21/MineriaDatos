@@ -1,9 +1,7 @@
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
@@ -11,14 +9,58 @@ import javax.swing.JComboBox;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JButton;
 import javax.swing.JTextField;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
-public class ventanaCorrelacion extends JFrame {
+public class VentanaCorrelacion extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textCorrelacion;
+	
+	private CalculadorCorrelacion calculador;
+	private DatosCSV datos;
+	private JComboBox<String> comboAtributo1;
+	private JComboBox<String> comboAtributo2;
+	
+	public CalculadorCorrelacion getCalculador() 
+	{
+		return calculador;
+	}
 
+	public DatosCSV getDatos() 
+	{
+		return datos;
+	}
 
-	public ventanaCorrelacion() {
+	public void setDatos(DatosCSV datos) 
+	{
+		this.datos = datos;
+		this.calculador = new CalculadorCorrelacion(this.datos);
+	}
+	
+	public void refrescarAtributos()
+	{
+		if (datos != null)
+		{
+			DefaultComboBoxModel<String> rModel = new DefaultComboBoxModel<String>(datos.getAtributosAsStringArray());
+			rModel.insertElementAt("Selecionar", 0);
+			rModel.setSelectedItem("Selecionar");
+			this.comboAtributo1.setModel(rModel);
+
+			DefaultComboBoxModel<String> rModel2 = new DefaultComboBoxModel<String>(datos.getAtributosAsStringArray());
+			rModel2.insertElementAt("Selecionar", 0);
+			rModel2.setSelectedItem("Selecionar");
+			this.comboAtributo2.setModel(rModel2);
+			
+			this.textCorrelacion.setText("");
+		}
+	}
+
+	public VentanaCorrelacion() 
+	{
+		datos = null;
+		calculador = null;
 		setResizable(false);
 		setTitle("Correlaci\u00F3n");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -29,13 +71,31 @@ public class ventanaCorrelacion extends JFrame {
 		
 		JLabel lblAtributo = new JLabel("Atributo 1");
 		
-		JComboBox comboAtributo1 = new JComboBox();
+		comboAtributo1 = new JComboBox<String>();
 		
 		JLabel lblAtributo_1 = new JLabel("Atributo 2");
 		
-		JComboBox comboBox = new JComboBox();
+		comboAtributo2 = new JComboBox<String>();
 		
 		JButton btnCalcular = new JButton("Calcular");
+		btnCalcular.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent e) 
+			{
+				String atr1 = (String) comboAtributo1.getSelectedItem();
+				String atr2 = (String) comboAtributo2.getSelectedItem();
+				double valor = calculador.calcularCorrelacion(atr1, atr2);
+				
+				if (valor == -777777 || (atr1.equals(atr2)))
+				{
+					textCorrelacion.setText("No Calculable");
+				}
+				else
+				{
+					textCorrelacion.setText(Double.toString(valor));
+				}
+			}
+		});
 		
 		JLabel lblCorrelacin = new JLabel("Correlaci\u00F3n");
 		
@@ -57,7 +117,7 @@ public class ventanaCorrelacion extends JFrame {
 								.addGroup(gl_contentPane.createSequentialGroup()
 									.addComponent(lblAtributo_1)
 									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addComponent(comboBox, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+									.addComponent(comboAtributo2, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(btnCalcular))
 						.addGroup(gl_contentPane.createSequentialGroup()
@@ -77,7 +137,7 @@ public class ventanaCorrelacion extends JFrame {
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 						.addComponent(lblAtributo_1)
-						.addComponent(comboBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(comboAtributo2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addGap(21)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblCorrelacin)
