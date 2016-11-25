@@ -17,7 +17,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JButton;
 
-public class Algoritmos extends JFrame {
+public class VentanaAlgoritmos extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textExactitud;
@@ -27,7 +27,7 @@ public class Algoritmos extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Algoritmos() {
+	public VentanaAlgoritmos() {
 		setTitle("Algoritmos");
 		setResizable(false);
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

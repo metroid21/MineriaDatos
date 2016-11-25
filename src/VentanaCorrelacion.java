@@ -82,17 +82,24 @@ public class VentanaCorrelacion extends JFrame {
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
-				String atr1 = (String) comboAtributo1.getSelectedItem();
-				String atr2 = (String) comboAtributo2.getSelectedItem();
-				double valor = calculador.calcularCorrelacion(atr1, atr2);
-				
-				if (valor == -777777 || (atr1.equals(atr2)))
+				if (datos != null)
 				{
-					textCorrelacion.setText("No Calculable");
-				}
-				else
-				{
-					textCorrelacion.setText(Double.toString(valor));
+					String atr1 = (String) comboAtributo1.getSelectedItem();
+					String atr2 = (String) comboAtributo2.getSelectedItem();
+					double valor = calculador.calcularCorrelacion(atr1, atr2);
+					
+					if ((atr1.equals(atr2)))
+					{
+						textCorrelacion.setText("Selecione dos distintos");
+					}
+					else if (valor == -777777)
+					{
+						textCorrelacion.setText("No Calculable");
+					}
+					else
+					{
+						textCorrelacion.setText(Double.toString(valor));
+					}					
 				}
 			}
 		});

@@ -81,10 +81,10 @@ public class VentanaPrincipal<E> extends JFrame {
 	private ExpresionRegular ventanaExpresiones; 
 	private AgregarAtributo ventanaAtributo;
 	private int balanceadorIndices;
-	private Algoritmos ventanaAlgoritmos;
+	private VentanaAlgoritmos ventanaAlgoritmos;
 	private Transformaciones ventanaTransformaciones;
 	private VentanaCorrelacion ventanaCorrelacion;
-	private Levenshtein ventanaLevenshtein;
+	private VentanaLevenshtein ventanaLevenshtein;
 
 	
 	public static void main(String[] args) 
@@ -154,10 +154,10 @@ public class VentanaPrincipal<E> extends JFrame {
 	public VentanaPrincipal() 
 	{
 		ventanaExpresiones = new ExpresionRegular();
-		ventanaAlgoritmos = new Algoritmos();
+		ventanaAlgoritmos = new VentanaAlgoritmos();
 		ventanaTransformaciones= new Transformaciones();
 		ventanaCorrelacion= new VentanaCorrelacion();
-		ventanaLevenshtein = new Levenshtein();
+		ventanaLevenshtein = new VentanaLevenshtein();
 		
 		datos = null;
 		setTitle("Proyecto Mineria");
@@ -395,6 +395,8 @@ public class VentanaPrincipal<E> extends JFrame {
 				EventQueue.invokeLater(new Runnable(){
 					public void run(){
 						try{
+							ventanaLevenshtein.setDatos(datos);
+							ventanaLevenshtein.refrescarAtributos();
 							ventanaLevenshtein.setVisible(true);
 						}catch(Exception e){
 							e.printStackTrace();
