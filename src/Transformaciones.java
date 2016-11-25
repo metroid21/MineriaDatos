@@ -1,5 +1,7 @@
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -13,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JButton;
+import javax.swing.DefaultComboBoxModel;
 
 public class Transformaciones extends JFrame {
 
@@ -21,9 +24,7 @@ public class Transformaciones extends JFrame {
 	private JTextField textRango2;
 	private JTable tablaResultados;
 
-	/**
-	 * Create the frame.
-	 */
+	
 	public Transformaciones() {
 		setResizable(false);
 		setTitle("Transfromaciones");
@@ -50,6 +51,26 @@ public class Transformaciones extends JFrame {
 		JScrollPane scrollResultados = new JScrollPane();
 		
 		JButton btnAplicar = new JButton("Aplicar");
+		
+		JLabel lblMetodo = new JLabel("Metodo");
+		
+		JComboBox comboMetodos = new JComboBox();
+		comboMetodos.setModel(new DefaultComboBoxModel(new String[] {"MIN-MAX", "Z-Score", "Escalamiento Decimal"}));
+		comboMetodos.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e){
+				String metodo=String.valueOf(comboMetodos.getSelectedItem());
+				if(metodo=="Z-Score"||metodo=="Escalamiento Decimal"){
+					textRango1.setEditable(false);
+					textRango2.setEditable(false);
+				}
+				else{
+					textRango1.setEditable(true);
+					textRango2.setEditable(true);
+				}
+			}
+		});
+		
+		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -60,7 +81,11 @@ public class Transformaciones extends JFrame {
 							.addComponent(lblAtributo)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
 							.addComponent(comboAtributos, GroupLayout.PREFERRED_SIZE, 106, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(lblMetodo)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(comboMetodos, GroupLayout.PREFERRED_SIZE, 74, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(lblRango)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(textRango1, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
@@ -68,7 +93,7 @@ public class Transformaciones extends JFrame {
 							.addComponent(label)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(textRango2, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGap(18)
 							.addComponent(btnAplicar))
 						.addComponent(scrollResultados, GroupLayout.PREFERRED_SIZE, 728, GroupLayout.PREFERRED_SIZE))
 					.addContainerGap(21, Short.MAX_VALUE))
@@ -80,6 +105,8 @@ public class Transformaciones extends JFrame {
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblAtributo)
 						.addComponent(comboAtributos, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblMetodo)
+						.addComponent(comboMetodos, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblRango)
 						.addComponent(textRango1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(label)
@@ -87,7 +114,7 @@ public class Transformaciones extends JFrame {
 						.addComponent(btnAplicar))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(scrollResultados, GroupLayout.PREFERRED_SIZE, 202, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(18, Short.MAX_VALUE))
+					.addContainerGap(15, Short.MAX_VALUE))
 		);
 		
 		tablaResultados = new JTable();
