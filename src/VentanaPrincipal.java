@@ -83,7 +83,8 @@ public class VentanaPrincipal<E> extends JFrame {
 	private int balanceadorIndices;
 	private Algoritmos ventanaAlgoritmos;
 	private Transformaciones ventanaTransformaciones;
-	
+	private ventanaCorrelacion ventanaCorrelacion;
+	private Levenshtein ventanaLevenshtein;
 
 	
 	public static void main(String[] args) 
@@ -155,6 +156,8 @@ public class VentanaPrincipal<E> extends JFrame {
 		ventanaExpresiones = new ExpresionRegular();
 		ventanaAlgoritmos = new Algoritmos();
 		ventanaTransformaciones= new Transformaciones();
+		ventanaCorrelacion= new ventanaCorrelacion();
+		ventanaLevenshtein = new Levenshtein();
 		
 		datos = null;
 		setTitle("Proyecto Mineria");
@@ -333,8 +336,22 @@ public class VentanaPrincipal<E> extends JFrame {
 		JMenu mnDatamining = new JMenu("DataMining");
 		menuBar.add(mnDatamining);
 		
-		JMenuItem mntmCorrelacin = new JMenuItem("Correlaci\u00F3n");
-		mnDatamining.add(mntmCorrelacin);
+		JMenuItem mntmCorrelacion = new JMenuItem("Correlaci\u00F3n");
+		mnDatamining.add(mntmCorrelacion);
+		mntmCorrelacion.addMouseListener(new MouseAdapter(){
+			public void mouseReleased(MouseEvent e){
+				EventQueue.invokeLater(new Runnable(){
+					public void run(){
+						try{
+							
+							ventanaCorrelacion.setVisible(true);
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+		});
 		
 		JMenuItem mntmAlgoritmos = new JMenuItem("Algoritmos");
 		mntmAlgoritmos.addMouseListener(new MouseAdapter() {
@@ -370,8 +387,21 @@ public class VentanaPrincipal<E> extends JFrame {
 		});
 		mnDatamining.add(mntmTransformaciones);
 		
-		JMenuItem mntmLevenshtain = new JMenuItem("Levenshtain");
-		mnDatamining.add(mntmLevenshtain);
+		JMenuItem mntmLevenshtein = new JMenuItem("Levenshtein");
+		mntmLevenshtein.addMouseListener(new MouseAdapter(){
+			public void mouseReleased(MouseEvent e){
+				EventQueue.invokeLater(new Runnable(){
+					public void run(){
+						try{
+							ventanaLevenshtein.setVisible(true);
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+		});
+		mnDatamining.add(mntmLevenshtein);
 		
 		/*Grid Principal*/
 		contentPane = new JPanel();
