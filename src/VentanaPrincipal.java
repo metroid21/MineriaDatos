@@ -529,7 +529,8 @@ public class VentanaPrincipal<E> extends JFrame {
                     System.out.println(cor.calcularCorrelacion("etiqueta", "tipo"));
                     System.out.println(cor.calcularCorrelacion("edad", "colesterol"));
                     
-					System.out.println(CalculadorLevenshtein.distancia("white", "wihte"));
+                    CalculadorLevenshtein calculadorLevenshtein = new CalculadorLevenshtein();
+					System.out.println(calculadorLevenshtein.calcular("white", "wihte"));
 					System.out.println(CalculadorLevenshtein.masParecido("white", datos.getDistintos(datos.getAtributos().getNodos().get(0).getValor())));
                  }
               }
