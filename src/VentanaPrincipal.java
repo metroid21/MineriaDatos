@@ -81,6 +81,8 @@ public class VentanaPrincipal<E> extends JFrame {
 	private ExpresionRegular ventanaExpresiones; 
 	private AgregarAtributo ventanaAtributo;
 	private int balanceadorIndices;
+	private Algoritmos ventanaAlgoritmos;
+	private Transformaciones ventanaTransformaciones;
 	
 
 	
@@ -151,6 +153,8 @@ public class VentanaPrincipal<E> extends JFrame {
 	public VentanaPrincipal() 
 	{
 		ventanaExpresiones = new ExpresionRegular();
+		ventanaAlgoritmos = new Algoritmos();
+		ventanaTransformaciones= new Transformaciones();
 		
 		datos = null;
 		setTitle("Proyecto Mineria");
@@ -329,6 +333,46 @@ public class VentanaPrincipal<E> extends JFrame {
 		JMenu mnDatamining = new JMenu("DataMining");
 		menuBar.add(mnDatamining);
 		
+		JMenuItem mntmCorrelacin = new JMenuItem("Correlaci\u00F3n");
+		mnDatamining.add(mntmCorrelacin);
+		
+		JMenuItem mntmAlgoritmos = new JMenuItem("Algoritmos");
+		mntmAlgoritmos.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						try {
+							ventanaAlgoritmos.setVisible(true);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+		});
+		mnDatamining.add(mntmAlgoritmos);
+		
+		JMenuItem mntmTransformaciones = new JMenuItem("Transformaciones");
+		mntmTransformaciones.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						try {
+							ventanaTransformaciones.setVisible(true);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				});
+			}
+		});
+		mnDatamining.add(mntmTransformaciones);
+		
+		JMenuItem mntmLevenshtain = new JMenuItem("Levenshtain");
+		mnDatamining.add(mntmLevenshtain);
+		
 		/*Grid Principal*/
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(255, 250, 240));
@@ -451,8 +495,8 @@ public class VentanaPrincipal<E> extends JFrame {
                     System.out.println(cor.calcularCorrelacion("etiqueta", "tipo"));
                     System.out.println(cor.calcularCorrelacion("edad", "colesterol"));
                     
-					System.out.println(CalculadorLevenshtein.distancia("facil", "dificil"));
-					System.out.println(CalculadorLevenshtein.masParecido("facil", datos.getDistintos(datos.getAtributos().getNodos().get(0).getValor())));
+					System.out.println(CalculadorLevenshtein.distancia("white", "wihte"));
+					System.out.println(CalculadorLevenshtein.masParecido("white", datos.getDistintos(datos.getAtributos().getNodos().get(0).getValor())));
                  }
               }
  		});
