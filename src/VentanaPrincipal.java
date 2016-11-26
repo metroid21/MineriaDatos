@@ -380,6 +380,8 @@ public class VentanaPrincipal<E> extends JFrame {
 					public void run() {
 						try {
 							ventanaTransformaciones.setVisible(true);
+							ventanaTransformaciones.setDatos(datos);
+							ventanaTransformaciones.refrescarAtributos();
 						} catch (Exception e) {
 							e.printStackTrace();
 						}

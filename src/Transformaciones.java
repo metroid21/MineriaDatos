@@ -16,6 +16,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JButton;
 import javax.swing.DefaultComboBoxModel;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Transformaciones extends JFrame {
 
@@ -23,7 +25,28 @@ public class Transformaciones extends JFrame {
 	private JTextField textRango1;
 	private JTextField textRango2;
 	private JTable tablaResultados;
-
+	private DatosCSV datos;
+	private CalculadorTransformaciones CT;
+	private JComboBox<String> comboAtributos;
+	
+	public void setDatos(DatosCSV datos) 
+	{
+		this.datos = datos;
+	}
+	
+	public void refrescarAtributos()
+	{
+		if (datos != null)
+		{
+			DefaultComboBoxModel<String> rModel = new DefaultComboBoxModel<String>(datos.getAtributosAsStringArray());
+			rModel.insertElementAt("Selecionar", 0);
+			rModel.setSelectedItem("Selecionar");
+			this.comboAtributos.setModel(rModel);
+			
+			//this.textCorrelacion.setText("");
+		}
+	}
+	
 	
 	public Transformaciones() {
 		setResizable(false);
@@ -35,8 +58,7 @@ public class Transformaciones extends JFrame {
 		setContentPane(contentPane);
 		
 		JLabel lblAtributo = new JLabel("Atributo:");
-		
-		JComboBox comboAtributos = new JComboBox();
+		comboAtributos = new JComboBox<String>();
 		
 		JLabel lblRango = new JLabel("Rango");
 		
@@ -50,7 +72,7 @@ public class Transformaciones extends JFrame {
 		
 		JScrollPane scrollResultados = new JScrollPane();
 		
-		JButton btnAplicar = new JButton("Aplicar");
+		
 		
 		JLabel lblMetodo = new JLabel("Metodo");
 		
@@ -70,6 +92,24 @@ public class Transformaciones extends JFrame {
 			}
 		});
 		
+		
+		JButton btnAplicar = new JButton("Aplicar");
+		btnAplicar.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				CT=new CalculadorTransformaciones(datos);
+				String metodo=String.valueOf(comboMetodos.getSelectedItem());
+				String atributo=String.valueOf(comboAtributos.getSelectedItem());
+				if(metodo=="MIN-MAX"){
+					CT.minMax(Integer.parseInt(textRango1.getText()),Integer.parseInt(textRango2.getText()),atributo);
+				}else if(metodo=="Z-Score"){
+					
+				}else if(metodo=="Escalamiento Decimal"){
+					
+				}
+				
+			}
+		});
 		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
