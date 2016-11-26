@@ -144,7 +144,7 @@ public class CalculadorLevenshtein
 		{
 			for (int j = 1; j <= palabraLado.length(); j++)
 			{
-				System.out.println(j + " " + palabraLado.charAt(j-1) + " " + i + " " + palabraArriba.charAt(i-1));
+				//System.out.println(j + " " + palabraLado.charAt(j-1) + " " + i + " " + palabraArriba.charAt(i-1));
 				
 				NodoLevenshtein nodo = new NodoLevenshtein(0);
 				
@@ -170,57 +170,64 @@ public class CalculadorLevenshtein
 								
 				nodo.calcular11();
 				
-				System.out.println(nodo);
-				System.out.println(nodo.get(0, 0).getPadre());
-				System.out.println(nodo.get(0, 1).getPadre());
-				System.out.println(nodo.get(1, 0).getPadre());
-				System.out.println(nodo.get(1, 1).getPadre());
+				//System.out.println(nodo);
 				
 				tabla[j][i] = nodo;
 			} 
 		}
 		
-		System.out.println(getRecorridoInverso());
+		//System.out.println(getRecorrido());
 				
 		//Retornamos el ultimo valor
 		return tabla[palabraLado.length()][palabraArriba.length()].get(1, 1).getValor();
 	}
 
-	public String getRecorridoInverso()
+	public String getRecorrido()
 	{
 		boolean terminado = false;
 		SubNodoLevenshtein nodoActual = this.tabla[this.palabraL.length()][this.palabraA.length()].get(1, 1);
 		String cadena = "";
-		int i = this.palabraL.length()-1;
-		int j = this.palabraA.length()-1;
+		int i = this.palabraL.length();
+		int j = this.palabraA.length();
+		LinkedList<String> pila = new LinkedList<String>();
+		String lastPos = "1,1";
 		
 		while (!terminado)
-		{
-			System.out.println(cadena + " [" + nodoActual.getPadre() + "] (" + i + "," + j+ ")");
-
-			cadena += nodoActual.getValor() + " ";
-			
-			if (nodoActual == null || nodoActual.getPadre().equals(""))
+		{			
+			if (nodoActual == null || nodoActual.getPadre() == null || nodoActual.getPadre().equals(""))
 			{
+				String temp = "{" + nodoActual.getValor();
+				temp += ",Nodo(" + i + "," + j + ") Subnodo(" + lastPos + ")}";
+
+				pila.add(temp);
+
 				terminado = true;
 			}
 			else
-			{				
+			{
 				String [] padreTrozos = nodoActual.getPadre().split(",");
+				
+				String temp = "{" + nodoActual.getValor();
+				temp += ",Nodo(" + i + "," + j + ") Subnodo(" + lastPos + ")}";
+				
+				pila.add(temp);
 
 				if (padreTrozos[0].equals("T"))
 				{
 					if (padreTrozos[1].equals("D"))
 					{
 						nodoActual = this.tabla[i][j].get(0, 0);
+						lastPos = "0,0";
 					}
 					else if (padreTrozos[1].equals("I"))
 					{
 						nodoActual = this.tabla[i][j].get(1, 0);
+						lastPos = "1,0";
 					}
 					else
 					{
 						nodoActual = this.tabla[i][j].get(0, 1);
+						lastPos = "0,1";
 					}
 				}
 				else
@@ -241,8 +248,15 @@ public class CalculadorLevenshtein
 						j--;
 						nodoActual = this.tabla[i][j].get(1, 1);
 					}
+					
+					lastPos = "1,1";
 				}
 			}
+		}
+		
+		while (!pila.isEmpty())
+		{
+			cadena = pila.pop() + "\n" + cadena;
 		}
 		
 		return cadena;
@@ -259,7 +273,7 @@ public class CalculadorLevenshtein
 			CalculadorLevenshtein calculador = new CalculadorLevenshtein();
 			double distancia = calculador.calcular(input, actual);
 			
-			System.out.println(distancia);
+			//System.out.println(distancia);
 			
 			if (distancia < menorPeso)
 			{
