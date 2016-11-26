@@ -177,7 +177,7 @@ public class CalculadorLevenshtein
 				System.out.println(nodo.get(1, 1).getPadre());
 				
 				tabla[j][i] = nodo;
-			}
+			} 
 		}
 		
 		System.out.println(getRecorridoInverso());
