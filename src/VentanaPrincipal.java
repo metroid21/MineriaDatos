@@ -72,7 +72,7 @@ public class VentanaPrincipal<E> extends JFrame {
 	private JScrollPane scrollPaneCSV;
 	private JComboBox<String> comboBoxClases;
 	private JScrollPane scrollPaneFrecuencia;
-	private JList<? extends E> listaAtributos;
+	private JList<String> listaAtributos;
 	private JScrollPane scrollPaneAtributos;
 	private ListDataListener listDataListener;
 	private JTable tableCalculo;
@@ -80,11 +80,17 @@ public class VentanaPrincipal<E> extends JFrame {
 	private JMenuItem mntmIngresarExprecionregular;
 	private ExpresionRegular ventanaExpresiones; 
 	private AgregarAtributo ventanaAtributo;
-	private int balanceadorIndices;
 	private VentanaAlgoritmos ventanaAlgoritmos;
 	private Transformaciones ventanaTransformaciones;
 	private VentanaCorrelacion ventanaCorrelacion;
 	private VentanaLevenshtein ventanaLevenshtein;
+	private JButton btnAgregarFila;
+	private JButton btnEliminarFila;
+	private JButton btnQuitar;
+	private JButton btnAgregar;
+	private JButton btnActualizar;
+	private JMenu mnPreprocesamiento;
+	private JMenu mnDatamining;
 
 	
 	public static void main(String[] args) 
@@ -109,13 +115,22 @@ public class VentanaPrincipal<E> extends JFrame {
 	
 	private void actualizarModelos()
 	{
-		balanceadorIndices=0;
+		listaAtributos.setEnabled(true);
+		comboBoxClases.setEnabled(true);
+		textFieldNuevoAtributo.setEnabled(true);
+		btnAgregar.setEnabled(true);
+		btnQuitar.setEnabled(true);
+		btnActualizar.setEnabled(true);
+		btnEliminarFila.setEnabled(true);
+		btnAgregarFila.setEnabled(true);
+		mnPreprocesamiento.setEnabled(true);
+		mnDatamining.setEnabled(true);
+		
 		 //Cargamos los cambios en un modelo de tabla
 		 modeloTablaCSV = datos.getDatosAsTableModel(true);
 		 tablaCSV.setModel(modeloTablaCSV);
 		 tablaCSV.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		 scrollPaneCSV.setViewportView(tablaCSV);
-		 
 		 
 		 //Actualizamos el Select de la Clase
 		 DefaultComboBoxModel<String> aModel = new DefaultComboBoxModel<String>(datos.getAtributosAsStringArray());
@@ -130,7 +145,7 @@ public class VentanaPrincipal<E> extends JFrame {
 		 ventanaExpresiones.setEnableBtn(false);
 
 		 //Actualizamos la lista de los Atributos
-		 DefaultListModel lModel = new DefaultListModel();
+		 DefaultListModel<String> lModel = new DefaultListModel<String>();
 		 
 		 for (int i = 0; i < datos.getAtributos().getNodos().size(); i++)
 		 {
@@ -220,7 +235,6 @@ public class VentanaPrincipal<E> extends JFrame {
 		                 tablaFrecuencia.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		                 tablaFrecuencia.setAutoCreateRowSorter(true);        		
 		                 scrollPaneFrecuencia.setViewportView(tablaFrecuencia);   
-		                 ventanaExpresiones.setDatos(datos);
 
 		                 txtEstado.setText("Archivo Terminado"); 
 					 }
@@ -235,6 +249,18 @@ public class VentanaPrincipal<E> extends JFrame {
 				 }
 			}
 		});
+		
+		JMenuItem mntmNuevo = new JMenuItem("Nuevo", (Icon) null);
+		mntmNuevo.addMouseListener(new MouseAdapter() 
+		{
+			@Override
+			public void mouseReleased(MouseEvent e) 
+			{
+				datos = new DatosCSV();
+				actualizarModelos();
+			}
+		});
+		mnArchivo.add(mntmNuevo);
 		mnArchivo.add(mntmAbrir);
 	
 		JMenuItem mntmGuardar = new JMenuItem("Guardar",iconoGuardar);
@@ -299,7 +325,8 @@ public class VentanaPrincipal<E> extends JFrame {
 		});
 		mnArchivo.add(mntmSalir);
 		
-		JMenu mnPreprocesamiento = new JMenu("Preprocesamiento");
+		mnPreprocesamiento = new JMenu("Preprocesamiento");
+		mnPreprocesamiento.setEnabled(false);
 		menuBar.add(mnPreprocesamiento);
 		
 		mntmIngresarExprecionregular = new JMenuItem("Expresiones Regulares");
@@ -318,6 +345,7 @@ public class VentanaPrincipal<E> extends JFrame {
 							try
 							{
 								ventanaExpresiones.setVisible(true);
+				                ventanaExpresiones.setDatos(datos);
 							} 
 							catch (Exception e) 
 							{
@@ -333,7 +361,8 @@ public class VentanaPrincipal<E> extends JFrame {
 			}
 		});
 		
-		JMenu mnDatamining = new JMenu("DataMining");
+		mnDatamining = new JMenu("DataMining");
+		mnDatamining.setEnabled(false);
 		menuBar.add(mnDatamining);
 		
 		JMenuItem mntmCorrelacion = new JMenuItem("Correlaci\u00F3n");
@@ -437,7 +466,8 @@ public class VentanaPrincipal<E> extends JFrame {
 		txtEstado = new JLabel("Bienvenido");
 		txtEstado.setHorizontalAlignment(SwingConstants.CENTER);
 		
-		JButton btnEliminarFila = new JButton("Eliminar Fila");
+		btnEliminarFila = new JButton("Eliminar Fila");
+		btnEliminarFila.setEnabled(false);
 		btnEliminarFila.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent arg0) 
@@ -448,7 +478,8 @@ public class VentanaPrincipal<E> extends JFrame {
 			}
 		});
 		
-		JButton btnAgregarFila = new JButton("Agregar Fila");
+		btnAgregarFila = new JButton("Agregar Fila");
+		btnAgregarFila.setEnabled(false);
 		btnAgregarFila.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent e) 
@@ -507,6 +538,7 @@ public class VentanaPrincipal<E> extends JFrame {
 		JLabel lblClase = new JLabel("Clase:");
 		
 		comboBoxClases = new JComboBox<String>();
+		comboBoxClases.setEnabled(false);
  		comboBoxClases.addActionListener(new ActionListener() 
  		{
              public void actionPerformed(ActionEvent event) 
@@ -522,8 +554,9 @@ public class VentanaPrincipal<E> extends JFrame {
               }
  		});
 
-		JButton btnAadir = new JButton("Agregar");
-		btnAadir.addActionListener(new ActionListener() 
+		btnAgregar = new JButton("Agregar");
+		btnAgregar.setEnabled(false);
+		btnAgregar.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent e) 
 			{
@@ -545,7 +578,8 @@ public class VentanaPrincipal<E> extends JFrame {
 			}
 		});
 		
-		JButton btnQuitar = new JButton("Quitar");
+		btnQuitar = new JButton("Quitar");
+		btnQuitar.setEnabled(false);
 		btnQuitar.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent e) 
@@ -566,10 +600,12 @@ public class VentanaPrincipal<E> extends JFrame {
 		});
 		
 		scrollPaneAtributos = new JScrollPane();
+		scrollPaneAtributos.setEnabled(false);
 		
 		contentPane.setLayout(gl_contentPane);
 		
-		JButton btnActualizar = new JButton("Actualizar");
+		btnActualizar = new JButton("Actualizar");
+		btnActualizar.setEnabled(false);
 		btnActualizar.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent e) 
@@ -579,6 +615,7 @@ public class VentanaPrincipal<E> extends JFrame {
 		});
 		
 		textFieldNuevoAtributo = new JTextField();
+		textFieldNuevoAtributo.setEnabled(false);
 		textFieldNuevoAtributo.setColumns(10);
 		GroupLayout gl_panel = new GroupLayout(panel);
 		gl_panel.setHorizontalGroup(
@@ -596,7 +633,7 @@ public class VentanaPrincipal<E> extends JFrame {
 					.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
 						.addComponent(scrollPaneAtributos, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
 						.addGroup(Alignment.LEADING, gl_panel.createSequentialGroup()
-							.addComponent(btnAadir)
+							.addComponent(btnAgregar)
 							.addGap(12)
 							.addComponent(btnQuitar))
 						.addGroup(Alignment.LEADING, gl_panel.createSequentialGroup()
@@ -619,13 +656,14 @@ public class VentanaPrincipal<E> extends JFrame {
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_panel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnQuitar)
-						.addComponent(btnAadir))
+						.addComponent(btnAgregar))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(btnActualizar)
 					.addContainerGap())
 		);
 		
-		listaAtributos = new JList();
+		listaAtributos = new JList<String>();
+		listaAtributos.setEnabled(false);
 		listaAtributos.addMouseListener(new MouseAdapter() 
 		{
 			@Override
@@ -633,12 +671,15 @@ public class VentanaPrincipal<E> extends JFrame {
 			{
 				txtEstado.setText("Creando Tabla de Frecuencia y Estadistica");
 				
-				DefaultTableModel modelo = datos.getTablaFrecuencia(listaAtributos.getSelectedValue().toString());
-                tablaFrecuencia.setModel(modelo);
+				if (listaAtributos.getSelectedValue() != null)
+				{
+					DefaultTableModel modelo = datos.getTablaFrecuencia(listaAtributos.getSelectedValue().toString());
+	                tablaFrecuencia.setModel(modelo);
 
-				DefaultTableModel modelo2 = datos.getTablaEstadistica(listaAtributos.getSelectedValue().toString());
-				tableCalculo.setModel(modelo2);
-
+					DefaultTableModel modelo2 = datos.getTablaEstadistica(listaAtributos.getSelectedValue().toString());
+					tableCalculo.setModel(modelo2);
+				}
+				
                 tablaFrecuencia.setPreferredScrollableViewportSize(new Dimension(500, 70));
         		scrollPaneFrecuencia.setViewportView(tablaFrecuencia);
         		

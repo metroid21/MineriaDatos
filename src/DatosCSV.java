@@ -713,7 +713,16 @@ public class DatosCSV
 		
 		if (indexAtributos < 0 || indexAtributos > this.atributos.getNodos().size())
 		{
-			DefaultTableModel modelo = new DefaultTableModel();
+			DefaultTableModel modelo = new DefaultTableModel()
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+			     public boolean isCellEditable (int fila, int columna) 
+				 {
+			         return false;
+			     }
+			};;
 
 			modelo.addColumn("Descripcion");
 			modelo.addColumn("Datos de Descripcion");
@@ -764,7 +773,16 @@ public class DatosCSV
 				}
 			}
 	
-			DefaultTableModel modelo = new DefaultTableModel();
+			DefaultTableModel modelo = new DefaultTableModel()
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+			     public boolean isCellEditable (int fila, int columna) 
+				 {
+			         return false;
+			     }
+			};					
 			
 			modelo.addColumn("Atributo");
 			modelo.addColumn("Repeticiones");
@@ -785,7 +803,16 @@ public class DatosCSV
 		
 		if (indexAtributos < 0 || indexAtributos > this.atributos.getNodos().size())
 		{
-			DefaultTableModel modelo = new DefaultTableModel();
+			DefaultTableModel modelo = new DefaultTableModel()
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+			     public boolean isCellEditable (int fila, int columna) 
+				 {
+			         return false;
+			     }
+			};					
 
 			modelo.addColumn("Descripcion");
 			modelo.addColumn("Datos de Descripcion");
@@ -812,6 +839,11 @@ public class DatosCSV
 		}
 		else
 		{
+			if (this.datos.isEmpty())
+			{
+				return new DefaultTableModel();
+			}
+			
 			LinkedList<String>  datosAtributo      = new LinkedList<String>();
 			LinkedList<Integer> contadorPosiciones = new LinkedList<Integer>();
 				
@@ -836,7 +868,16 @@ public class DatosCSV
 				}
 			}
 	
-			DefaultTableModel modelo = new DefaultTableModel();
+			DefaultTableModel modelo = new DefaultTableModel()
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+			     public boolean isCellEditable (int fila, int columna) 
+				 {
+			         return false;
+			     }
+			};					
 			
 			modelo.addColumn("Descripcion");
 			modelo.addColumn("Datos de Descripcion");
@@ -970,7 +1011,17 @@ public class DatosCSV
 			
 			for (int i = 0; i < this.datos.size(); i++)
 			{
-				NodoCSV nodo = new NodoCSV(tamAtributos, "", false);
+				NodoCSV nodo;
+				
+				if (this.datos.get(i) == null || this.datos.get(i).getNodos().get(0).isEliminado())
+				{
+					nodo = new NodoCSV(tamAtributos, "", true);
+				}
+				else
+				{
+					nodo = new NodoCSV(tamAtributos, "", false);
+				}
+				
 				this.datos.get(i).getNodos().add(nodo);
 				nuevoCambio.getNodos().add(new NodoCambios(nodo.getId(), tamAtributos, "true", "false"));
 			}			
@@ -1032,10 +1083,17 @@ public class DatosCSV
 		{
 			nuevoCambio = new Cambio(cambios.size()+1, 1);
 		}
-
-		registroCompleto.setId(this.getDatos().getLast().getId()+1);
 		
-		for (int i = 0; i < this.getDatos().getLast().getNodos().size(); i++)
+		if (this.getDatos().isEmpty())
+		{
+			registroCompleto.setId(1);
+		}
+		else
+		{
+			registroCompleto.setId(this.getDatos().getLast().getId()+1);
+		}
+		
+		for (int i = 0; i < this.getAtributos().getNodos().size(); i++)
 		{
 			NodoCambios nodoC = new NodoCambios(registroCompleto.getId(), i, "false", "true");
 			NodoCSV nodo = new NodoCSV();
