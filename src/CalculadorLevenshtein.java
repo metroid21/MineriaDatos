@@ -111,25 +111,32 @@ class NodoLevenshtein
 
 public class CalculadorLevenshtein 
 {
+	private String palabraL;
+	private String palabraA;
+	private NodoLevenshtein[][] tabla;
+	
 	public double calcular(String palabraL, String palabraA)
 	{
 		String palabraLado   = palabraL.toLowerCase() ;
 		String palabraArriba = palabraA.toLowerCase();
 		
+		this.palabraL = palabraLado;
+		this.palabraA = palabraArriba;
+		
 		//Creamos la tabla principal
-		NodoLevenshtein[][] tabla = new NodoLevenshtein[palabraLado.length()+1][palabraArriba.length()+1];  
+		tabla = new NodoLevenshtein[palabraLado.length()+1][palabraArriba.length()+1];  
 		
 		//Llenamos los datos de la primera tabla
 		for (int i = 0; i < palabraArriba.length()+1; i++)
 		{
 			tabla[0][i] = new NodoLevenshtein(i);
-			System.out.println(tabla[0][i].toString());
+			//System.out.println(tabla[0][i].toString());
 		}
 		
 		for (int i = 0; i < palabraLado.length()+1; i++)
 		{
 			tabla[i][0] = new NodoLevenshtein(i);
-			System.out.println(tabla[i][0]);
+			//System.out.println(tabla[i][0]);
 		}
 		
 		//Llenamos la estructura de la tabla
@@ -164,92 +171,95 @@ public class CalculadorLevenshtein
 				nodo.calcular11();
 				
 				System.out.println(nodo);
+				System.out.println(nodo.get(0, 0).getPadre());
+				System.out.println(nodo.get(0, 1).getPadre());
+				System.out.println(nodo.get(1, 0).getPadre());
+				System.out.println(nodo.get(1, 1).getPadre());
 				
 				tabla[j][i] = nodo;
 			}
 		}
 		
+		System.out.println(getRecorridoInverso());
+				
 		//Retornamos el ultimo valor
 		return tabla[palabraLado.length()][palabraArriba.length()].get(1, 1).getValor();
 	}
 
-	public double calcularDiscreto(String palabraL, String palabraA)
+	public String getRecorridoInverso()
 	{
-		String palabraLado   = palabraL.toLowerCase() ;
-		String palabraArriba = palabraA.toLowerCase();
+		boolean terminado = false;
+		SubNodoLevenshtein nodoActual = this.tabla[this.palabraL.length()][this.palabraA.length()].get(1, 1);
+		String cadena = "";
+		int i = this.palabraL.length()-1;
+		int j = this.palabraA.length()-1;
 		
-		//Creamos la tabla principal
-		NodoLevenshtein[][] tabla = new NodoLevenshtein[palabraLado.length()+1][palabraArriba.length()+1];  
-		
-		//Llenamos los datos de la primera tabla
-		for (int i = 0; i < palabraArriba.length()+1; i++)
+		while (!terminado)
 		{
-			tabla[0][i] = new NodoLevenshtein(i);
-			System.out.println(tabla[0][i].toString());
-		}
-		
-		for (int i = 0; i < palabraLado.length()+1; i++)
-		{
-			tabla[i][0] = new NodoLevenshtein(i);
-			System.out.println(tabla[i][0]);
-		}
-		
-		//Llenamos la estructura de la tabla
-		for (int i = 1; i <= palabraArriba.length(); i++)
-		{
-			for (int j = 1; j <= palabraLado.length(); j++)
+			System.out.println(cadena + " [" + nodoActual.getPadre() + "] (" + i + "," + j+ ")");
+
+			cadena += nodoActual.getValor() + " ";
+			
+			if (nodoActual == null || nodoActual.getPadre().equals(""))
 			{
-				System.out.println(j + " " + palabraLado.charAt(j-1) + " " + i + " " + palabraArriba.charAt(i-1));
-				
-				NodoLevenshtein nodo = new NodoLevenshtein(0);
-				
-				double valorDiagonal  = tabla[j-1][i-1].get(1, 1).getValor();
-				double valorIzquierdo = tabla[j-1][i].get(1, 1).getValor();
-				double valorArriba    = tabla[j][i-1].get(1, 1).getValor();
-				
-				nodo.set(0, 1, valorArriba+1);
-				nodo.set(1, 0, valorIzquierdo+1);
+				terminado = true;
+			}
+			else
+			{				
+				String [] padreTrozos = nodoActual.getPadre().split(",");
 
-				nodo.get(0, 1).setPadre("F,A");
-				nodo.get(1, 0).setPadre("F,I");
-				nodo.get(0, 0).setPadre("F,D");
-
-				if (palabraArriba.charAt(i-1) == palabraLado.charAt(j-1))
+				if (padreTrozos[0].equals("T"))
 				{
-					nodo.set(0, 0, valorDiagonal);
+					if (padreTrozos[1].equals("D"))
+					{
+						nodoActual = this.tabla[i][j].get(0, 0);
+					}
+					else if (padreTrozos[1].equals("I"))
+					{
+						nodoActual = this.tabla[i][j].get(1, 0);
+					}
+					else
+					{
+						nodoActual = this.tabla[i][j].get(0, 1);
+					}
 				}
 				else
 				{
-					nodo.set(0, 0, valorDiagonal+1);
+					if (padreTrozos[1].equals("D"))
+					{
+						i--;
+						j--;
+						nodoActual = this.tabla[i][j].get(1, 1);
+					}
+					else if (padreTrozos[1].equals("I"))
+					{
+						i--;
+						nodoActual = this.tabla[i][j].get(1, 1);
+					}
+					else
+					{
+						j--;
+						nodoActual = this.tabla[i][j].get(1, 1);
+					}
 				}
-								
-				nodo.calcular11();
-				
-				System.out.println(nodo);
-				
-				tabla[j][i] = nodo;
 			}
 		}
 		
-		//Retornamos el ultimo valor
-		return tabla[palabraLado.length()][palabraArriba.length()].get(1, 1).getValor();
-	}
-
-	public static String getRecorridoInverso()
-	{
-		return "";
+		return cadena;
 	}
 
 	public static String masParecido(String input, LinkedList<String> posibles)
 	{
 		String menor = "";
-		double menorPeso = 100;
+		double menorPeso = 10000000;
 		
 		for (int i = 0; i < posibles.size(); i++)
 		{
 			String actual = posibles.get(i);
 			CalculadorLevenshtein calculador = new CalculadorLevenshtein();
 			double distancia = calculador.calcular(input, actual);
+			
+			System.out.println(distancia);
 			
 			if (distancia < menorPeso)
 			{
