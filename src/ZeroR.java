@@ -30,7 +30,7 @@ public class ZeroR extends Algoritmo
 						resultado.add(new NodoCSV(i, moda, true));
 					}
 				}
-								
+				
 				this.setResultado(resultado);
 			}
 		}

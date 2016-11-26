@@ -603,9 +603,27 @@ public class DatosCSV
 		return arreglo;
 	}
 	
-	public DefaultTableModel getDatosAsTableModel()
+	public DefaultTableModel getDatosAsTableModel(boolean editable)
 	{
-		DefaultTableModel modelo = new DefaultTableModel();
+		DefaultTableModel modelo;
+		
+		if (!editable)
+		{
+			modelo = new DefaultTableModel()
+			{
+				private static final long serialVersionUID = 1L;
+
+				@Override
+			     public boolean isCellEditable (int fila, int columna) 
+				 {
+			         return false;
+			     }
+			};
+		}
+		else
+		{
+			modelo = new DefaultTableModel();
+		}
 		
 		for (int i = 0; i < this.atributos.getNodos().size(); i++)
 		{
@@ -638,7 +656,56 @@ public class DatosCSV
 		}		
 		return modelo;
 	}	
-	
+
+	public static DatosCSV getDatosFromTableModel(DefaultTableModel modelo)
+	{
+		DatosCSV nuevosDatos = new DatosCSV();
+		
+		//Creamos los atributos
+		for (int i = 0; i < modelo.getColumnCount(); i++)
+		{
+			boolean esNumerico = true;
+			
+			try
+			{
+				Integer.parseInt((String) modelo.getValueAt(0, i));
+			}
+			catch (NumberFormatException e)
+			{
+				esNumerico = false;
+			}
+			
+			NodoAtributo nuevo = new NodoAtributo();;
+			
+			nuevo.setEliminado(false);
+			nuevo.setExpresionRegular("");
+			nuevo.setId(i);
+			nuevo.setTipo(5);
+			nuevo.setValor(modelo.getColumnName(i));
+			
+			if (esNumerico)
+			{
+				nuevo.setTipo(2);
+			}
+			
+			nuevosDatos.getAtributos().getNodos().add(nuevo);
+		}
+		
+		for (int i = 0; i < modelo.getRowCount(); i++)
+		{
+			RegistroCSV<NodoCSV> registroNuevo = new RegistroCSV<NodoCSV>(i);
+			
+			for (int j = 0; j < modelo.getColumnCount(); j++)
+			{
+				NodoCSV nodoNuevo = new NodoCSV(j, (String)modelo.getValueAt(i, j), false);
+				registroNuevo.getNodos().add(nodoNuevo);
+			}
+			
+			nuevosDatos.getDatos().add(registroNuevo);
+		}
+		
+		return nuevosDatos;
+	}	
 		
 	public DefaultTableModel getTablaFrecuencia(String nombreAtributo)
 	{

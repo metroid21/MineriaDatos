@@ -1,6 +1,3 @@
-import java.awt.BorderLayout;
- import java.awt.EventQueue;
- 
  import javax.swing.JFrame;
  import javax.swing.JPanel;
  import javax.swing.border.EmptyBorder;
@@ -14,92 +11,33 @@ import java.awt.BorderLayout;
  import javax.swing.JButton;
  import java.beans.PropertyChangeListener;
  import java.beans.PropertyChangeEvent;
- import javax.swing.ComboBoxModel;
- import java.awt.event.MouseAdapter;
- import java.awt.event.MouseEvent;
  import java.awt.event.ActionListener;
- import java.awt.Color;
- import java.beans.PropertyChangeListener;
- import java.beans.PropertyChangeEvent;
- import javax.swing.JTextPane;
- import javax.swing.event.CellEditorListener;
- import javax.swing.event.ChangeEvent;
- import javax.swing.event.ListDataEvent;
- import javax.swing.event.ListDataListener;
- import javax.swing.event.ListSelectionEvent;
- import javax.swing.event.ListSelectionListener;
  import java.awt.Dimension;
- import java.awt.EventQueue;
  
- import javax.swing.JFrame;
- import javax.swing.JPanel;
- import javax.swing.border.EmptyBorder;
- import javax.swing.event.CellEditorListener;
- import javax.swing.event.ChangeEvent;
- import javax.swing.event.ListDataEvent;
- import javax.swing.event.ListDataListener;
- import javax.swing.event.ListSelectionEvent;
- import javax.swing.event.ListSelectionListener;
- import javax.swing.filechooser.FileNameExtensionFilter;
  import javax.swing.table.DefaultTableModel;
- import javax.swing.table.TableCellEditor;
- import javax.swing.table.TableRowSorter;
- import javax.swing.JMenuBar;
- import javax.swing.JButton;
- import javax.swing.JMenu;
- import javax.swing.JMenuItem;
- import java.awt.SystemColor;
  import java.awt.event.ActionEvent;
- import java.io.FileNotFoundException;
- import java.io.PrintWriter;
- import java.io.UnsupportedEncodingException;
- import java.awt.GridBagLayout;
- 
- import javax.swing.ComboBoxModel;
- import javax.swing.DefaultCellEditor;
  import javax.swing.DefaultComboBoxModel;
- import javax.swing.DefaultListModel;
- import javax.swing.GroupLayout;
- import javax.swing.GroupLayout.Alignment;
- import javax.swing.Icon;
- import javax.swing.ImageIcon;
- import javax.swing.JList;
- import javax.swing.JScrollPane;
- import javax.swing.LayoutStyle.ComponentPlacement;
- import javax.swing.ListModel;
- import javax.swing.ListSelectionModel;
- import javax.swing.JTable;
- import javax.swing.JComboBox;
- import javax.swing.JFileChooser;
- import javax.swing.JLabel;
- import javax.swing.JTextField;
- import java.awt.event.MouseAdapter;
- import java.awt.event.MouseEvent;
- import java.awt.event.ActionListener;
- import java.awt.Color;
- import java.beans.PropertyChangeListener;
- import java.beans.PropertyChangeEvent;
- import javax.swing.JTextPane;
  
- public class ExpresionRegular extends JFrame {
- 
- 	private JPanel panelPrincipal;
+ public class ExpresionRegular extends JFrame 
+ {
+	private static final long serialVersionUID = 1L;
+	private JPanel panelPrincipal;
  	private JTable tablaFiltro;
  	private JTextField txtGramatica;
- 	private JComboBox comboBox;
+ 	private JComboBox<String> comboBox;
  	private JButton btnGuardar;
  	private JButton btnFiltrarDistinto;
  	private DatosCSV datos;
- 	private JComboBox comboTipo;
+ 	private JComboBox<String> comboTipo;
  	private JScrollPane panelTabla;
  	private JButton btnFiltrar;
  	
- 	public JComboBox getComboBox() 
+ 	public JComboBox<String> getComboBox() 
  	{ 
  		return comboBox;
  	}
  
- 	public void setComboBox(JComboBox comboBox) 
+ 	public void setComboBox(JComboBox<String> comboBox) 
  	{
  		this.comboBox = comboBox;
  	}
@@ -130,12 +68,13 @@ import java.awt.BorderLayout;
  		
  		panelTabla = new JScrollPane();
  		
- 		comboBox = new JComboBox();
+ 		comboBox = new JComboBox<String>();
  		comboBox.addActionListener(new ActionListener() 
  		{
              public void actionPerformed(ActionEvent event) 
              {
-                 JComboBox comboBoxN = (JComboBox) event.getSource();
+                 @SuppressWarnings("unchecked")
+				 JComboBox<String> comboBoxN = (JComboBox<String>) event.getSource();
                  String item = comboBoxN.getSelectedItem().toString();
                  
                  if (item == "Selecionar")
@@ -184,8 +123,8 @@ import java.awt.BorderLayout;
  			}
  		});
  		
- 		comboTipo = new JComboBox();
- 		comboTipo.setModel(new DefaultComboBoxModel(new String[] {"Selecionar", "?????", "Nominal", "Numerico", "Ordinal", "Booleano"}));
+ 		comboTipo = new JComboBox<String>();
+ 		comboTipo.setModel(new DefaultComboBoxModel<String>(new String[] {"Selecionar", "?????", "Nominal", "Numerico", "Ordinal", "Booleano"}));
  		
  		btnFiltrar = new JButton("Filtrar");
  		btnFiltrar.addActionListener(new ActionListener() 

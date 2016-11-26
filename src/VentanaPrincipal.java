@@ -111,7 +111,7 @@ public class VentanaPrincipal<E> extends JFrame {
 	{
 		balanceadorIndices=0;
 		 //Cargamos los cambios en un modelo de tabla
-		 modeloTablaCSV = datos.getDatosAsTableModel();
+		 modeloTablaCSV = datos.getDatosAsTableModel(true);
 		 tablaCSV.setModel(modeloTablaCSV);
 		 tablaCSV.setPreferredScrollableViewportSize(new Dimension(500, 70));
 		 scrollPaneCSV.setViewportView(tablaCSV);
@@ -362,7 +362,18 @@ public class VentanaPrincipal<E> extends JFrame {
 				EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						try {
-							ventanaAlgoritmos.setVisible(true);
+							
+							if (datos.getNombreClase() != "")
+							{
+								ventanaAlgoritmos.setVisible(true);
+								ventanaAlgoritmos.setDatosOrigen(datos);
+								ventanaAlgoritmos.inicializar();
+								txtEstado.setText("Abriendo Ventana de Algoritmos");
+							}
+							else
+							{
+								txtEstado.setText("Selecione una clase primero");
+							}
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -495,45 +506,18 @@ public class VentanaPrincipal<E> extends JFrame {
 		
 		JLabel lblClase = new JLabel("Clase:");
 		
-		comboBoxClases = new JComboBox();
+		comboBoxClases = new JComboBox<String>();
  		comboBoxClases.addActionListener(new ActionListener() 
  		{
              public void actionPerformed(ActionEvent event) 
              {
-                 JComboBox comboBoxN = (JComboBox) event.getSource();
+                 @SuppressWarnings("unchecked")
+				JComboBox<String> comboBoxN = (JComboBox<String>) event.getSource();
                  String item = comboBoxN.getSelectedItem().toString();
                  
                  if (item != "Selecionar" && item != "")
                  {
                     datos.setNombreClase(item);
-                    System.out.println(datos.getNombreClase());
-                    
-                    LectorCSV lect = new LectorCSV();
-                    DatosCSV datosPruebas = new DatosCSV();
-                    datosPruebas = lect.cargarCSVDelimitadores("pruebas.jl");
-                                        
-                    ZeroR algoritmo = new ZeroR(datos,datosPruebas);
-                    algoritmo.calcular();
-                    //System.out.println(algoritmo.getResultado().toString());
-                    System.out.println(algoritmo.getExactitud());
-
-                    OneR algoritmo2 = new OneR(datos,datosPruebas);
-                    algoritmo2.calcular();
-                    //System.out.println(algoritmo2.getResultado().toString());
-                    System.out.println(algoritmo2.getExactitud());
-
-                    NaiveBayes algoritmo3 = new NaiveBayes(datos,datosPruebas);
-                    algoritmo3.calcular();
-                    //System.out.println(algoritmo3.getResultado().toString());
-                    System.out.println(algoritmo3.getExactitud());
-                    
-                    CalculadorCorrelacion cor = new CalculadorCorrelacion(datos);
-                    System.out.println(cor.calcularCorrelacion("etiqueta", "tipo"));
-                    System.out.println(cor.calcularCorrelacion("edad", "colesterol"));
-                    
-                    CalculadorLevenshtein calculadorLevenshtein = new CalculadorLevenshtein();
-					System.out.println(calculadorLevenshtein.calcular("miku", "mikan"));
-					//System.out.println(CalculadorLevenshtein.masParecido("white", datos.getDistintos(datos.getAtributos().getNodos().get(0).getValor())));
                  }
               }
  		});
