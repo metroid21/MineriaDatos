@@ -1,5 +1,3 @@
-import java.util.Collections;
-
 public class CalculadorTransformaciones {
 
 	private DatosCSV datos;

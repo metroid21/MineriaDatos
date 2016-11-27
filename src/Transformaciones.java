@@ -1,5 +1,3 @@
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -21,6 +19,7 @@ import java.awt.event.MouseEvent;
 
 public class Transformaciones extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField textRango1;
 	private JTextField textRango2;
@@ -40,9 +39,20 @@ public class Transformaciones extends JFrame {
 		if (datos != null)
 		{
 			tablaResultados.setModel(datos.getDatosAsTableModel(false));
-			DefaultComboBoxModel<String> rModel = new DefaultComboBoxModel<String>(datos.getAtributosAsStringArray());
+			
+			DefaultComboBoxModel<String> rModel = new DefaultComboBoxModel<String>();
+		
+			for (int i = 0; i < datos.getAtributos().getNodos().size(); i++)
+			{
+				if (datos.getAtributos().getNodos().get(i).getTipo() == 3)
+				{
+					rModel.insertElementAt(datos.getAtributos().getNodos().get(i).getValor(), 0);
+				}
+			}
+			
 			rModel.insertElementAt("Selecionar", 0);
 			rModel.setSelectedItem("Selecionar");
+			
 			this.comboAtributos.setModel(rModel);
 			
 			//this.textCorrelacion.setText("");
@@ -80,8 +90,8 @@ public class Transformaciones extends JFrame {
 		
 		JLabel lblMetodo = new JLabel("Metodo");
 		
-		final JComboBox comboMetodos = new JComboBox();
-		comboMetodos.setModel(new DefaultComboBoxModel(new String[] {"MIN-MAX", "Z-Score","Z-Score Absoluto", "Escalamiento Decimal"}));
+		final JComboBox<String> comboMetodos = new JComboBox<String>();
+		comboMetodos.setModel(new DefaultComboBoxModel<String>(new String[] {"MIN-MAX", "Z-Score","Z-Score Absoluto", "Escalamiento Decimal"}));
 		comboMetodos.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				String metodo=String.valueOf(comboMetodos.getSelectedItem());
@@ -104,17 +114,39 @@ public class Transformaciones extends JFrame {
 				CT=new CalculadorTransformaciones(datos);
 				String metodo=String.valueOf(comboMetodos.getSelectedItem());
 				String nombreAtributo=String.valueOf(comboAtributos.getSelectedItem());
-				if(metodo=="MIN-MAX"){
-					CT.minMax(Integer.parseInt(textRango1.getText()),Integer.parseInt(textRango2.getText()),nombreAtributo);
-				}else if(metodo=="Z-Score"){
-					CT.zScore(nombreAtributo);
-				}else if(metodo=="Z-Score Absoluto"){
-					CT.zScoreAbs(nombreAtributo);
-				}else if(metodo=="Escalamiento Decimal"){
-					CT.decimal(nombreAtributo);
-				}
-				tableNuevos.setModel(datos.getDatosAsTableModel(false));
 				
+				if (nombreAtributo != "Selecionar")
+				{
+					if(metodo=="MIN-MAX")
+					{
+						boolean correcto = true;
+						int val1 = 0;
+						int val2 = 1;
+						
+						try
+						{
+							val1 = Integer.parseInt(textRango1.getText());
+							val2 = Integer.parseInt(textRango2.getText());
+						}
+						catch (NumberFormatException e)
+						{
+							correcto = false;
+						}
+						
+						if (correcto)
+						{
+							CT.minMax(val1,val2,nombreAtributo);							
+						}
+						
+					}else if(metodo=="Z-Score"){
+						CT.zScore(nombreAtributo);
+					}else if(metodo=="Z-Score Absoluto"){
+						CT.zScoreAbs(nombreAtributo);
+					}else if(metodo=="Escalamiento Decimal"){
+						CT.decimal(nombreAtributo);
+					}
+					tableNuevos.setModel(datos.getDatosAsTableModel(false));
+				}				
 			}
 		});
 		

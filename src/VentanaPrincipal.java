@@ -4,35 +4,15 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ListDataEvent;
-import javax.swing.event.ListDataListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableRowSorter;
 import javax.swing.JMenuBar;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 
-import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.awt.GridBagLayout;
-import java.awt.List;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
@@ -42,8 +22,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.ListModel;
-import javax.swing.ListSelectionModel;
 import javax.swing.JTable;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -53,15 +31,13 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.Color;
-import java.awt.Component;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeEvent;
-import javax.swing.JTextPane;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
  
-public class VentanaPrincipal<E> extends JFrame {
+public class VentanaPrincipal extends JFrame {
  
+	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private DatosCSV datos = new DatosCSV();
 	private DefaultTableModel modeloTablaCSV;
@@ -74,12 +50,10 @@ public class VentanaPrincipal<E> extends JFrame {
 	private JScrollPane scrollPaneFrecuencia;
 	private JList<String> listaAtributos;
 	private JScrollPane scrollPaneAtributos;
-	private ListDataListener listDataListener;
 	private JTable tableCalculo;
 	private JLabel txtEstado;
 	private JMenuItem mntmIngresarExprecionregular;
 	private ExpresionRegular ventanaExpresiones; 
-	private AgregarAtributo ventanaAtributo;
 	private VentanaAlgoritmos ventanaAlgoritmos;
 	private Transformaciones ventanaTransformaciones;
 	private VentanaCorrelacion ventanaCorrelacion;
