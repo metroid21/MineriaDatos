@@ -1,15 +1,16 @@
 public class CalculadorTransformaciones {
 
 	private DatosCSV datos;
-	private DatosCSV datosNuevos;
+	private DatosCSV datosNuevos = new DatosCSV() ;
 	private double nuevoValor;
 	
 	public CalculadorTransformaciones(DatosCSV datosN){
 		this.datos=datosN;
-		this.datosNuevos=datos;
+		this.datosNuevos.setAtributos(datos.getAtributos());
+		this.datosNuevos.setDatos(datos.getDatos());
 	}
 	
-	public void minMax(int min, int max, String nombreAtributo){
+	public void minMax(int min, int max, String nombreAtributo){	
 		int pos = datos.getPosicionAtributo(nombreAtributo);
 		double minA=datos.getMayor(nombreAtributo);
 		double maxA=datos.getMenor(nombreAtributo);
