@@ -22,10 +22,18 @@ public class CalculadorTransformaciones {
 		this.datosNuevos = datosNuevos;
 	}
 
-	public CalculadorTransformaciones(DatosCSV datosN){
-		this.datos=datosN;
-		DefaultTableModel modelo = this.datos.getDatosAsTableModel(true);
-		this.datosNuevos = DatosCSV.getDatosFromTableModel(modelo);
+	public CalculadorTransformaciones(DatosCSV datosN, boolean aplicarDirectamente){
+		if (aplicarDirectamente)
+		{
+			this.datos=datosN;
+			this.datosNuevos = datos;
+		}
+		else
+		{
+			this.datos=datosN;
+			DefaultTableModel modelo = this.datos.getDatosAsTableModel(true);
+			this.datosNuevos = DatosCSV.getDatosFromTableModel(modelo);			
+		}
 	}
 	
 	public void minMax(int min, int max, String nombreAtributo){	

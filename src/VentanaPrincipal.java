@@ -55,7 +55,7 @@ public class VentanaPrincipal extends JFrame {
 	private JMenuItem mntmIngresarExprecionregular;
 	private ExpresionRegular ventanaExpresiones; 
 	private VentanaAlgoritmos ventanaAlgoritmos;
-	private Transformaciones ventanaTransformaciones;
+	private VentanaTransformaciones ventanaTransformaciones;
 	private VentanaCorrelacion ventanaCorrelacion;
 	private VentanaLevenshtein ventanaLevenshtein;
 	private JButton btnAgregarFila;
@@ -144,7 +144,7 @@ public class VentanaPrincipal extends JFrame {
 	{
 		ventanaExpresiones = new ExpresionRegular();
 		ventanaAlgoritmos = new VentanaAlgoritmos();
-		ventanaTransformaciones= new Transformaciones();
+		ventanaTransformaciones= new VentanaTransformaciones();
 		ventanaCorrelacion= new VentanaCorrelacion();
 		ventanaLevenshtein = new VentanaLevenshtein();
 		

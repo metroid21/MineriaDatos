@@ -17,7 +17,7 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class Transformaciones extends JFrame {
+public class VentanaTransformaciones extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
@@ -39,6 +39,7 @@ public class Transformaciones extends JFrame {
 		if (datos != null)
 		{
 			tablaResultados.setModel(datos.getDatosAsTableModel(false));
+			tableNuevos.setModel(datos.getDatosAsTableModel(false));
 			
 			DefaultComboBoxModel<String> rModel = new DefaultComboBoxModel<String>();
 		
@@ -60,7 +61,7 @@ public class Transformaciones extends JFrame {
 	}
 	
 	
-	public Transformaciones() {
+	public VentanaTransformaciones() {
 		setResizable(false);
 		setTitle("Transfromaciones");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -107,11 +108,61 @@ public class Transformaciones extends JFrame {
 		});
 		
 		
+		JButton btnVisualizar = new JButton("Visualizar");
+		btnVisualizar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CT=new CalculadorTransformaciones(datos, false);
+				String metodo=String.valueOf(comboMetodos.getSelectedItem());
+				String nombreAtributo=String.valueOf(comboAtributos.getSelectedItem());
+				
+				if (nombreAtributo != "Selecionar")
+				{
+					if(metodo=="MIN-MAX")
+					{
+						boolean correcto = true;
+						int val1 = 0;
+						int val2 = 1;
+						
+						try
+						{
+							val1 = Integer.parseInt(textRango1.getText());
+							val2 = Integer.parseInt(textRango2.getText());
+						}
+						catch (NumberFormatException f)
+						{
+							correcto = false;
+						}
+						
+						if (correcto)
+						{
+							CT.minMax(val1,val2,nombreAtributo);							
+						}
+						
+					}else if(metodo=="Z-Score"){
+						CT.zScore(nombreAtributo);
+					}else if(metodo=="Z-Score Absoluto"){
+						CT.zScoreAbs(nombreAtributo);
+					}else if(metodo=="Escalamiento Decimal"){
+						CT.decimal(nombreAtributo);
+					}
+					
+					tablaResultados.setModel(CT.getDatos().getDatosAsTableModel(false));
+					tableNuevos.setModel(CT.getDatosNuevos().getDatosAsTableModel(false));
+				}
+			}
+		});
+		
+		JScrollPane scrollNuevos = new JScrollPane();
+		
+		JLabel lblActual = new JLabel("Actual");
+		
+		JLabel lblNuevo = new JLabel("Nuevo");
+		
 		JButton btnAplicar = new JButton("Aplicar");
 		btnAplicar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent arg0) {
-				CT=new CalculadorTransformaciones(datos);
+				CT=new CalculadorTransformaciones(datos, true);
 				String metodo=String.valueOf(comboMetodos.getSelectedItem());
 				String nombreAtributo=String.valueOf(comboAtributos.getSelectedItem());
 				
@@ -146,23 +197,18 @@ public class Transformaciones extends JFrame {
 						CT.decimal(nombreAtributo);
 					}
 					
+					tablaResultados.setModel(CT.getDatos().getDatosAsTableModel(false));
 					tableNuevos.setModel(CT.getDatosNuevos().getDatosAsTableModel(false));
 				}				
 			}
 		});
-		
-		JScrollPane scrollNuevos = new JScrollPane();
-		
-		JLabel lblActual = new JLabel("Actual");
-		
-		JLabel lblNuevo = new JLabel("Nuevo");
-		
+
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
 						.addGroup(gl_contentPane.createSequentialGroup()
 							.addComponent(lblAtributo)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
@@ -175,23 +221,25 @@ public class Transformaciones extends JFrame {
 							.addComponent(lblRango)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(textRango1, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED, 5, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 							.addComponent(label)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(textRango2, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)
 							.addGap(18)
-							.addComponent(btnAplicar)
-							.addContainerGap(300, Short.MAX_VALUE))
-						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
+							.addComponent(btnVisualizar)
+							.addGap(39)
+							.addComponent(btnAplicar, GroupLayout.PREFERRED_SIZE, 82, GroupLayout.PREFERRED_SIZE)
+							.addContainerGap(58, Short.MAX_VALUE))
+						.addGroup(gl_contentPane.createSequentialGroup()
 							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 								.addComponent(scrollResultados, 0, 0, Short.MAX_VALUE)
 								.addComponent(lblActual))
 							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING, false)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING, false)
 								.addGroup(gl_contentPane.createSequentialGroup()
 									.addComponent(lblNuevo)
 									.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-								.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
+								.addGroup(gl_contentPane.createSequentialGroup()
 									.addComponent(scrollNuevos, GroupLayout.PREFERRED_SIZE, 364, GroupLayout.PREFERRED_SIZE)
 									.addGap(26))))))
 		);
@@ -208,6 +256,7 @@ public class Transformaciones extends JFrame {
 						.addComponent(textRango1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(label)
 						.addComponent(textRango2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(btnVisualizar)
 						.addComponent(btnAplicar))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
