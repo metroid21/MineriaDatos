@@ -1429,6 +1429,44 @@ public class DatosCSV
 		return -777777;
 	}
 	
+	public double getDesviacionAbsoluta(String nombreAtributo)
+	{
+		int indexAtributo = this.atributoStringToIndex(nombreAtributo);
+		
+		if (indexAtributo >= 0 && indexAtributo < this.atributos.getNodos().size())
+		{
+			double promedio = this.getMedia(nombreAtributo);
+			double acumulacion = 0;
+			int cantidadFilas  = 0;
+
+			if (this.atributos.getNodos().get(indexAtributo).getTipo() != 3)
+			{
+				return -777777;
+			}
+
+			for (int i = 0; i < datos.size(); i++)
+			{
+				NodoCSV nodo = datos.get(i).getNodos().get(indexAtributo);
+				
+				if (nodo.isEliminado())
+				{
+					continue;
+				}
+				else
+				{
+					cantidadFilas++;
+					float valor = Float.parseFloat(nodo.getValor());
+					acumulacion = acumulacion + Math.abs(valor-promedio);
+				}
+			}
+			acumulacion = (acumulacion/(cantidadFilas));
+			return acumulacion;
+		}
+		
+		return -777777;
+	}
+
+	
 	public DefaultTableModel filtrarDatos(String nombreAtributo)
 	{
 		int indexAtributo = this.atributoStringToIndex(nombreAtributo);

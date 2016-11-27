@@ -28,6 +28,7 @@ public class Transformaciones extends JFrame {
 	private DatosCSV datos;
 	private CalculadorTransformaciones CT;
 	private JComboBox<String> comboAtributos;
+	private JTable tableNuevos;
 	
 	public void setDatos(DatosCSV datos) 
 	{
@@ -38,6 +39,7 @@ public class Transformaciones extends JFrame {
 	{
 		if (datos != null)
 		{
+			tablaResultados.setModel(datos.getDatosAsTableModel(false));
 			DefaultComboBoxModel<String> rModel = new DefaultComboBoxModel<String>(datos.getAtributosAsStringArray());
 			rModel.insertElementAt("Selecionar", 0);
 			rModel.setSelectedItem("Selecionar");
@@ -52,7 +54,7 @@ public class Transformaciones extends JFrame {
 		setResizable(false);
 		setTitle("Transfromaciones");
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setBounds(100, 100, 775, 301);
+		setBounds(100, 100, 775, 310);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -63,11 +65,13 @@ public class Transformaciones extends JFrame {
 		JLabel lblRango = new JLabel("Rango");
 		
 		textRango1 = new JTextField();
+		textRango1.setText("0");
 		textRango1.setColumns(10);
 		
 		JLabel label = new JLabel("-");
 		
 		textRango2 = new JTextField();
+		textRango2.setText("1");
 		textRango2.setColumns(10);
 		
 		JScrollPane scrollResultados = new JScrollPane();
@@ -77,17 +81,17 @@ public class Transformaciones extends JFrame {
 		JLabel lblMetodo = new JLabel("Metodo");
 		
 		final JComboBox comboMetodos = new JComboBox();
-		comboMetodos.setModel(new DefaultComboBoxModel(new String[] {"MIN-MAX", "Z-Score", "Escalamiento Decimal"}));
+		comboMetodos.setModel(new DefaultComboBoxModel(new String[] {"MIN-MAX", "Z-Score","Z-Score Absoluto", "Escalamiento Decimal"}));
 		comboMetodos.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e){
 				String metodo=String.valueOf(comboMetodos.getSelectedItem());
-				if(metodo=="Z-Score"||metodo=="Escalamiento Decimal"){
-					textRango1.setEditable(false);
-					textRango2.setEditable(false);
-				}
-				else{
+				if(metodo=="MIN-MAX"){
 					textRango1.setEditable(true);
 					textRango2.setEditable(true);
+				}
+				else{
+					textRango1.setEditable(false);
+					textRango2.setEditable(false);					
 				}
 			}
 		});
@@ -99,17 +103,26 @@ public class Transformaciones extends JFrame {
 			public void mouseReleased(MouseEvent arg0) {
 				CT=new CalculadorTransformaciones(datos);
 				String metodo=String.valueOf(comboMetodos.getSelectedItem());
-				String atributo=String.valueOf(comboAtributos.getSelectedItem());
+				String nombreAtributo=String.valueOf(comboAtributos.getSelectedItem());
 				if(metodo=="MIN-MAX"){
-					CT.minMax(Integer.parseInt(textRango1.getText()),Integer.parseInt(textRango2.getText()),atributo);
+					CT.minMax(Integer.parseInt(textRango1.getText()),Integer.parseInt(textRango2.getText()),nombreAtributo);
 				}else if(metodo=="Z-Score"){
-					
+					CT.zScore(nombreAtributo);
+				}else if(metodo=="Z-Score Absoluto"){
+					CT.zScoreAbs(nombreAtributo);
 				}else if(metodo=="Escalamiento Decimal"){
-					
+					CT.decimal(nombreAtributo);
 				}
+				tableNuevos.setModel(datos.getDatosAsTableModel(false));
 				
 			}
 		});
+		
+		JScrollPane scrollNuevos = new JScrollPane();
+		
+		JLabel lblActual = new JLabel("Actual");
+		
+		JLabel lblNuevo = new JLabel("Nuevo");
 		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
@@ -129,14 +142,25 @@ public class Transformaciones extends JFrame {
 							.addComponent(lblRango)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(textRango1, GroupLayout.PREFERRED_SIZE, 19, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED)
+							.addPreferredGap(ComponentPlacement.RELATED, 5, Short.MAX_VALUE)
 							.addComponent(label)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(textRango2, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE)
 							.addGap(18)
-							.addComponent(btnAplicar))
-						.addComponent(scrollResultados, GroupLayout.PREFERRED_SIZE, 728, GroupLayout.PREFERRED_SIZE))
-					.addContainerGap(21, Short.MAX_VALUE))
+							.addComponent(btnAplicar)
+							.addContainerGap(300, Short.MAX_VALUE))
+						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+								.addComponent(scrollResultados, 0, 0, Short.MAX_VALUE)
+								.addComponent(lblActual))
+							.addPreferredGap(ComponentPlacement.UNRELATED)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING, false)
+								.addGroup(gl_contentPane.createSequentialGroup()
+									.addComponent(lblNuevo)
+									.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+								.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
+									.addComponent(scrollNuevos, GroupLayout.PREFERRED_SIZE, 364, GroupLayout.PREFERRED_SIZE)
+									.addGap(26))))))
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -153,9 +177,18 @@ public class Transformaciones extends JFrame {
 						.addComponent(textRango2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(btnAplicar))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(scrollResultados, GroupLayout.PREFERRED_SIZE, 202, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(15, Short.MAX_VALUE))
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblNuevo)
+						.addComponent(lblActual))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+						.addComponent(scrollResultados, GroupLayout.PREFERRED_SIZE, 202, GroupLayout.PREFERRED_SIZE)
+						.addComponent(scrollNuevos, GroupLayout.PREFERRED_SIZE, 198, GroupLayout.PREFERRED_SIZE))
+					.addContainerGap())
 		);
+		
+		tableNuevos = new JTable();
+		scrollNuevos.setViewportView(tableNuevos);
 		
 		tablaResultados = new JTable();
 		scrollResultados.setViewportView(tablaResultados);

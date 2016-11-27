@@ -4,32 +4,66 @@ public class CalculadorTransformaciones {
 
 	private DatosCSV datos;
 	private DatosCSV datosNuevos;
+	private double nuevoValor;
 	
 	public CalculadorTransformaciones(DatosCSV datosN){
 		this.datos=datosN;
-		this.datosNuevos=datosN;
+		this.datosNuevos=datos;
 	}
 	
 	public void minMax(int min, int max, String nombreAtributo){
 		int pos = datos.getPosicionAtributo(nombreAtributo);
 		double minA=datos.getMayor(nombreAtributo);
 		double maxA=datos.getMenor(nombreAtributo);
-		double valor;
-		int datoInt;
+		double datoIni;
 		for (int i = 0; i < datos.getDatos().size(); i++)
 		{
-			datoInt=Integer.parseInt(datos.getDatos().get(i).getNodos().get(pos).getValor());
-			valor=((datoInt-minA)/(maxA-minA))*(max-min)+min;
-			System.out.println(valor);
-			datosNuevos.getDatos().get(i).getNodos().get(pos).setValor(String.valueOf(valor));
+			datoIni=Double.parseDouble(datos.getDatos().get(i).getNodos().get(pos).getValor());
+			nuevoValor=((datoIni-minA)/(maxA-minA))*(max-min)+min;
+			//System.out.println(valor);
+			datosNuevos.getDatos().get(i).getNodos().get(pos).setValor(String.valueOf(nuevoValor));
 		}
 	}
 	
-	public void zeroR(){
-		
+	public void zScore(String nombreAtributo){
+		int pos = datos.getPosicionAtributo(nombreAtributo);
+		double media=datos.getMedia(nombreAtributo);
+		double dEstandar=datos.getDesviacionEstandar(nombreAtributo);
+		double datoIni;
+		for(int i=0;i < datos.getDatos().size();i++){
+			datoIni=Double.parseDouble(datos.getDatos().get(i).getNodos().get(pos).getValor());
+			nuevoValor=(datoIni-media)/dEstandar;
+			//System.out.println("*"+nuevoValor);
+			datosNuevos.getDatos().get(i).getNodos().get(pos).setValor(String.valueOf(nuevoValor));
+		}
 	}
 	
-	public void diez(){
-		
+	public void zScoreAbs(String nombreAtributo){
+		int pos = datos.getPosicionAtributo(nombreAtributo);
+		double media=datos.getMedia(nombreAtributo);
+		double dAbsoluta=datos.getDesviacionAbsoluta(nombreAtributo);
+		double datoIni;
+		for(int i=0;i < datos.getDatos().size();i++){
+			datoIni=Double.parseDouble(datos.getDatos().get(i).getNodos().get(pos).getValor());
+			nuevoValor=(datoIni-media)/dAbsoluta;
+			//System.out.println(nuevoValor);
+			datosNuevos.getDatos().get(i).getNodos().get(pos).setValor(String.valueOf(nuevoValor));
+		}
+	}
+	
+	public void decimal(String nombreAtributo){
+		int pos = datos.getPosicionAtributo(nombreAtributo);
+		double maxAbs=Math.abs(datos.getMayor(nombreAtributo));
+		double datoIni;
+		int divisor=10;
+		while((maxAbs/divisor)>1){
+			divisor=divisor*10;
+		}
+		for(int i=0;i < datos.getDatos().size();i++){
+			datoIni=Double.parseDouble(datos.getDatos().get(i).getNodos().get(pos).getValor());
+			nuevoValor=datoIni/divisor;
+			//System.out.println(nuevoValor);
+			datosNuevos.getDatos().get(i).getNodos().get(pos).setValor(String.valueOf(nuevoValor));
+		}
 	}
 }

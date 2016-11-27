@@ -372,7 +372,6 @@ public class VentanaPrincipal<E> extends JFrame {
 				EventQueue.invokeLater(new Runnable(){
 					public void run(){
 						try{
-							
 							ventanaCorrelacion.setVisible(true);
 							ventanaCorrelacion.setDatos(datos);
 							ventanaCorrelacion.refrescarAtributos();
