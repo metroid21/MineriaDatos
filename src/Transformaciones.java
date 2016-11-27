@@ -145,7 +145,8 @@ public class Transformaciones extends JFrame {
 					}else if(metodo=="Escalamiento Decimal"){
 						CT.decimal(nombreAtributo);
 					}
-					tableNuevos.setModel(datos.getDatosAsTableModel(false));
+					
+					tableNuevos.setModel(CT.getDatosNuevos().getDatosAsTableModel(false));
 				}				
 			}
 		});

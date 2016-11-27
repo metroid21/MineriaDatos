@@ -1,13 +1,31 @@
+import javax.swing.table.DefaultTableModel;
+
 public class CalculadorTransformaciones {
 
 	private DatosCSV datos;
-	private DatosCSV datosNuevos = new DatosCSV() ;
+	private DatosCSV datosNuevos;
 	private double nuevoValor;
 	
+	public DatosCSV getDatos() {
+		return datos;
+	}
+
+	public void setDatos(DatosCSV datos) {
+		this.datos = datos;
+	}
+
+	public DatosCSV getDatosNuevos() {
+		return datosNuevos;
+	}
+
+	public void setDatosNuevos(DatosCSV datosNuevos) {
+		this.datosNuevos = datosNuevos;
+	}
+
 	public CalculadorTransformaciones(DatosCSV datosN){
 		this.datos=datosN;
-		this.datosNuevos.setAtributos(datos.getAtributos());
-		this.datosNuevos.setDatos(datos.getDatos());
+		DefaultTableModel modelo = this.datos.getDatosAsTableModel(true);
+		this.datosNuevos = DatosCSV.getDatosFromTableModel(modelo);
 	}
 	
 	public void minMax(int min, int max, String nombreAtributo){	
